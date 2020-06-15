@@ -1,0 +1,12 @@
+
+endpoint: https://eu1.prisma.sh/kouatchoua/inex-back/dev
+datamodel: datamodel.prisma
+
+hooks:
+  post-deploy:
+    - graphql get-schema -p prisma
+
+generate:
+  - generator: javascript-client
+    output: ./src/generated/
+    # output: ./generated/prisma-client/

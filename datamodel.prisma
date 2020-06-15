@@ -1,0 +1,311 @@
+ enum Permission {
+
+        USER
+        ADMIN
+        CANDIDATE
+        CENTER
+        ITEM_CREATE
+        ITEM_DELETE
+        ITEM_UPDATE
+        PERMISSION_UPDATE
+
+  }
+ 
+ type User {
+     id: ID!@id @unique
+     email : String! @unique
+     name : String!
+     password : String!
+     resetToken: String
+     resetTokenExpiry: String
+      createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+ }
+ 
+type Region {
+    id : ID  ! @id @unique
+    regName : String !
+    regCode : String ! @unique
+    country: Country!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+    division : [Division]!
+}
+
+type Division {
+    id : ID  ! @id @unique
+    divName : String !
+    divCode : String ! @unique
+    region : Region !
+    subDivision : [SubDivision]!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+
+type SubDivision {
+    id : ID  ! @id @unique
+    subDivName : String !
+    subDivCode : String ! @unique
+    division : Division !
+    createdAt : DateTime! @createdAt  
+    updatedAt : DateTime! @updatedAt  
+    town : [Town]!
+}
+
+type Town {
+    id : ID  ! @id @unique
+    townName : String !
+    townCode : String ! @unique
+    subDiv : SubDivision !
+    office : Office 
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt  
+    center : [Center]!
+}
+
+type Center {
+    id : ID  ! @id @unique
+    centerName : String !
+    centerCode : String ! @unique
+    centerSecretCode : String ! @unique
+    town : Town !
+    centerNumber : Int ! @unique
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt
+    centerExamSessionExaminer:[CenterExamSessionExaminer]!
+    centerExamSession: [CenterExamSession]!
+}
+
+type Series {
+    id : ID  ! @id @unique
+    seriesName : String !
+    seriesCode : String ! @unique
+    subjectSeries: [SubjectSeries]!
+    centerExamSessionSeries: [CenterExamSessionSeries]
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt  
+    educationType : EducationType!
+    
+}
+type EducationType {
+    id : ID  ! @id @unique
+    subject: [Subject]!
+    educationTypeName : String
+    educationTypeCode : String! @unique
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt  
+    series : [Series]!
+}
+
+type Exam {
+    id : ID  ! @id @unique
+    examName : String !
+    examSession: [ExamSession]!
+    examCode : String ! @unique
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt 
+   
+}
+type Subject {
+    id : ID  ! @id @unique
+    subjectName : String ! @unique
+    subjectCode : String ! @unique
+    subjectType: SubjectType! 
+    educType: EducationType!
+    createdAt : DateTime! @createdAt 
+    updatedAt : DateTime! @updatedAt  
+}
+
+type Session {
+    id : ID  ! @id @unique
+    examSession: [ExamSession]!
+    sessionName : String !@unique
+    sessionCode : String ! @unique
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+   
+}
+
+type Gender {
+    id : ID  ! @id @unique
+    genderName : String !
+    genderCode : String ! @unique
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+    candidate : [Candidate]!
+}
+
+type Candidate {
+    id : ID  ! @id @unique
+    cand1stName : String
+    cand2ndName : String
+    cand3rdName : String
+    placeOfBirth : String
+    momName: String
+    dadName: String
+    image : String
+    birthCertNumber : String
+    candCode : String! @unique
+    email : String! @unique
+    phoneNumb : Int
+    dateOfBirth : DateTime @dateOfBirth
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+    gender : Gender !
+    registration: [Registration]!
+}
+
+type Rank {
+    id : ID  ! @id @unique
+    rankName : String !
+    rankCode : String !
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+
+type Office {
+    id : ID  ! @id @unique
+    officeName : String !
+    officeCode : String !
+    town: [Town]!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+
+type Country {
+    id : ID  ! @id @unique
+    countryName : String !
+    region:[Region]!
+    countryCode : String !
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+
+type Phase {
+    id : ID  ! @id @unique
+    phaseName : String !
+    phaseCode : String !
+    phaseRank: [PhaseRank]
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+
+type PhaseRank {
+    id : ID  ! @id @unique
+    phase : Phase !
+    rankName : String!
+    rankCode : String!
+    createdAt : DateTime!@createdAt
+    updatedAt : DateTime!@updatedAt  
+}
+
+type Examiner {
+    id : ID  ! @id @unique
+    examiner1stName: String!
+    examiner2ndName: String!
+    examinerOtherNames: String!
+    examinerCNI: String!
+    examinerPhone: Int!
+    examinerMatricule: String!
+    examinerEmail: String!
+    examinerImage: String!
+    gender: Gender!
+    examinerCode: String! @unique
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+}
+type CenterExamSessionExaminer {
+    id : ID  ! @id @unique
+    examiner: Examiner!
+    centerExamSession : CenterExamSession!
+    phaseRank: PhaseRank!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+    report : [Report]!
+}
+type Report {
+    id : ID  ! @id @unique
+    reportName : String !
+    centerExamSessionExaminer : CenterExamSessionExaminer !
+    reportImage: String!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+
+}
+
+type CenterExamSession {
+    id : ID! @id @unique    
+    examSession: ExamSession!
+    center: Center!
+    registration: [Registration]!
+    centerExamSessionSeries: [CenterExamSessionSeries]!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt
+    centerExamSessionExaminer : [CenterExamSessionExaminer]!
+}
+
+type ExamSession {
+    id : ID! @id @unique    
+    exam: Exam!
+    session: Session!
+    centerExamSession: [CenterExamSession]!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt
+}
+
+type CenterExamSessionSeries {
+    id : ID! @id @unique
+    centerExamSession: CenterExamSession!
+    registration: [Registration]!
+    series: Series!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt
+}
+
+type Score {
+    id : ID! @id @unique
+    subjectAve : Float
+    subjectTotal : Float
+    registration : Registration !
+    subjectSeries: SubjectSeries!
+    presence: Boolean
+    coeff: Int!
+    candExamSecretCode: String!
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt
+}
+
+type Registration {
+    id : ID  ! @id @unique
+    candidate : Candidate!
+    centerExamSessionSeries: CenterExamSessionSeries!
+    centerExamSession: CenterExamSession!
+    candExamSecretCode: String! @unique
+    candExamSession: String! @unique
+    scores: [Score]!
+    series: Series!
+    candRegistrationNumber: String! @unique 
+    serial: Int
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt
+
+}
+
+type SubjectSeries {
+    id : ID! @id @unique
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+    series : Series!
+    coeff: Int!
+    subjectName : String ! 
+    subjectCode : String ! 
+}
+
+type SubjectType {
+    id : ID! @id @unique  
+    subjectTypeName: String!@unique
+    subjectTypeCode: String!@unique
+    createdAt : DateTime! @createdAt
+    updatedAt : DateTime! @updatedAt  
+
+}

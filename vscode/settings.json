@@ -1,0 +1,12 @@
+{
+              "workbench.colorCustomizations": {
+                            "activityBar.background": "#1D2E48",
+                            "titleBar.activeBackground": "#284164",
+                            "titleBar.activeForeground": "#ffffff"
+            },
+            "editor.fontSize": 18,
+            "editor.tabSize": 5,
+            "editor.defaultFormatter": "vscode.emmet",
+            "markdown.preview.fontSize": 16,
+
+}
