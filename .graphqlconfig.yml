@@ -4,15 +4,9 @@ projects:
     schemaPath: "./src/schema.graphql"
     extensions:
       endpoints:
-        default: "http://localhost:5000"
+        default: "http://localhost:50000"
   prisma:
     schemaPath: "./src/generated/prisma.graphql"
     extensions:
       prisma: prisma.yml
     # schemaPath: "./generated/prisma.schema"
-#       // config.js
-# module.exports = {
-#   endpoint: process.env.API_URL,
-#   masterKey: process.env.API_KEY,
-#   port: process.env.PORT
-# };

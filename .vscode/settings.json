@@ -1,0 +1,28 @@
+{
+        
+            "workbench.colorCustomizations": {
+            "activityBar.background": "#013161",
+            "activityBar.activeBorder": "#06f997",
+            "activityBar.foreground": "#000",
+            "activityBar.inactiveForeground": "#ffff",
+            "activityBarBadge.background": "#eeee06de",
+            "activityBarBadge.activeBackground": "#aee00a",
+            "activityBar.activeBackground": "#08f1e2",
+            "activityBarBadge.foreground": "#010508",
+            "titleBar.activeBackground": "#013161",
+            "titleBar.inactiveBackground": "#9f0099",
+            "titleBar.activeForeground": "#e7e7e7",
+            "titleBar.inactiveForeground": "#e7e7e799",
+            "statusBar.background": "#013161",
+            "statusBarItem.hoverBackground": "#000000",
+            "statusBar.foreground": "#e7e7e7",
+            
+        },
+      
+        "window.zoomLevel": 0.4,
+        "editor.tabSize": 10,
+        "editor.fontSize": 16,
+        "git.ignoreLimitWarning": true,
+        "terminal.integrated.fontSize": 14,
+        
+    }

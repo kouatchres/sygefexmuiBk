@@ -1,0 +1,312 @@
+enum Permissions {
+  ADMIN
+  USER
+  ENTER_MARKS
+  CHEF_SEC
+  CENTER_ADMIN
+  EXAMINER
+  EXAMINER_ADMIN
+  PERMISSION_UPDATE
+}
+type User {
+  id: ID! @id @unique
+  email: String! @unique
+  name: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: String
+  candidate: [Candidate]!
+  permissions: [Permissions!]! @scalarList(strategy: RELATION)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+type Region {
+  id: ID! @id @unique
+  regName: String!
+  regCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  division: [Division]!
+}
+
+type Division {
+  id: ID! @id @unique
+  divName: String!
+  divCode: String! @unique
+  region: Region!
+  subDivision: [SubDivision]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SubDivision {
+  id: ID! @id @unique
+  subDivName: String!
+  subDivCode: String! @unique
+  division: Division!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  town: [Town]!
+}
+
+type Town {
+  id: ID! @id @unique
+  townName: String!
+  townCode: String! @unique
+  subDiv: SubDivision!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  center: [Center]!
+}
+
+type Center {
+  id: ID! @id @unique
+  centerName: String!
+  centerCode: String! @unique
+  centerSecretCode: String! @unique
+  town: Town!
+  centerNumber: Int! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  centerExamSessionExaminer: [CenterExamSessionExaminer]!
+  centerExamSession: [CenterExamSession]!
+}
+
+type Specialty {
+  id: ID! @id @unique
+  specialtyName: String!
+  specialtyCode: String! @unique
+  subjectSpecialty: [SubjectSpecialty]!
+  centerExamSessionSpecialty: [CenterExamSessionSpecialty]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  educationType: EducationType!
+}
+type EducationType {
+  id: ID! @id @unique
+  subject: [Subject]!
+  educationTypeName: String
+  educationTypeCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  specialty: [Specialty]!
+}
+
+type Exam {
+  id: ID! @id @unique
+  examName: String!
+  examSession: [ExamSession]!
+  examCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+type Subject {
+  id: ID! @id @unique
+  subjectName: String! @unique
+  subjectCode: String! @unique
+  subjectType: SubjectType!
+  educType: EducationType!
+  specialty: [SubjectSpecialty]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Session {
+  id: ID! @id @unique
+  examSession: [ExamSession]!
+  sessionName: String! @unique
+  sessionCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Gender {
+  id: ID! @id @unique
+  genderName: String!
+  genderCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Candidate {
+  id: ID! @id @unique
+  cand1stName: String
+  cand2ndName: String
+  cand3rdName: String
+  placeOfBirth: String
+  momName: String
+  dadName: String
+  image: String
+  birthCertNumber: String
+  candCode: String! @unique
+  email: String! @unique
+  phoneNumb: Int
+  dateOfBirth: DateTime @dateOfBirth
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  gender: Gender!
+  registration: [Registration]!
+  user: User!
+}
+
+type Rank {
+  id: ID! @id @unique
+  rankName: String!
+  rankCode: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Phase {
+  id: ID! @id @unique
+  phaseName: String!
+  phaseCode: String!
+  phaseRank: [PhaseRank]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type PhaseRank {
+  id: ID! @id @unique
+  phase: Phase!
+  rankName: String!
+  rankCode: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Examiner {
+  id: ID! @id @unique
+  examiner1stName: String!
+  examiner2ndName: String!
+  examinerOtherNames: String!
+  examinerCNI: String!
+  examinerPhone: Int!
+  examinerMatricule: String!
+  examinerEmail: String!
+  examinerImage: String!
+  gender: Gender!
+  examinerCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User!
+}
+type CenterExamSessionExaminer {
+  id: ID! @id @unique
+  examiner: Examiner!
+  centerExamSession: CenterExamSession!
+  phaseRank: PhaseRank!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  report: [Report]!
+}
+type Report {
+  id: ID! @id @unique
+  reportName: String!
+  centerExamSessionExaminer: CenterExamSessionExaminer!
+  reportImage: String!
+  user: User!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type CenterExamSession {
+  id: ID! @id @unique
+  examSession: ExamSession!
+  center: Center!
+  registration: [Registration]!
+  centerExamSessionSpecialty: [CenterExamSessionSpecialty]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  centerExamSessionExaminer: [CenterExamSessionExaminer]!
+}
+
+type ExamSession {
+  id: ID! @id @unique
+  exam: Exam!
+  session: Session!
+  centerExamSession: [CenterExamSession]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type CenterExamSessionSpecialty {
+  id: ID! @id @unique
+  centerExamSession: CenterExamSession!
+  specialty: Specialty!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  registration: [Registration]!
+}
+
+type Score {
+  id: ID! @id @unique
+  subjectAve: Float
+  subjectTotal: Float
+  registration: Registration!
+  subjectSpecialty: SubjectSpecialty!
+  presence: Boolean
+  coeff: Int!
+  user: User!
+  candExamSecretCode: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Registration {
+  id: ID! @id @unique
+  candidate: Candidate!
+  centerExamSessionSpecialty: CenterExamSessionSpecialty!
+  centerExamSession: CenterExamSession!
+  candExamSecretCode: String! @unique
+  candExamSession: String! @unique
+  scores: [Score]!
+  aptitude: Aptitude!
+  specialty: Specialty!
+  optionalSubject: [OptionalSubjectRegistration]!
+  candRegistrationNumber: String! @unique
+  serial: Int
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SubjectSpecialty {
+  id: ID! @id @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  specialty: Specialty!
+  subject: Subject!
+  coeff: Int!
+}
+
+type SubjectType {
+  id: ID! @id @unique
+  subjectTypeName: String! @unique
+  subjectTypeCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Aptitude {
+  id: ID! @id @unique
+  aptitudeName: String! @unique
+  aptitudeCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type SubjectGroup {
+  id: ID! @id @unique
+  subjectGroupName: String! @unique
+  subjectGroupCode: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type OptionalSubjectRegistration {
+  id: ID! @id @unique
+  registration: Registration!
+  Subject: Subject!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
