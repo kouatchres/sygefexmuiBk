@@ -15,7 +15,7 @@ type User {
   password: String!
   resetToken: String
   resetTokenExpiry: String
-  candidate: [Candidate]!
+  candidate: Candidate @relation(name: "USER")
   permissions: [Permissions!]! @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -104,7 +104,8 @@ type Subject {
   id: ID! @id @unique
   subjectName: String! @unique
   subjectCode: String! @unique
-  subjectType: SubjectType!
+  subjectType: String!
+  subjectGroup: String!
   educType: EducationType!
   specialty: [SubjectSpecialty]!
   createdAt: DateTime! @createdAt
@@ -116,14 +117,6 @@ type Session {
   examSession: [ExamSession]!
   sessionName: String! @unique
   sessionCode: String! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type Gender {
-  id: ID! @id @unique
-  genderName: String!
-  genderCode: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
@@ -144,9 +137,9 @@ type Candidate {
   dateOfBirth: DateTime @dateOfBirth
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  gender: Gender!
+  gender: String!
   registration: [Registration]!
-  user: User!
+  user: User! @relation(name: "USER", link: INLINE)
 }
 
 type Rank {
@@ -185,7 +178,7 @@ type Examiner {
   examinerMatricule: String!
   examinerEmail: String!
   examinerImage: String!
-  gender: Gender!
+  gender: String!
   examinerCode: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -261,9 +254,9 @@ type Registration {
   candExamSecretCode: String! @unique
   candExamSession: String! @unique
   scores: [Score]!
-  aptitude: Aptitude!
+  aptitude: String!
   specialty: Specialty!
-  optionalSubject: [OptionalSubjectRegistration]!
+  optionalSubjects: [RegisterOptionalSubject]!
   candRegistrationNumber: String! @unique
   serial: Int
   createdAt: DateTime! @createdAt
@@ -279,31 +272,7 @@ type SubjectSpecialty {
   coeff: Int!
 }
 
-type SubjectType {
-  id: ID! @id @unique
-  subjectTypeName: String! @unique
-  subjectTypeCode: String! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type Aptitude {
-  id: ID! @id @unique
-  aptitudeName: String! @unique
-  aptitudeCode: String! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type SubjectGroup {
-  id: ID! @id @unique
-  subjectGroupName: String! @unique
-  subjectGroupCode: String! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-}
-
-type OptionalSubjectRegistration {
+type RegisterOptionalSubject {
   id: ID! @id @unique
   registration: Registration!
   Subject: Subject!

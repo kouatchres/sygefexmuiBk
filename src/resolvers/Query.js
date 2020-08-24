@@ -67,41 +67,6 @@ const Query = {
     }
   },
 
-  async aptitude(parent, args, { prismaDB, request: { user, userId } }, info) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const where = {
-        id: args.id,
-      };
-      const oneApte = await prismaDB.query.aptitude({ where }, info);
-      return oneApte;
-    } catch (error) {
-      throw new Error(`Aptitude Errors, ${error.message}`);
-    }
-  },
-
-  async subjectGroup(
-    parent,
-    args,
-    { prismaDB, request: { user, userId } },
-    info
-  ) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const where = {
-        id: args.id,
-      };
-      const oneSubjGrp = await prismaDB.query.subjectGroup({ where }, info);
-      return oneSubjGrp;
-    } catch (error) {
-      throw new Error(`Subj grp Errors, ${error.message}`);
-    }
-  },
-
   async regions(parent, args, { prismaDB, request: { userId, user } }, info) {
     try {
       if (!userId) {
@@ -122,57 +87,6 @@ const Query = {
       return allRegions;
     } catch (error) {
       throw new Error(`regions Errors, ${error}`);
-    }
-  },
-
-  async aptitudes(parent, args, { prismaDB, request: { userId, user } }, info) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if they are logged in
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if he haas the permissions to query all the users.
-      hasPermissions(user, ["USER", "ADMIN", "PERMISSION_UPDATE"]);
-
-      //todo if they do, then query all the aptitudes.
-      const allAptes = await prismaDB.query.aptitudes(
-        { orderBy: "aptitudeName_ASC" },
-        info
-      );
-      return allAptes;
-    } catch (error) {
-      throw new Error(`aptitudes Errors, ${error}`);
-    }
-  },
-
-  async subjectGroups(
-    parent,
-    args,
-    { prismaDB, request: { userId, user } },
-    info
-  ) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if they are logged in
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if he haas the permissions to query all the users.
-      hasPermissions(user, ["USER", "ADMIN", "PERMISSION_UPDATE"]);
-
-      //todo if they do, then query all the aptitudes.
-      const allSubjGrps = await prismaDB.query.subjectGroups(
-        { orderBy: "subjectGroupName_ASC" },
-        info
-      );
-      return allSubjGrps;
-    } catch (error) {
-      throw new Error(`Subj Grps Errors, ${error}`);
     }
   },
 
@@ -232,41 +146,13 @@ const Query = {
     }
   },
 
-  async genders(parent, args, { prismaDB, request: { user, userId } }, info) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const allGenders = await prismaDB.query.genders({
-        orderBy: "genderName_ASC",
-      });
-      return allGenders;
-    } catch (error) {
-      throw new Error(`genders Query error: ${error.message}`);
-    }
-  },
-  async gender(parent, args, { prismaDB, request: { user, userId } }, info) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const where = {
-        id: args.id,
-      };
-      const oneGender = await prismaDB.query.gender({ where }, info);
-      return oneGender;
-    } catch (error) {
-      throw new Error(`genders Query error: ${error.message}`);
-    }
-  },
-
   async divisions(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
       }
       const allDivisions = await prismaDB.query.divisions({
-        orderBy: "divisionName_ASC",
+        orderBy: "divName_ASC",
       });
       return allDivisions;
     } catch (error) {
@@ -359,49 +245,6 @@ const Query = {
       throw new Error(
         `Count registered Students Query error: ${error.message}`
       );
-    }
-  },
-
-  async subjectTypes(
-    parent,
-    args,
-    { prismaDB, request: { user, userId } },
-    info
-  ) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const allSubjectTypes = await prismaDB.query.subjectTypes({
-        orderBy: "subjectTypeName_ASC",
-      });
-      return allSubjectTypes;
-    } catch (error) {
-      throw new Error(`All subject types Query error: ${error.message}`);
-    }
-  },
-  async subjectType(
-    parent,
-    args,
-    { prismaDB, request: { user, userId } },
-    info
-  ) {
-    try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      const where = {
-        id: args.id,
-      };
-      const oneSubjectType = await prismaDB.query.subjectType(
-        {
-          where,
-        },
-        info
-      );
-      return oneSubjectType;
-    } catch (error) {
-      throw new Error(`subject types Query error: ${error.message}`);
     }
   },
 
@@ -667,6 +510,47 @@ const Query = {
       throw new Error(`Subjects Query error: ${error.message}`);
     }
   },
+
+  async group1Subjects(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      const allSubject = await prismaDB.query.subjects({
+        where: { subjectGroup:"G1" },
+        orderBy: "subjectName_ASC",
+      });
+      return allSubject;
+    } catch (error) {
+      throw new Error(`Subjects Query error: ${error.message}`);
+    }
+  },
+
+  async group1Subjects(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      const allSubject = await prismaDB.query.subjects({
+        where: { subjectGroup: "G2" },
+        orderBy: "subjectName_ASC",
+      });
+      return allSubject;
+    } catch (error) {
+      throw new Error(`Subjects Query error: ${error.message}`);
+    }
+  },
+
   async subject(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
       if (!userId) {

@@ -1,7 +1,3 @@
-type AggregateAptitude {
-  count: Int!
-}
-
 type AggregateCandidate {
   count: Int!
 }
@@ -42,14 +38,6 @@ type AggregateExamSession {
   count: Int!
 }
 
-type AggregateGender {
-  count: Int!
-}
-
-type AggregateOptionalSubjectRegistration {
-  count: Int!
-}
-
 type AggregatePhase {
   count: Int!
 }
@@ -63,6 +51,10 @@ type AggregateRank {
 }
 
 type AggregateRegion {
+  count: Int!
+}
+
+type AggregateRegisterOptionalSubject {
   count: Int!
 }
 
@@ -94,15 +86,7 @@ type AggregateSubject {
   count: Int!
 }
 
-type AggregateSubjectGroup {
-  count: Int!
-}
-
 type AggregateSubjectSpecialty {
-  count: Int!
-}
-
-type AggregateSubjectType {
   count: Int!
 }
 
@@ -112,166 +96,6 @@ type AggregateTown {
 
 type AggregateUser {
   count: Int!
-}
-
-type Aptitude {
-  id: ID!
-  aptitudeName: String!
-  aptitudeCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type AptitudeConnection {
-  pageInfo: PageInfo!
-  edges: [AptitudeEdge]!
-  aggregate: AggregateAptitude!
-}
-
-input AptitudeCreateInput {
-  aptitudeName: String!
-  aptitudeCode: String!
-}
-
-input AptitudeCreateOneInput {
-  create: AptitudeCreateInput
-  connect: AptitudeWhereUniqueInput
-}
-
-type AptitudeEdge {
-  node: Aptitude!
-  cursor: String!
-}
-
-enum AptitudeOrderByInput {
-  id_ASC
-  id_DESC
-  aptitudeName_ASC
-  aptitudeName_DESC
-  aptitudeCode_ASC
-  aptitudeCode_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type AptitudePreviousValues {
-  id: ID!
-  aptitudeName: String!
-  aptitudeCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type AptitudeSubscriptionPayload {
-  mutation: MutationType!
-  node: Aptitude
-  updatedFields: [String!]
-  previousValues: AptitudePreviousValues
-}
-
-input AptitudeSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: AptitudeWhereInput
-  AND: [AptitudeSubscriptionWhereInput!]
-  OR: [AptitudeSubscriptionWhereInput!]
-  NOT: [AptitudeSubscriptionWhereInput!]
-}
-
-input AptitudeUpdateDataInput {
-  aptitudeName: String
-  aptitudeCode: String
-}
-
-input AptitudeUpdateInput {
-  aptitudeName: String
-  aptitudeCode: String
-}
-
-input AptitudeUpdateOneRequiredInput {
-  create: AptitudeCreateInput
-  update: AptitudeUpdateDataInput
-  upsert: AptitudeUpsertNestedInput
-  connect: AptitudeWhereUniqueInput
-}
-
-input AptitudeUpsertNestedInput {
-  update: AptitudeUpdateDataInput!
-  create: AptitudeCreateInput!
-}
-
-input AptitudeWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  aptitudeName: String
-  aptitudeName_not: String
-  aptitudeName_in: [String!]
-  aptitudeName_not_in: [String!]
-  aptitudeName_lt: String
-  aptitudeName_lte: String
-  aptitudeName_gt: String
-  aptitudeName_gte: String
-  aptitudeName_contains: String
-  aptitudeName_not_contains: String
-  aptitudeName_starts_with: String
-  aptitudeName_not_starts_with: String
-  aptitudeName_ends_with: String
-  aptitudeName_not_ends_with: String
-  aptitudeCode: String
-  aptitudeCode_not: String
-  aptitudeCode_in: [String!]
-  aptitudeCode_not_in: [String!]
-  aptitudeCode_lt: String
-  aptitudeCode_lte: String
-  aptitudeCode_gt: String
-  aptitudeCode_gte: String
-  aptitudeCode_contains: String
-  aptitudeCode_not_contains: String
-  aptitudeCode_starts_with: String
-  aptitudeCode_not_starts_with: String
-  aptitudeCode_ends_with: String
-  aptitudeCode_not_ends_with: String
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [AptitudeWhereInput!]
-  OR: [AptitudeWhereInput!]
-  NOT: [AptitudeWhereInput!]
-}
-
-input AptitudeWhereUniqueInput {
-  id: ID
-  aptitudeName: String
-  aptitudeCode: String
 }
 
 type BatchPayload {
@@ -294,7 +118,7 @@ type Candidate {
   dateOfBirth: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
-  gender: Gender!
+  gender: String!
   registration(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Registration!]
   user: User!
 }
@@ -318,18 +142,18 @@ input CandidateCreateInput {
   email: String!
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderCreateOneInput!
+  gender: String!
   registration: RegistrationCreateManyWithoutCandidateInput
   user: UserCreateOneWithoutCandidateInput!
 }
 
-input CandidateCreateManyWithoutUserInput {
-  create: [CandidateCreateWithoutUserInput!]
-  connect: [CandidateWhereUniqueInput!]
-}
-
 input CandidateCreateOneWithoutRegistrationInput {
   create: CandidateCreateWithoutRegistrationInput
+  connect: CandidateWhereUniqueInput
+}
+
+input CandidateCreateOneWithoutUserInput {
+  create: CandidateCreateWithoutUserInput
   connect: CandidateWhereUniqueInput
 }
 
@@ -346,7 +170,7 @@ input CandidateCreateWithoutRegistrationInput {
   email: String!
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderCreateOneInput!
+  gender: String!
   user: UserCreateOneWithoutCandidateInput!
 }
 
@@ -363,7 +187,7 @@ input CandidateCreateWithoutUserInput {
   email: String!
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderCreateOneInput!
+  gender: String!
   registration: RegistrationCreateManyWithoutCandidateInput
 }
 
@@ -403,6 +227,8 @@ enum CandidateOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  gender_ASC
+  gender_DESC
 }
 
 type CandidatePreviousValues {
@@ -421,6 +247,7 @@ type CandidatePreviousValues {
   dateOfBirth: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
+  gender: String!
 }
 
 type CandidateSubscriptionPayload {
@@ -454,24 +281,24 @@ input CandidateUpdateInput {
   email: String
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderUpdateOneRequiredInput
+  gender: String
   registration: RegistrationUpdateManyWithoutCandidateInput
   user: UserUpdateOneRequiredWithoutCandidateInput
-}
-
-input CandidateUpdateManyWithoutUserInput {
-  create: [CandidateCreateWithoutUserInput!]
-  delete: [CandidateWhereUniqueInput!]
-  connect: [CandidateWhereUniqueInput!]
-  disconnect: [CandidateWhereUniqueInput!]
-  update: [CandidateUpdateWithWhereUniqueWithoutUserInput!]
-  upsert: [CandidateUpsertWithWhereUniqueWithoutUserInput!]
 }
 
 input CandidateUpdateOneRequiredWithoutRegistrationInput {
   create: CandidateCreateWithoutRegistrationInput
   update: CandidateUpdateWithoutRegistrationDataInput
   upsert: CandidateUpsertWithoutRegistrationInput
+  connect: CandidateWhereUniqueInput
+}
+
+input CandidateUpdateOneWithoutUserInput {
+  create: CandidateCreateWithoutUserInput
+  update: CandidateUpdateWithoutUserDataInput
+  upsert: CandidateUpsertWithoutUserInput
+  delete: Boolean
+  disconnect: Boolean
   connect: CandidateWhereUniqueInput
 }
 
@@ -488,7 +315,7 @@ input CandidateUpdateWithoutRegistrationDataInput {
   email: String
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderUpdateOneRequiredInput
+  gender: String
   user: UserUpdateOneRequiredWithoutCandidateInput
 }
 
@@ -505,13 +332,8 @@ input CandidateUpdateWithoutUserDataInput {
   email: String
   phoneNumb: Int
   dateOfBirth: DateTime
-  gender: GenderUpdateOneRequiredInput
+  gender: String
   registration: RegistrationUpdateManyWithoutCandidateInput
-}
-
-input CandidateUpdateWithWhereUniqueWithoutUserInput {
-  where: CandidateWhereUniqueInput!
-  data: CandidateUpdateWithoutUserDataInput!
 }
 
 input CandidateUpsertWithoutRegistrationInput {
@@ -519,8 +341,7 @@ input CandidateUpsertWithoutRegistrationInput {
   create: CandidateCreateWithoutRegistrationInput!
 }
 
-input CandidateUpsertWithWhereUniqueWithoutUserInput {
-  where: CandidateWhereUniqueInput!
+input CandidateUpsertWithoutUserInput {
   update: CandidateUpdateWithoutUserDataInput!
   create: CandidateCreateWithoutUserInput!
 }
@@ -712,7 +533,20 @@ input CandidateWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  gender: GenderWhereInput
+  gender: String
+  gender_not: String
+  gender_in: [String!]
+  gender_not_in: [String!]
+  gender_lt: String
+  gender_lte: String
+  gender_gt: String
+  gender_gte: String
+  gender_contains: String
+  gender_not_contains: String
+  gender_starts_with: String
+  gender_not_starts_with: String
+  gender_ends_with: String
+  gender_not_ends_with: String
   registration_every: RegistrationWhereInput
   registration_some: RegistrationWhereInput
   registration_none: RegistrationWhereInput
@@ -2175,7 +2009,7 @@ type Examiner {
   examinerMatricule: String!
   examinerEmail: String!
   examinerImage: String!
-  gender: Gender!
+  gender: String!
   examinerCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -2197,7 +2031,7 @@ input ExaminerCreateInput {
   examinerMatricule: String!
   examinerEmail: String!
   examinerImage: String!
-  gender: GenderCreateOneInput!
+  gender: String!
   examinerCode: String!
   user: UserCreateOneInput!
 }
@@ -2231,6 +2065,8 @@ enum ExaminerOrderByInput {
   examinerEmail_DESC
   examinerImage_ASC
   examinerImage_DESC
+  gender_ASC
+  gender_DESC
   examinerCode_ASC
   examinerCode_DESC
   createdAt_ASC
@@ -2249,6 +2085,7 @@ type ExaminerPreviousValues {
   examinerMatricule: String!
   examinerEmail: String!
   examinerImage: String!
+  gender: String!
   examinerCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -2281,7 +2118,7 @@ input ExaminerUpdateDataInput {
   examinerMatricule: String
   examinerEmail: String
   examinerImage: String
-  gender: GenderUpdateOneRequiredInput
+  gender: String
   examinerCode: String
   user: UserUpdateOneRequiredInput
 }
@@ -2295,7 +2132,7 @@ input ExaminerUpdateInput {
   examinerMatricule: String
   examinerEmail: String
   examinerImage: String
-  gender: GenderUpdateOneRequiredInput
+  gender: String
   examinerCode: String
   user: UserUpdateOneRequiredInput
 }
@@ -2433,7 +2270,20 @@ input ExaminerWhereInput {
   examinerImage_not_starts_with: String
   examinerImage_ends_with: String
   examinerImage_not_ends_with: String
-  gender: GenderWhereInput
+  gender: String
+  gender_not: String
+  gender_in: [String!]
+  gender_not_in: [String!]
+  gender_lt: String
+  gender_lte: String
+  gender_gt: String
+  gender_gte: String
+  gender_contains: String
+  gender_not_contains: String
+  gender_starts_with: String
+  gender_not_starts_with: String
+  gender_ends_with: String
+  gender_not_ends_with: String
   examinerCode: String
   examinerCode_not: String
   examinerCode_in: [String!]
@@ -2816,174 +2666,9 @@ input ExamWhereUniqueInput {
   examCode: String
 }
 
-type Gender {
-  id: ID!
-  genderName: String!
-  genderCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type GenderConnection {
-  pageInfo: PageInfo!
-  edges: [GenderEdge]!
-  aggregate: AggregateGender!
-}
-
-input GenderCreateInput {
-  genderName: String!
-  genderCode: String!
-}
-
-input GenderCreateOneInput {
-  create: GenderCreateInput
-  connect: GenderWhereUniqueInput
-}
-
-type GenderEdge {
-  node: Gender!
-  cursor: String!
-}
-
-enum GenderOrderByInput {
-  id_ASC
-  id_DESC
-  genderName_ASC
-  genderName_DESC
-  genderCode_ASC
-  genderCode_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type GenderPreviousValues {
-  id: ID!
-  genderName: String!
-  genderCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type GenderSubscriptionPayload {
-  mutation: MutationType!
-  node: Gender
-  updatedFields: [String!]
-  previousValues: GenderPreviousValues
-}
-
-input GenderSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: GenderWhereInput
-  AND: [GenderSubscriptionWhereInput!]
-  OR: [GenderSubscriptionWhereInput!]
-  NOT: [GenderSubscriptionWhereInput!]
-}
-
-input GenderUpdateDataInput {
-  genderName: String
-  genderCode: String
-}
-
-input GenderUpdateInput {
-  genderName: String
-  genderCode: String
-}
-
-input GenderUpdateOneRequiredInput {
-  create: GenderCreateInput
-  update: GenderUpdateDataInput
-  upsert: GenderUpsertNestedInput
-  connect: GenderWhereUniqueInput
-}
-
-input GenderUpsertNestedInput {
-  update: GenderUpdateDataInput!
-  create: GenderCreateInput!
-}
-
-input GenderWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  genderName: String
-  genderName_not: String
-  genderName_in: [String!]
-  genderName_not_in: [String!]
-  genderName_lt: String
-  genderName_lte: String
-  genderName_gt: String
-  genderName_gte: String
-  genderName_contains: String
-  genderName_not_contains: String
-  genderName_starts_with: String
-  genderName_not_starts_with: String
-  genderName_ends_with: String
-  genderName_not_ends_with: String
-  genderCode: String
-  genderCode_not: String
-  genderCode_in: [String!]
-  genderCode_not_in: [String!]
-  genderCode_lt: String
-  genderCode_lte: String
-  genderCode_gt: String
-  genderCode_gte: String
-  genderCode_contains: String
-  genderCode_not_contains: String
-  genderCode_starts_with: String
-  genderCode_not_starts_with: String
-  genderCode_ends_with: String
-  genderCode_not_ends_with: String
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [GenderWhereInput!]
-  OR: [GenderWhereInput!]
-  NOT: [GenderWhereInput!]
-}
-
-input GenderWhereUniqueInput {
-  id: ID
-  genderCode: String
-}
-
 scalar Long
 
 type Mutation {
-  createAptitude(data: AptitudeCreateInput!): Aptitude!
-  updateAptitude(data: AptitudeUpdateInput!, where: AptitudeWhereUniqueInput!): Aptitude
-  updateManyAptitudes(data: AptitudeUpdateInput!, where: AptitudeWhereInput): BatchPayload!
-  upsertAptitude(where: AptitudeWhereUniqueInput!, create: AptitudeCreateInput!, update: AptitudeUpdateInput!): Aptitude!
-  deleteAptitude(where: AptitudeWhereUniqueInput!): Aptitude
-  deleteManyAptitudes(where: AptitudeWhereInput): BatchPayload!
   createCandidate(data: CandidateCreateInput!): Candidate!
   updateCandidate(data: CandidateUpdateInput!, where: CandidateWhereUniqueInput!): Candidate
   updateManyCandidates(data: CandidateUpdateInput!, where: CandidateWhereInput): BatchPayload!
@@ -3044,18 +2729,6 @@ type Mutation {
   upsertExaminer(where: ExaminerWhereUniqueInput!, create: ExaminerCreateInput!, update: ExaminerUpdateInput!): Examiner!
   deleteExaminer(where: ExaminerWhereUniqueInput!): Examiner
   deleteManyExaminers(where: ExaminerWhereInput): BatchPayload!
-  createGender(data: GenderCreateInput!): Gender!
-  updateGender(data: GenderUpdateInput!, where: GenderWhereUniqueInput!): Gender
-  updateManyGenders(data: GenderUpdateInput!, where: GenderWhereInput): BatchPayload!
-  upsertGender(where: GenderWhereUniqueInput!, create: GenderCreateInput!, update: GenderUpdateInput!): Gender!
-  deleteGender(where: GenderWhereUniqueInput!): Gender
-  deleteManyGenders(where: GenderWhereInput): BatchPayload!
-  createOptionalSubjectRegistration(data: OptionalSubjectRegistrationCreateInput!): OptionalSubjectRegistration!
-  updateOptionalSubjectRegistration(data: OptionalSubjectRegistrationUpdateInput!, where: OptionalSubjectRegistrationWhereUniqueInput!): OptionalSubjectRegistration
-  updateManyOptionalSubjectRegistrations(data: OptionalSubjectRegistrationUpdateInput!, where: OptionalSubjectRegistrationWhereInput): BatchPayload!
-  upsertOptionalSubjectRegistration(where: OptionalSubjectRegistrationWhereUniqueInput!, create: OptionalSubjectRegistrationCreateInput!, update: OptionalSubjectRegistrationUpdateInput!): OptionalSubjectRegistration!
-  deleteOptionalSubjectRegistration(where: OptionalSubjectRegistrationWhereUniqueInput!): OptionalSubjectRegistration
-  deleteManyOptionalSubjectRegistrations(where: OptionalSubjectRegistrationWhereInput): BatchPayload!
   createPhase(data: PhaseCreateInput!): Phase!
   updatePhase(data: PhaseUpdateInput!, where: PhaseWhereUniqueInput!): Phase
   updateManyPhases(data: PhaseUpdateInput!, where: PhaseWhereInput): BatchPayload!
@@ -3080,6 +2753,12 @@ type Mutation {
   upsertRegion(where: RegionWhereUniqueInput!, create: RegionCreateInput!, update: RegionUpdateInput!): Region!
   deleteRegion(where: RegionWhereUniqueInput!): Region
   deleteManyRegions(where: RegionWhereInput): BatchPayload!
+  createRegisterOptionalSubject(data: RegisterOptionalSubjectCreateInput!): RegisterOptionalSubject!
+  updateRegisterOptionalSubject(data: RegisterOptionalSubjectUpdateInput!, where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
+  updateManyRegisterOptionalSubjects(data: RegisterOptionalSubjectUpdateInput!, where: RegisterOptionalSubjectWhereInput): BatchPayload!
+  upsertRegisterOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!, create: RegisterOptionalSubjectCreateInput!, update: RegisterOptionalSubjectUpdateInput!): RegisterOptionalSubject!
+  deleteRegisterOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
+  deleteManyRegisterOptionalSubjects(where: RegisterOptionalSubjectWhereInput): BatchPayload!
   createRegistration(data: RegistrationCreateInput!): Registration!
   updateRegistration(data: RegistrationUpdateInput!, where: RegistrationWhereUniqueInput!): Registration
   updateManyRegistrations(data: RegistrationUpdateInput!, where: RegistrationWhereInput): BatchPayload!
@@ -3122,24 +2801,12 @@ type Mutation {
   upsertSubject(where: SubjectWhereUniqueInput!, create: SubjectCreateInput!, update: SubjectUpdateInput!): Subject!
   deleteSubject(where: SubjectWhereUniqueInput!): Subject
   deleteManySubjects(where: SubjectWhereInput): BatchPayload!
-  createSubjectGroup(data: SubjectGroupCreateInput!): SubjectGroup!
-  updateSubjectGroup(data: SubjectGroupUpdateInput!, where: SubjectGroupWhereUniqueInput!): SubjectGroup
-  updateManySubjectGroups(data: SubjectGroupUpdateInput!, where: SubjectGroupWhereInput): BatchPayload!
-  upsertSubjectGroup(where: SubjectGroupWhereUniqueInput!, create: SubjectGroupCreateInput!, update: SubjectGroupUpdateInput!): SubjectGroup!
-  deleteSubjectGroup(where: SubjectGroupWhereUniqueInput!): SubjectGroup
-  deleteManySubjectGroups(where: SubjectGroupWhereInput): BatchPayload!
   createSubjectSpecialty(data: SubjectSpecialtyCreateInput!): SubjectSpecialty!
   updateSubjectSpecialty(data: SubjectSpecialtyUpdateInput!, where: SubjectSpecialtyWhereUniqueInput!): SubjectSpecialty
   updateManySubjectSpecialties(data: SubjectSpecialtyUpdateInput!, where: SubjectSpecialtyWhereInput): BatchPayload!
   upsertSubjectSpecialty(where: SubjectSpecialtyWhereUniqueInput!, create: SubjectSpecialtyCreateInput!, update: SubjectSpecialtyUpdateInput!): SubjectSpecialty!
   deleteSubjectSpecialty(where: SubjectSpecialtyWhereUniqueInput!): SubjectSpecialty
   deleteManySubjectSpecialties(where: SubjectSpecialtyWhereInput): BatchPayload!
-  createSubjectType(data: SubjectTypeCreateInput!): SubjectType!
-  updateSubjectType(data: SubjectTypeUpdateInput!, where: SubjectTypeWhereUniqueInput!): SubjectType
-  updateManySubjectTypes(data: SubjectTypeUpdateInput!, where: SubjectTypeWhereInput): BatchPayload!
-  upsertSubjectType(where: SubjectTypeWhereUniqueInput!, create: SubjectTypeCreateInput!, update: SubjectTypeUpdateInput!): SubjectType!
-  deleteSubjectType(where: SubjectTypeWhereUniqueInput!): SubjectType
-  deleteManySubjectTypes(where: SubjectTypeWhereInput): BatchPayload!
   createTown(data: TownCreateInput!): Town!
   updateTown(data: TownUpdateInput!, where: TownWhereUniqueInput!): Town
   updateManyTowns(data: TownUpdateInput!, where: TownWhereInput): BatchPayload!
@@ -3162,143 +2829,6 @@ enum MutationType {
 
 interface Node {
   id: ID!
-}
-
-type OptionalSubjectRegistration {
-  id: ID!
-  registration: Registration!
-  Subject: Subject!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type OptionalSubjectRegistrationConnection {
-  pageInfo: PageInfo!
-  edges: [OptionalSubjectRegistrationEdge]!
-  aggregate: AggregateOptionalSubjectRegistration!
-}
-
-input OptionalSubjectRegistrationCreateInput {
-  registration: RegistrationCreateOneWithoutOptionalSubjectInput!
-  Subject: SubjectCreateOneInput!
-}
-
-input OptionalSubjectRegistrationCreateManyWithoutRegistrationInput {
-  create: [OptionalSubjectRegistrationCreateWithoutRegistrationInput!]
-  connect: [OptionalSubjectRegistrationWhereUniqueInput!]
-}
-
-input OptionalSubjectRegistrationCreateWithoutRegistrationInput {
-  Subject: SubjectCreateOneInput!
-}
-
-type OptionalSubjectRegistrationEdge {
-  node: OptionalSubjectRegistration!
-  cursor: String!
-}
-
-enum OptionalSubjectRegistrationOrderByInput {
-  id_ASC
-  id_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type OptionalSubjectRegistrationPreviousValues {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type OptionalSubjectRegistrationSubscriptionPayload {
-  mutation: MutationType!
-  node: OptionalSubjectRegistration
-  updatedFields: [String!]
-  previousValues: OptionalSubjectRegistrationPreviousValues
-}
-
-input OptionalSubjectRegistrationSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: OptionalSubjectRegistrationWhereInput
-  AND: [OptionalSubjectRegistrationSubscriptionWhereInput!]
-  OR: [OptionalSubjectRegistrationSubscriptionWhereInput!]
-  NOT: [OptionalSubjectRegistrationSubscriptionWhereInput!]
-}
-
-input OptionalSubjectRegistrationUpdateInput {
-  registration: RegistrationUpdateOneRequiredWithoutOptionalSubjectInput
-  Subject: SubjectUpdateOneRequiredInput
-}
-
-input OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput {
-  create: [OptionalSubjectRegistrationCreateWithoutRegistrationInput!]
-  delete: [OptionalSubjectRegistrationWhereUniqueInput!]
-  connect: [OptionalSubjectRegistrationWhereUniqueInput!]
-  disconnect: [OptionalSubjectRegistrationWhereUniqueInput!]
-  update: [OptionalSubjectRegistrationUpdateWithWhereUniqueWithoutRegistrationInput!]
-  upsert: [OptionalSubjectRegistrationUpsertWithWhereUniqueWithoutRegistrationInput!]
-}
-
-input OptionalSubjectRegistrationUpdateWithoutRegistrationDataInput {
-  Subject: SubjectUpdateOneRequiredInput
-}
-
-input OptionalSubjectRegistrationUpdateWithWhereUniqueWithoutRegistrationInput {
-  where: OptionalSubjectRegistrationWhereUniqueInput!
-  data: OptionalSubjectRegistrationUpdateWithoutRegistrationDataInput!
-}
-
-input OptionalSubjectRegistrationUpsertWithWhereUniqueWithoutRegistrationInput {
-  where: OptionalSubjectRegistrationWhereUniqueInput!
-  update: OptionalSubjectRegistrationUpdateWithoutRegistrationDataInput!
-  create: OptionalSubjectRegistrationCreateWithoutRegistrationInput!
-}
-
-input OptionalSubjectRegistrationWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  registration: RegistrationWhereInput
-  Subject: SubjectWhereInput
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [OptionalSubjectRegistrationWhereInput!]
-  OR: [OptionalSubjectRegistrationWhereInput!]
-  NOT: [OptionalSubjectRegistrationWhereInput!]
-}
-
-input OptionalSubjectRegistrationWhereUniqueInput {
-  id: ID
 }
 
 type PageInfo {
@@ -3687,9 +3217,6 @@ input PhaseWhereUniqueInput {
 }
 
 type Query {
-  aptitude(where: AptitudeWhereUniqueInput!): Aptitude
-  aptitudes(where: AptitudeWhereInput, orderBy: AptitudeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Aptitude]!
-  aptitudesConnection(where: AptitudeWhereInput, orderBy: AptitudeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AptitudeConnection!
   candidate(where: CandidateWhereUniqueInput!): Candidate
   candidates(where: CandidateWhereInput, orderBy: CandidateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Candidate]!
   candidatesConnection(where: CandidateWhereInput, orderBy: CandidateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CandidateConnection!
@@ -3720,12 +3247,6 @@ type Query {
   examiner(where: ExaminerWhereUniqueInput!): Examiner
   examiners(where: ExaminerWhereInput, orderBy: ExaminerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Examiner]!
   examinersConnection(where: ExaminerWhereInput, orderBy: ExaminerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExaminerConnection!
-  gender(where: GenderWhereUniqueInput!): Gender
-  genders(where: GenderWhereInput, orderBy: GenderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Gender]!
-  gendersConnection(where: GenderWhereInput, orderBy: GenderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GenderConnection!
-  optionalSubjectRegistration(where: OptionalSubjectRegistrationWhereUniqueInput!): OptionalSubjectRegistration
-  optionalSubjectRegistrations(where: OptionalSubjectRegistrationWhereInput, orderBy: OptionalSubjectRegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OptionalSubjectRegistration]!
-  optionalSubjectRegistrationsConnection(where: OptionalSubjectRegistrationWhereInput, orderBy: OptionalSubjectRegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OptionalSubjectRegistrationConnection!
   phase(where: PhaseWhereUniqueInput!): Phase
   phases(where: PhaseWhereInput, orderBy: PhaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Phase]!
   phasesConnection(where: PhaseWhereInput, orderBy: PhaseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PhaseConnection!
@@ -3738,6 +3259,9 @@ type Query {
   region(where: RegionWhereUniqueInput!): Region
   regions(where: RegionWhereInput, orderBy: RegionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Region]!
   regionsConnection(where: RegionWhereInput, orderBy: RegionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegionConnection!
+  registerOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
+  registerOptionalSubjects(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RegisterOptionalSubject]!
+  registerOptionalSubjectsConnection(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegisterOptionalSubjectConnection!
   registration(where: RegistrationWhereUniqueInput!): Registration
   registrations(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Registration]!
   registrationsConnection(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegistrationConnection!
@@ -3759,15 +3283,9 @@ type Query {
   subject(where: SubjectWhereUniqueInput!): Subject
   subjects(where: SubjectWhereInput, orderBy: SubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Subject]!
   subjectsConnection(where: SubjectWhereInput, orderBy: SubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubjectConnection!
-  subjectGroup(where: SubjectGroupWhereUniqueInput!): SubjectGroup
-  subjectGroups(where: SubjectGroupWhereInput, orderBy: SubjectGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectGroup]!
-  subjectGroupsConnection(where: SubjectGroupWhereInput, orderBy: SubjectGroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubjectGroupConnection!
   subjectSpecialty(where: SubjectSpecialtyWhereUniqueInput!): SubjectSpecialty
   subjectSpecialties(where: SubjectSpecialtyWhereInput, orderBy: SubjectSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectSpecialty]!
   subjectSpecialtiesConnection(where: SubjectSpecialtyWhereInput, orderBy: SubjectSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubjectSpecialtyConnection!
-  subjectType(where: SubjectTypeWhereUniqueInput!): SubjectType
-  subjectTypes(where: SubjectTypeWhereInput, orderBy: SubjectTypeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectType]!
-  subjectTypesConnection(where: SubjectTypeWhereInput, orderBy: SubjectTypeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubjectTypeConnection!
   town(where: TownWhereUniqueInput!): Town
   towns(where: TownWhereInput, orderBy: TownOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Town]!
   townsConnection(where: TownWhereInput, orderBy: TownOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TownConnection!
@@ -4083,6 +3601,143 @@ input RegionWhereUniqueInput {
   regCode: String
 }
 
+type RegisterOptionalSubject {
+  id: ID!
+  registration: Registration!
+  Subject: Subject!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type RegisterOptionalSubjectConnection {
+  pageInfo: PageInfo!
+  edges: [RegisterOptionalSubjectEdge]!
+  aggregate: AggregateRegisterOptionalSubject!
+}
+
+input RegisterOptionalSubjectCreateInput {
+  registration: RegistrationCreateOneWithoutOptionalSubjectsInput!
+  Subject: SubjectCreateOneInput!
+}
+
+input RegisterOptionalSubjectCreateManyWithoutRegistrationInput {
+  create: [RegisterOptionalSubjectCreateWithoutRegistrationInput!]
+  connect: [RegisterOptionalSubjectWhereUniqueInput!]
+}
+
+input RegisterOptionalSubjectCreateWithoutRegistrationInput {
+  Subject: SubjectCreateOneInput!
+}
+
+type RegisterOptionalSubjectEdge {
+  node: RegisterOptionalSubject!
+  cursor: String!
+}
+
+enum RegisterOptionalSubjectOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type RegisterOptionalSubjectPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type RegisterOptionalSubjectSubscriptionPayload {
+  mutation: MutationType!
+  node: RegisterOptionalSubject
+  updatedFields: [String!]
+  previousValues: RegisterOptionalSubjectPreviousValues
+}
+
+input RegisterOptionalSubjectSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: RegisterOptionalSubjectWhereInput
+  AND: [RegisterOptionalSubjectSubscriptionWhereInput!]
+  OR: [RegisterOptionalSubjectSubscriptionWhereInput!]
+  NOT: [RegisterOptionalSubjectSubscriptionWhereInput!]
+}
+
+input RegisterOptionalSubjectUpdateInput {
+  registration: RegistrationUpdateOneRequiredWithoutOptionalSubjectsInput
+  Subject: SubjectUpdateOneRequiredInput
+}
+
+input RegisterOptionalSubjectUpdateManyWithoutRegistrationInput {
+  create: [RegisterOptionalSubjectCreateWithoutRegistrationInput!]
+  delete: [RegisterOptionalSubjectWhereUniqueInput!]
+  connect: [RegisterOptionalSubjectWhereUniqueInput!]
+  disconnect: [RegisterOptionalSubjectWhereUniqueInput!]
+  update: [RegisterOptionalSubjectUpdateWithWhereUniqueWithoutRegistrationInput!]
+  upsert: [RegisterOptionalSubjectUpsertWithWhereUniqueWithoutRegistrationInput!]
+}
+
+input RegisterOptionalSubjectUpdateWithoutRegistrationDataInput {
+  Subject: SubjectUpdateOneRequiredInput
+}
+
+input RegisterOptionalSubjectUpdateWithWhereUniqueWithoutRegistrationInput {
+  where: RegisterOptionalSubjectWhereUniqueInput!
+  data: RegisterOptionalSubjectUpdateWithoutRegistrationDataInput!
+}
+
+input RegisterOptionalSubjectUpsertWithWhereUniqueWithoutRegistrationInput {
+  where: RegisterOptionalSubjectWhereUniqueInput!
+  update: RegisterOptionalSubjectUpdateWithoutRegistrationDataInput!
+  create: RegisterOptionalSubjectCreateWithoutRegistrationInput!
+}
+
+input RegisterOptionalSubjectWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  registration: RegistrationWhereInput
+  Subject: SubjectWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [RegisterOptionalSubjectWhereInput!]
+  OR: [RegisterOptionalSubjectWhereInput!]
+  NOT: [RegisterOptionalSubjectWhereInput!]
+}
+
+input RegisterOptionalSubjectWhereUniqueInput {
+  id: ID
+}
+
 type Registration {
   id: ID!
   candidate: Candidate!
@@ -4091,9 +3746,9 @@ type Registration {
   candExamSecretCode: String!
   candExamSession: String!
   scores(where: ScoreWhereInput, orderBy: ScoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Score!]
-  aptitude: Aptitude!
+  aptitude: String!
   specialty: Specialty!
-  optionalSubject(where: OptionalSubjectRegistrationWhereInput, orderBy: OptionalSubjectRegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OptionalSubjectRegistration!]
+  optionalSubjects(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RegisterOptionalSubject!]
   candRegistrationNumber: String!
   serial: Int
   createdAt: DateTime!
@@ -4113,9 +3768,9 @@ input RegistrationCreateInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
-  optionalSubject: OptionalSubjectRegistrationCreateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4135,8 +3790,8 @@ input RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput {
   connect: [RegistrationWhereUniqueInput!]
 }
 
-input RegistrationCreateOneWithoutOptionalSubjectInput {
-  create: RegistrationCreateWithoutOptionalSubjectInput
+input RegistrationCreateOneWithoutOptionalSubjectsInput {
+  create: RegistrationCreateWithoutOptionalSubjectsInput
   connect: RegistrationWhereUniqueInput
 }
 
@@ -4151,9 +3806,9 @@ input RegistrationCreateWithoutCandidateInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
-  optionalSubject: OptionalSubjectRegistrationCreateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4164,9 +3819,9 @@ input RegistrationCreateWithoutCenterExamSessionInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
-  optionalSubject: OptionalSubjectRegistrationCreateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4177,21 +3832,21 @@ input RegistrationCreateWithoutCenterExamSessionSpecialtyInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
-  optionalSubject: OptionalSubjectRegistrationCreateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
 
-input RegistrationCreateWithoutOptionalSubjectInput {
+input RegistrationCreateWithoutOptionalSubjectsInput {
   candidate: CandidateCreateOneWithoutRegistrationInput!
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutRegistrationInput!
   centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
   candRegistrationNumber: String!
   serial: Int
@@ -4203,9 +3858,9 @@ input RegistrationCreateWithoutScoresInput {
   centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
   candExamSecretCode: String!
   candExamSession: String!
-  aptitude: AptitudeCreateOneInput!
+  aptitude: String!
   specialty: SpecialtyCreateOneInput!
-  optionalSubject: OptionalSubjectRegistrationCreateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4222,6 +3877,8 @@ enum RegistrationOrderByInput {
   candExamSecretCode_DESC
   candExamSession_ASC
   candExamSession_DESC
+  aptitude_ASC
+  aptitude_DESC
   candRegistrationNumber_ASC
   candRegistrationNumber_DESC
   serial_ASC
@@ -4236,6 +3893,7 @@ type RegistrationPreviousValues {
   id: ID!
   candExamSecretCode: String!
   candExamSession: String!
+  aptitude: String!
   candRegistrationNumber: String!
   serial: Int
   createdAt: DateTime!
@@ -4267,9 +3925,9 @@ input RegistrationUpdateInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
-  optionalSubject: OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4301,10 +3959,10 @@ input RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput {
   upsert: [RegistrationUpsertWithWhereUniqueWithoutCenterExamSessionSpecialtyInput!]
 }
 
-input RegistrationUpdateOneRequiredWithoutOptionalSubjectInput {
-  create: RegistrationCreateWithoutOptionalSubjectInput
-  update: RegistrationUpdateWithoutOptionalSubjectDataInput
-  upsert: RegistrationUpsertWithoutOptionalSubjectInput
+input RegistrationUpdateOneRequiredWithoutOptionalSubjectsInput {
+  create: RegistrationCreateWithoutOptionalSubjectsInput
+  update: RegistrationUpdateWithoutOptionalSubjectsDataInput
+  upsert: RegistrationUpsertWithoutOptionalSubjectsInput
   connect: RegistrationWhereUniqueInput
 }
 
@@ -4321,9 +3979,9 @@ input RegistrationUpdateWithoutCandidateDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
-  optionalSubject: OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4334,9 +3992,9 @@ input RegistrationUpdateWithoutCenterExamSessionDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
-  optionalSubject: OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4347,21 +4005,21 @@ input RegistrationUpdateWithoutCenterExamSessionSpecialtyDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
-  optionalSubject: OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
 
-input RegistrationUpdateWithoutOptionalSubjectDataInput {
+input RegistrationUpdateWithoutOptionalSubjectsDataInput {
   candidate: CandidateUpdateOneRequiredWithoutRegistrationInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
   candRegistrationNumber: String
   serial: Int
@@ -4373,9 +4031,9 @@ input RegistrationUpdateWithoutScoresDataInput {
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
   candExamSecretCode: String
   candExamSession: String
-  aptitude: AptitudeUpdateOneRequiredInput
+  aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
-  optionalSubject: OptionalSubjectRegistrationUpdateManyWithoutRegistrationInput
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4395,9 +4053,9 @@ input RegistrationUpdateWithWhereUniqueWithoutCenterExamSessionSpecialtyInput {
   data: RegistrationUpdateWithoutCenterExamSessionSpecialtyDataInput!
 }
 
-input RegistrationUpsertWithoutOptionalSubjectInput {
-  update: RegistrationUpdateWithoutOptionalSubjectDataInput!
-  create: RegistrationCreateWithoutOptionalSubjectInput!
+input RegistrationUpsertWithoutOptionalSubjectsInput {
+  update: RegistrationUpdateWithoutOptionalSubjectsDataInput!
+  create: RegistrationCreateWithoutOptionalSubjectsInput!
 }
 
 input RegistrationUpsertWithoutScoresInput {
@@ -4472,11 +4130,24 @@ input RegistrationWhereInput {
   scores_every: ScoreWhereInput
   scores_some: ScoreWhereInput
   scores_none: ScoreWhereInput
-  aptitude: AptitudeWhereInput
+  aptitude: String
+  aptitude_not: String
+  aptitude_in: [String!]
+  aptitude_not_in: [String!]
+  aptitude_lt: String
+  aptitude_lte: String
+  aptitude_gt: String
+  aptitude_gte: String
+  aptitude_contains: String
+  aptitude_not_contains: String
+  aptitude_starts_with: String
+  aptitude_not_starts_with: String
+  aptitude_ends_with: String
+  aptitude_not_ends_with: String
   specialty: SpecialtyWhereInput
-  optionalSubject_every: OptionalSubjectRegistrationWhereInput
-  optionalSubject_some: OptionalSubjectRegistrationWhereInput
-  optionalSubject_none: OptionalSubjectRegistrationWhereInput
+  optionalSubjects_every: RegisterOptionalSubjectWhereInput
+  optionalSubjects_some: RegisterOptionalSubjectWhereInput
+  optionalSubjects_none: RegisterOptionalSubjectWhereInput
   candRegistrationNumber: String
   candRegistrationNumber_not: String
   candRegistrationNumber_in: [String!]
@@ -5598,7 +5269,8 @@ type Subject {
   id: ID!
   subjectName: String!
   subjectCode: String!
-  subjectType: SubjectType!
+  subjectType: String!
+  subjectGroup: String!
   educType: EducationType!
   specialty(where: SubjectSpecialtyWhereInput, orderBy: SubjectSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectSpecialty!]
   createdAt: DateTime!
@@ -5614,7 +5286,8 @@ type SubjectConnection {
 input SubjectCreateInput {
   subjectName: String!
   subjectCode: String!
-  subjectType: SubjectTypeCreateOneInput!
+  subjectType: String!
+  subjectGroup: String!
   educType: EducationTypeCreateOneWithoutSubjectInput!
   specialty: SubjectSpecialtyCreateManyWithoutSubjectInput
 }
@@ -5637,158 +5310,22 @@ input SubjectCreateOneWithoutSpecialtyInput {
 input SubjectCreateWithoutEducTypeInput {
   subjectName: String!
   subjectCode: String!
-  subjectType: SubjectTypeCreateOneInput!
+  subjectType: String!
+  subjectGroup: String!
   specialty: SubjectSpecialtyCreateManyWithoutSubjectInput
 }
 
 input SubjectCreateWithoutSpecialtyInput {
   subjectName: String!
   subjectCode: String!
-  subjectType: SubjectTypeCreateOneInput!
+  subjectType: String!
+  subjectGroup: String!
   educType: EducationTypeCreateOneWithoutSubjectInput!
 }
 
 type SubjectEdge {
   node: Subject!
   cursor: String!
-}
-
-type SubjectGroup {
-  id: ID!
-  subjectGroupName: String!
-  subjectGroupCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type SubjectGroupConnection {
-  pageInfo: PageInfo!
-  edges: [SubjectGroupEdge]!
-  aggregate: AggregateSubjectGroup!
-}
-
-input SubjectGroupCreateInput {
-  subjectGroupName: String!
-  subjectGroupCode: String!
-}
-
-type SubjectGroupEdge {
-  node: SubjectGroup!
-  cursor: String!
-}
-
-enum SubjectGroupOrderByInput {
-  id_ASC
-  id_DESC
-  subjectGroupName_ASC
-  subjectGroupName_DESC
-  subjectGroupCode_ASC
-  subjectGroupCode_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type SubjectGroupPreviousValues {
-  id: ID!
-  subjectGroupName: String!
-  subjectGroupCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type SubjectGroupSubscriptionPayload {
-  mutation: MutationType!
-  node: SubjectGroup
-  updatedFields: [String!]
-  previousValues: SubjectGroupPreviousValues
-}
-
-input SubjectGroupSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: SubjectGroupWhereInput
-  AND: [SubjectGroupSubscriptionWhereInput!]
-  OR: [SubjectGroupSubscriptionWhereInput!]
-  NOT: [SubjectGroupSubscriptionWhereInput!]
-}
-
-input SubjectGroupUpdateInput {
-  subjectGroupName: String
-  subjectGroupCode: String
-}
-
-input SubjectGroupWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  subjectGroupName: String
-  subjectGroupName_not: String
-  subjectGroupName_in: [String!]
-  subjectGroupName_not_in: [String!]
-  subjectGroupName_lt: String
-  subjectGroupName_lte: String
-  subjectGroupName_gt: String
-  subjectGroupName_gte: String
-  subjectGroupName_contains: String
-  subjectGroupName_not_contains: String
-  subjectGroupName_starts_with: String
-  subjectGroupName_not_starts_with: String
-  subjectGroupName_ends_with: String
-  subjectGroupName_not_ends_with: String
-  subjectGroupCode: String
-  subjectGroupCode_not: String
-  subjectGroupCode_in: [String!]
-  subjectGroupCode_not_in: [String!]
-  subjectGroupCode_lt: String
-  subjectGroupCode_lte: String
-  subjectGroupCode_gt: String
-  subjectGroupCode_gte: String
-  subjectGroupCode_contains: String
-  subjectGroupCode_not_contains: String
-  subjectGroupCode_starts_with: String
-  subjectGroupCode_not_starts_with: String
-  subjectGroupCode_ends_with: String
-  subjectGroupCode_not_ends_with: String
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [SubjectGroupWhereInput!]
-  OR: [SubjectGroupWhereInput!]
-  NOT: [SubjectGroupWhereInput!]
-}
-
-input SubjectGroupWhereUniqueInput {
-  id: ID
-  subjectGroupName: String
-  subjectGroupCode: String
 }
 
 enum SubjectOrderByInput {
@@ -5798,6 +5335,10 @@ enum SubjectOrderByInput {
   subjectName_DESC
   subjectCode_ASC
   subjectCode_DESC
+  subjectType_ASC
+  subjectType_DESC
+  subjectGroup_ASC
+  subjectGroup_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -5808,6 +5349,8 @@ type SubjectPreviousValues {
   id: ID!
   subjectName: String!
   subjectCode: String!
+  subjectType: String!
+  subjectGroup: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -6041,170 +5584,11 @@ input SubjectSubscriptionWhereInput {
   NOT: [SubjectSubscriptionWhereInput!]
 }
 
-type SubjectType {
-  id: ID!
-  subjectTypeName: String!
-  subjectTypeCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type SubjectTypeConnection {
-  pageInfo: PageInfo!
-  edges: [SubjectTypeEdge]!
-  aggregate: AggregateSubjectType!
-}
-
-input SubjectTypeCreateInput {
-  subjectTypeName: String!
-  subjectTypeCode: String!
-}
-
-input SubjectTypeCreateOneInput {
-  create: SubjectTypeCreateInput
-  connect: SubjectTypeWhereUniqueInput
-}
-
-type SubjectTypeEdge {
-  node: SubjectType!
-  cursor: String!
-}
-
-enum SubjectTypeOrderByInput {
-  id_ASC
-  id_DESC
-  subjectTypeName_ASC
-  subjectTypeName_DESC
-  subjectTypeCode_ASC
-  subjectTypeCode_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type SubjectTypePreviousValues {
-  id: ID!
-  subjectTypeName: String!
-  subjectTypeCode: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type SubjectTypeSubscriptionPayload {
-  mutation: MutationType!
-  node: SubjectType
-  updatedFields: [String!]
-  previousValues: SubjectTypePreviousValues
-}
-
-input SubjectTypeSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: SubjectTypeWhereInput
-  AND: [SubjectTypeSubscriptionWhereInput!]
-  OR: [SubjectTypeSubscriptionWhereInput!]
-  NOT: [SubjectTypeSubscriptionWhereInput!]
-}
-
-input SubjectTypeUpdateDataInput {
-  subjectTypeName: String
-  subjectTypeCode: String
-}
-
-input SubjectTypeUpdateInput {
-  subjectTypeName: String
-  subjectTypeCode: String
-}
-
-input SubjectTypeUpdateOneRequiredInput {
-  create: SubjectTypeCreateInput
-  update: SubjectTypeUpdateDataInput
-  upsert: SubjectTypeUpsertNestedInput
-  connect: SubjectTypeWhereUniqueInput
-}
-
-input SubjectTypeUpsertNestedInput {
-  update: SubjectTypeUpdateDataInput!
-  create: SubjectTypeCreateInput!
-}
-
-input SubjectTypeWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  subjectTypeName: String
-  subjectTypeName_not: String
-  subjectTypeName_in: [String!]
-  subjectTypeName_not_in: [String!]
-  subjectTypeName_lt: String
-  subjectTypeName_lte: String
-  subjectTypeName_gt: String
-  subjectTypeName_gte: String
-  subjectTypeName_contains: String
-  subjectTypeName_not_contains: String
-  subjectTypeName_starts_with: String
-  subjectTypeName_not_starts_with: String
-  subjectTypeName_ends_with: String
-  subjectTypeName_not_ends_with: String
-  subjectTypeCode: String
-  subjectTypeCode_not: String
-  subjectTypeCode_in: [String!]
-  subjectTypeCode_not_in: [String!]
-  subjectTypeCode_lt: String
-  subjectTypeCode_lte: String
-  subjectTypeCode_gt: String
-  subjectTypeCode_gte: String
-  subjectTypeCode_contains: String
-  subjectTypeCode_not_contains: String
-  subjectTypeCode_starts_with: String
-  subjectTypeCode_not_starts_with: String
-  subjectTypeCode_ends_with: String
-  subjectTypeCode_not_ends_with: String
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [SubjectTypeWhereInput!]
-  OR: [SubjectTypeWhereInput!]
-  NOT: [SubjectTypeWhereInput!]
-}
-
-input SubjectTypeWhereUniqueInput {
-  id: ID
-  subjectTypeName: String
-  subjectTypeCode: String
-}
-
 input SubjectUpdateDataInput {
   subjectName: String
   subjectCode: String
-  subjectType: SubjectTypeUpdateOneRequiredInput
+  subjectType: String
+  subjectGroup: String
   educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
   specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
@@ -6212,7 +5596,8 @@ input SubjectUpdateDataInput {
 input SubjectUpdateInput {
   subjectName: String
   subjectCode: String
-  subjectType: SubjectTypeUpdateOneRequiredInput
+  subjectType: String
+  subjectGroup: String
   educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
   specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
@@ -6243,14 +5628,16 @@ input SubjectUpdateOneRequiredWithoutSpecialtyInput {
 input SubjectUpdateWithoutEducTypeDataInput {
   subjectName: String
   subjectCode: String
-  subjectType: SubjectTypeUpdateOneRequiredInput
+  subjectType: String
+  subjectGroup: String
   specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
 
 input SubjectUpdateWithoutSpecialtyDataInput {
   subjectName: String
   subjectCode: String
-  subjectType: SubjectTypeUpdateOneRequiredInput
+  subjectType: String
+  subjectGroup: String
   educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
 }
 
@@ -6318,7 +5705,34 @@ input SubjectWhereInput {
   subjectCode_not_starts_with: String
   subjectCode_ends_with: String
   subjectCode_not_ends_with: String
-  subjectType: SubjectTypeWhereInput
+  subjectType: String
+  subjectType_not: String
+  subjectType_in: [String!]
+  subjectType_not_in: [String!]
+  subjectType_lt: String
+  subjectType_lte: String
+  subjectType_gt: String
+  subjectType_gte: String
+  subjectType_contains: String
+  subjectType_not_contains: String
+  subjectType_starts_with: String
+  subjectType_not_starts_with: String
+  subjectType_ends_with: String
+  subjectType_not_ends_with: String
+  subjectGroup: String
+  subjectGroup_not: String
+  subjectGroup_in: [String!]
+  subjectGroup_not_in: [String!]
+  subjectGroup_lt: String
+  subjectGroup_lte: String
+  subjectGroup_gt: String
+  subjectGroup_gte: String
+  subjectGroup_contains: String
+  subjectGroup_not_contains: String
+  subjectGroup_starts_with: String
+  subjectGroup_not_starts_with: String
+  subjectGroup_ends_with: String
+  subjectGroup_not_ends_with: String
   educType: EducationTypeWhereInput
   specialty_every: SubjectSpecialtyWhereInput
   specialty_some: SubjectSpecialtyWhereInput
@@ -6351,7 +5765,6 @@ input SubjectWhereUniqueInput {
 }
 
 type Subscription {
-  aptitude(where: AptitudeSubscriptionWhereInput): AptitudeSubscriptionPayload
   candidate(where: CandidateSubscriptionWhereInput): CandidateSubscriptionPayload
   center(where: CenterSubscriptionWhereInput): CenterSubscriptionPayload
   centerExamSession(where: CenterExamSessionSubscriptionWhereInput): CenterExamSessionSubscriptionPayload
@@ -6362,12 +5775,11 @@ type Subscription {
   exam(where: ExamSubscriptionWhereInput): ExamSubscriptionPayload
   examSession(where: ExamSessionSubscriptionWhereInput): ExamSessionSubscriptionPayload
   examiner(where: ExaminerSubscriptionWhereInput): ExaminerSubscriptionPayload
-  gender(where: GenderSubscriptionWhereInput): GenderSubscriptionPayload
-  optionalSubjectRegistration(where: OptionalSubjectRegistrationSubscriptionWhereInput): OptionalSubjectRegistrationSubscriptionPayload
   phase(where: PhaseSubscriptionWhereInput): PhaseSubscriptionPayload
   phaseRank(where: PhaseRankSubscriptionWhereInput): PhaseRankSubscriptionPayload
   rank(where: RankSubscriptionWhereInput): RankSubscriptionPayload
   region(where: RegionSubscriptionWhereInput): RegionSubscriptionPayload
+  registerOptionalSubject(where: RegisterOptionalSubjectSubscriptionWhereInput): RegisterOptionalSubjectSubscriptionPayload
   registration(where: RegistrationSubscriptionWhereInput): RegistrationSubscriptionPayload
   report(where: ReportSubscriptionWhereInput): ReportSubscriptionPayload
   score(where: ScoreSubscriptionWhereInput): ScoreSubscriptionPayload
@@ -6375,9 +5787,7 @@ type Subscription {
   specialty(where: SpecialtySubscriptionWhereInput): SpecialtySubscriptionPayload
   subDivision(where: SubDivisionSubscriptionWhereInput): SubDivisionSubscriptionPayload
   subject(where: SubjectSubscriptionWhereInput): SubjectSubscriptionPayload
-  subjectGroup(where: SubjectGroupSubscriptionWhereInput): SubjectGroupSubscriptionPayload
   subjectSpecialty(where: SubjectSpecialtySubscriptionWhereInput): SubjectSpecialtySubscriptionPayload
-  subjectType(where: SubjectTypeSubscriptionWhereInput): SubjectTypeSubscriptionPayload
   town(where: TownSubscriptionWhereInput): TownSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -6602,7 +6012,7 @@ type User {
   password: String!
   resetToken: String
   resetTokenExpiry: String
-  candidate(where: CandidateWhereInput, orderBy: CandidateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Candidate!]
+  candidate: Candidate
   permissions: [Permissions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -6620,7 +6030,7 @@ input UserCreateInput {
   password: String!
   resetToken: String
   resetTokenExpiry: String
-  candidate: CandidateCreateManyWithoutUserInput
+  candidate: CandidateCreateOneWithoutUserInput
   permissions: UserCreatepermissionsInput
 }
 
@@ -6707,7 +6117,7 @@ input UserUpdateDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: String
-  candidate: CandidateUpdateManyWithoutUserInput
+  candidate: CandidateUpdateOneWithoutUserInput
   permissions: UserUpdatepermissionsInput
 }
 
@@ -6717,7 +6127,7 @@ input UserUpdateInput {
   password: String
   resetToken: String
   resetTokenExpiry: String
-  candidate: CandidateUpdateManyWithoutUserInput
+  candidate: CandidateUpdateOneWithoutUserInput
   permissions: UserUpdatepermissionsInput
 }
 
@@ -6843,9 +6253,7 @@ input UserWhereInput {
   resetTokenExpiry_not_starts_with: String
   resetTokenExpiry_ends_with: String
   resetTokenExpiry_not_ends_with: String
-  candidate_every: CandidateWhereInput
-  candidate_some: CandidateWhereInput
-  candidate_none: CandidateWhereInput
+  candidate: CandidateWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

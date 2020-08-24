@@ -14,7 +14,7 @@ type Mutation {
     birthCertNumber: String
     candCode: String
     placeOfBirth: String
-    gender: GenderWhereUniqueInput!
+    gender: String!
   ): Candidate!
 
   createMultipleCandidates(
@@ -30,7 +30,7 @@ type Mutation {
     birthCertNumber: String
     candCode: String
     placeOfBirth: String
-    gender: GenderWhereUniqueInput!
+    gender: String!
   ): Candidate!
 
   updateCandidate(
@@ -46,7 +46,7 @@ type Mutation {
     birthCertNumber: String
     image: String
     placeOfBirth: String
-    gender: GenderWhereUniqueInput
+    gender: String
   ): Candidate!
 
   updateExaminer(
@@ -60,7 +60,7 @@ type Mutation {
     examinerMatricule: String!
     examinerCode: String!
     examinerEmail: String!
-    gender: GenderWhereUniqueInput!
+    gender: String!
   ): Examiner!
   createExaminer(
     examiner1stName: String!
@@ -72,7 +72,7 @@ type Mutation {
     examinerMatricule: String!
     examinerCode: String!
     examinerEmail: String!
-    gender: GenderWhereUniqueInput!
+    gender: String!
   ): Examiner!
 
   createScore(
@@ -122,11 +122,6 @@ type Mutation {
   # updateManyRegistrations(data: RegistrationUpdateManyMutationInput!, where: RegistrationWhereInput): BatchPayload!
   createRegion(regName: String!, regCode: String!): Region!
   updateRegion(id: ID!, regName: String, regCode: String): Region!
-  createAptitude(aptitudeName: String!, aptitudeCode: String!): Aptitude!
-  updateAptitude(id: ID!, aptitudeName: String, aptitudeCode: String): Aptitude!
-
-  createGender(genderName: String!, genderCode: String!): Gender!
-  updateGender(id: ID!, genderName: String, genderCode: String): Gender!
 
   createPhase(phaseName: String!, phaseCode: String!): Phase!
   createPhaseRank(
@@ -135,15 +130,6 @@ type Mutation {
     rankCode: String!
   ): PhaseRank!
   updatePhase(id: ID!, phaseName: String, phaseCode: String): Phase!
-  createSubjectType(
-    subjectTypeName: String!
-    subjectTypeCode: String!
-  ): SubjectType!
-  updateSubjectType(
-    id: ID!
-    subjectTypeName: String
-    subjectTypeCode: String
-  ): SubjectType!
 
   createExam(examName: String!, examCode: String!): Exam!
   updateExam(id: ID!, examName: String, examCode: String): Exam!
@@ -161,7 +147,8 @@ type Mutation {
     subjectName: String!
     subjectCode: String!
     educType: EducationTypeWhereUniqueInput!
-    subjectType: SubjectTypeWhereUniqueInput!
+    subjectType: String!
+    subjectGroup: String!
   ): Subject!
   updateSubject(id: ID!, subjectName: String, subjectCode: String): Subject!
   createReport(
@@ -187,7 +174,7 @@ type Mutation {
   createRegistration(
     candidate: CandidateWhereUniqueInput!
     specialty: SpecialtyWhereUniqueInput!
-    aptitude: AptitudeWhereUniqueInput!
+    aptitude: String!
     candExamSecretCode: String!
     candExamSession: String!
     candRegistrationNumber: String
@@ -239,16 +226,6 @@ type Mutation {
     centerNumber: Int
   ): Center!
 
-  createSubjectGroup(
-    subjectGroupName: String!
-    subjectGroupCode: String!
-  ): SubjectGroup!
-  updateSubjectGroup(
-    id: ID!
-    subjectGroupName: String
-    subjectGroupCode: String
-  ): SubjectGroup!
-
   deleteCandidate(id: ID!): Candidate
   deleteRegion(id: ID!): Region
 
@@ -295,8 +272,6 @@ type Query {
   ): [CenterExamSessionExaminer]!
   centerExamSessionExaminer(id: ID!): CenterExamSessionExaminer!
 
-  subjectTypes(orderBy: SubjectTypeOrderByInput): [SubjectType]!
-  subjectType(id: ID!): SubjectType!
   countRegisteredCandidates(id: ID!): [CenterExamSession]!
   registrationsConnection(
     where: RegistrationWhereInput
@@ -350,19 +325,16 @@ type Query {
 
   subjectSpecialties(orderBy: SubjectSpecialtyOrderByInput): [SubjectSpecialty]!
   subjects(orderBy: SubjectOrderByInput): [Subject]!
+
+  group1Subjects(orderBy: SubjectOrderByInput): [Subject]!
+  group2Subjects(orderBy: SubjectOrderByInput): [Subject]!
   subject(id: ID!): Subject!
 
   reports(orderBy: ReportOrderByInput): [Report]!
   report(id: ID!): Report!
 
-  aptitudes(orderBy: AptitudeOrderByInput): [Aptitude]!
-  aptitude(id: ID!): Aptitude!
-
   sessions(orderBy: SessionOrderByInput): [Session]!
   session(id: ID!): Session!
-
-  subjectGroups(orderBy: SubjectGroupOrderByInput): [SubjectGroup]!
-  subjectGroup(id: ID!): SubjectGroup!
 
   ranks(orderBy: RankOrderByInput): [Rank]!
   rank(id: ID!): Rank!
@@ -383,8 +355,7 @@ type Query {
   examiner(id: ID!): Examiner!
   getCenterByCode(centerSecretCode: String!): Center!
   centers(orderBy: CenterOrderByInput): [Center]!
-  genders(orderBy: GenderOrderByInput): [Gender]!
-  gender(id: ID!): Gender!
+
   Region(where: RegionWhereUniqueInput!): Region!
   me: User
   users(orderBy: UserOrderByInput!): [User]!
