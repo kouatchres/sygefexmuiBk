@@ -1293,10 +1293,10 @@ const Mutation = {
       }
       hasPermissions(user, ["ADMIN"]);
 
-      const newSbujectTypes = {
+      const newSubjectTypes = {
         ...args,
       };
-      const { educType, ...others } = newSbujectTypes;
+      const { educType, ...others } = newSubjectTypes;
 
       const subject = await prismaDB.mutation.createSubject(
         {

@@ -326,8 +326,15 @@ type Query {
   subjectSpecialties(orderBy: SubjectSpecialtyOrderByInput): [SubjectSpecialty]!
   subjects(orderBy: SubjectOrderByInput): [Subject]!
 
-  group1Subjects(orderBy: SubjectOrderByInput): [Subject]!
-  group2Subjects(orderBy: SubjectOrderByInput): [Subject]!
+  group1Subjects(
+    educType: EducationTypeWhereUniqueInput!
+    orderBy: SubjectOrderByInput
+  ): [Subject]!
+  group2Subjects(
+    educType: EducationTypeWhereUniqueInput!
+    orderBy: SubjectOrderByInput
+  ): [Subject]!
+
   subject(id: ID!): Subject!
 
   reports(orderBy: ReportOrderByInput): [Report]!

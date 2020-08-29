@@ -521,8 +521,9 @@ const Query = {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
       }
+      console.log(args);
       const allSubject = await prismaDB.query.subjects({
-        where: { subjectGroup:"G1" },
+        where: { subjectGroup: "EPF1", educType: args.educType },
         orderBy: "subjectName_ASC",
       });
       return allSubject;
@@ -531,7 +532,7 @@ const Query = {
     }
   },
 
-  async group1Subjects(
+  async group2Subjects(
     parent,
     args,
     { prismaDB, request: { user, userId } },
@@ -542,7 +543,7 @@ const Query = {
         throw new Error("Veuillez vous connecter");
       }
       const allSubject = await prismaDB.query.subjects({
-        where: { subjectGroup: "G2" },
+        where: { subjectGroup: "EPF2", educType: args.educType },
         orderBy: "subjectName_ASC",
       });
       return allSubject;
