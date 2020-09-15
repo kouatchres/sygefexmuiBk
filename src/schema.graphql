@@ -1,371 +1,381 @@
 # import * from './generated/prisma.graphql'
 
 type Mutation {
-  createCandidate(
-    cand1stName: String
-    cand2ndName: String
-    cand3rdName: String
-    email: String
-    phoneNumb: Int
-    momName: String
-    dadName: String
-    image: String
-    dateOfBirth: DateTime
-    birthCertNumber: String
-    candCode: String
-    placeOfBirth: String
-    gender: String!
-  ): Candidate!
+	createCandidate(
+	cand1stName: String
+	cand2ndName: String
+	cand3rdName: String
+	email: String
+	phoneNumb: Int
+	momName: String
+	dadName: String
+	image: String
+	dateOfBirth: DateTime
+	birthCertNumber: String
+	candCode: String
+	placeOfBirth: String
+	gender: String!
+	): Candidate!
 
-  createMultipleCandidates(
-    cand1stName: String
-    cand2ndName: String
-    cand3rdName: String
-    email: String
-    phoneNumb: Int
-    momName: String
-    dadName: String
-    image: String
-    dateOfBirth: DateTime
-    birthCertNumber: String
-    candCode: String
-    placeOfBirth: String
-    gender: String!
-  ): Candidate!
+	createMultipleCandidates(
+	cand1stName: String
+	cand2ndName: String
+	cand3rdName: String
+	email: String
+	phoneNumb: Int
+	momName: String
+	dadName: String
+	image: String
+	dateOfBirth: DateTime
+	birthCertNumber: String
+	candCode: String
+	placeOfBirth: String
+	gender: String!
+	): Candidate!
 
-  updateCandidate(
-    id: ID!
-    cand1stName: String
-    cand2ndName: String
-    cand3rdName: String
-    momName: String
-    dadName: String
-    email: String
-    phoneNumb: Int
-    dateOfBirth: DateTime
-    birthCertNumber: String
-    image: String
-    placeOfBirth: String
-    gender: String
-  ): Candidate!
+	updateCandidate(
+	id: ID!
+	cand1stName: String
+	cand2ndName: String
+	cand3rdName: String
+	momName: String
+	dadName: String
+	email: String
+	phoneNumb: Int
+	dateOfBirth: DateTime
+	birthCertNumber: String
+	image: String
+	placeOfBirth: String
+	gender: String
+	): Candidate!
 
-  updateExaminer(
-    id: ID!
-    examiner1stName: String!
-    examiner2ndName: String!
-    examinerOtherNames: String
-    examinerImage: String!
-    examinerCNI: String!
-    examinerPhone: Int!
-    examinerMatricule: String!
-    examinerCode: String!
-    examinerEmail: String!
-    gender: String!
-  ): Examiner!
-  createExaminer(
-    examiner1stName: String!
-    examiner2ndName: String!
-    examinerOtherNames: String
-    examinerImage: String!
-    examinerCNI: String!
-    examinerPhone: Int!
-    examinerMatricule: String!
-    examinerCode: String!
-    examinerEmail: String!
-    gender: String!
-  ): Examiner!
+	updateExaminer(
+	id: ID!
+	examiner1stName: String!
+	examiner2ndName: String!
+	examinerOtherNames: String
+	examinerImage: String!
+	examinerCNI: String!
+	examinerPhone: Int!
+	examinerMatricule: String!
+	examinerCode: String!
+	examinerEmail: String!
+	gender: String!
+	): Examiner!
+	createExaminer(
+	examiner1stName: String!
+	examiner2ndName: String!
+	examinerOtherNames: String
+	examinerImage: String!
+	examinerCNI: String!
+	examinerPhone: Int!
+	examinerMatricule: String!
+	examinerCode: String!
+	examinerEmail: String!
+	gender: String!
+	): Examiner!
 
-  createScore(
-    subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
-    candExamSecretCode: String!
-    subjectAve: Float!
-    user: UserWhereUniqueInput!
-  ): Score!
-  enterMarks(
-    subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
-    candExamSecretCode: String!
-    subjectAve: Float! # user: UserWhereUniqueInput!
-  ): Score!
-  resetPassword(
-    restToken: String!
-    password: String!
-    confirmPassword: String!
-  ): User!
-  requestReset(email: String!): SuccessMessage!
-  signup(email: String!, name: String!, password: String!): User!
-  # updateUser(email: String!, name: String!, password: String! ): User!
-  login(email: String!, password: String!): User!
-  createCenterExamSession(
-    center: CenterWhereUniqueInput!
-    examSession: ExamSessionWhereUniqueInput!
-  ): CenterExamSession!
-  createExamSession(
-    exam: ExamWhereUniqueInput!
-    session: SessionWhereUniqueInput!
-  ): ExamSession!
-  createCenterExamSessionSpecialty(
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-    specialty: SpecialtyWhereUniqueInput!
-  ): CenterExamSessionSpecialty!
+	createScore(
+	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
+	candExamSecretCode: String!
+	subjectAve: Float!
+	user: UserWhereUniqueInput!
+	): Score!
+	enterMarks(
+	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
+	candExamSecretCode: String!
+	subjectAve: Float! # user: UserWhereUniqueInput!
+	): Score!
+	resetPassword(
+	restToken: String!
+	password: String!
+	confirmPassword: String!
+	): User!
+	requestReset(email: String!): SuccessMessage!
+	signup(email: String!, name: String!, password: String!): User!
+	# updateUser(email: String!, name: String!, password: String! ): User!
+	login(email: String!, password: String!): User!
+	createCenterExamSession(
+	center: CenterWhereUniqueInput!
+	examSession: ExamSessionWhereUniqueInput!
+	): CenterExamSession!
+	createExamSession(
+	exam: ExamWhereUniqueInput!
+	session: SessionWhereUniqueInput!
+	): ExamSession!
+	createCenterExamSessionSpecialty(
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	specialty: SpecialtyWhereUniqueInput!
+	): CenterExamSessionSpecialty!
 
-  updateScore(
-    user: UserWhereUniqueInput!
-    subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
-    subjectAve: Float!
-    candExamSecretCode: String!
-  ): Score!
-  updateCenterExamSessionSpecialty(
-    centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereUniqueInput!
-    specialtyUsed: Int
-  ): CenterExamSessionSpecialty!
+	updateScore(
+	user: UserWhereUniqueInput!
+	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
+	subjectAve: Float!
+	candExamSecretCode: String!
+	): Score!
+	updateCenterExamSessionSpecialty(
+	centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereUniqueInput!
+	specialtyUsed: Int
+	): CenterExamSessionSpecialty!
 
-  # updateManyRegistrations(data: RegistrationUpdateManyMutationInput!, where: RegistrationWhereInput): BatchPayload!
-  createRegion(regName: String!, regCode: String!): Region!
-  updateRegion(id: ID!, regName: String, regCode: String): Region!
+	# updateManyRegistrations(data: RegistrationUpdateManyMutationInput!, where: RegistrationWhereInput): BatchPayload!
+	createRegion(regName: String!, regCode: String!): Region!
+	updateRegion(id: ID!, regName: String, regCode: String): Region!
 
-  createPhase(phaseName: String!, phaseCode: String!): Phase!
-  createPhaseRank(
-    phase: PhaseWhereUniqueInput!
-    rankName: String!
-    rankCode: String!
-  ): PhaseRank!
-  updatePhase(id: ID!, phaseName: String, phaseCode: String): Phase!
+	createPhase(phaseName: String!, phaseCode: String!): Phase!
+	createPhaseRank(
+	phase: PhaseWhereUniqueInput!
+	rankName: String!
+	rankCode: String!
+	): PhaseRank!
+	updatePhase(id: ID!, phaseName: String, phaseCode: String): Phase!
 
-  createExam(examName: String!, examCode: String!): Exam!
-  updateExam(id: ID!, examName: String, examCode: String): Exam!
-  createSpecialty(
-    specialtyName: String!
-    specialtyCode: String!
-    educationType: EducationTypeWhereUniqueInput!
-  ): Specialty!
-  updateSpecialty(
-    id: ID!
-    specialtyName: String
-    specialtyCode: String
-  ): Specialty!
-  createSubject(
-    subjectName: String!
-    subjectCode: String!
-    educType: EducationTypeWhereUniqueInput!
-    subjectType: String!
-    subjectGroup: String!
-  ): Subject!
-  updateSubject(id: ID!, subjectName: String, subjectCode: String): Subject!
-  createReport(
-    reportImage: String!
-    reportName: String!
-    centerExamSessionExaminer: CenterExamSessionExaminerWhereUniqueInput!
-  ): Report!
-  updateReport(id: ID!, reportName: String, reportCode: String): Report!
-  createSession(sessionName: String!, sessionCode: String!): Session!
-  updateSession(id: ID!, sessionName: String, sessionCode: String): Session!
-  createRank(rankName: String!, rankCode: String!): Rank!
-  updateRank(id: ID!, rankName: String, rankCode: String): Rank!
-  createEducationType(
-    educationTypeName: String!
-    educationTypeCode: String!
-  ): EducationType!
-  updateEducationType(
-    id: ID!
-    educationTypeName: String
-    educationTypeCode: String
-  ): EducationType!
-  updateRegistration(id: ID!): Registration!
-  createRegistration(
-    candidate: CandidateWhereUniqueInput!
-    specialty: SpecialtyWhereUniqueInput!
-    aptitude: String!
-    candExamSecretCode: String!
-    candExamSession: String!
-    candRegistrationNumber: String
-    centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereUniqueInput!
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-  ): Registration!
+	createExam(examName: String!, examCode: String!): Exam!
+	updateExam(id: ID!, examName: String, examCode: String): Exam!
+	createSpecialty(
+	specialtyName: String!
+	specialtyCode: String!
+	educationType: EducationTypeWhereUniqueInput!
+	): Specialty!
+	updateSpecialty(
+	id: ID!
+	specialtyName: String
+	specialtyCode: String
+	): Specialty!
+	createSubject(
+	subjectName: String!
+	subjectCode: String!
+	educType: EducationTypeWhereUniqueInput!
+	subjectType: String!
+	subjectGroup: String!
+	): Subject!
+	updateSubject(id: ID!, subjectName: String, subjectCode: String): Subject!
+	createReport(
+	reportImage: String!
+	reportName: String!
+	centerExamSessionExaminer: CenterExamSessionExaminerWhereUniqueInput!
+	): Report!
+	updateReport(id: ID!, reportName: String, reportCode: String): Report!
+	createSession(sessionName: String!, sessionCode: String!): Session!
+	updateSession(id: ID!, sessionName: String, sessionCode: String): Session!
+	createRank(rankName: String!, rankCode: String!): Rank!
+	updateRank(id: ID!, rankName: String, rankCode: String): Rank!
+	createEducationType(
+	educationTypeName: String!
+	educationTypeCode: String!
+	): EducationType!
+	updateEducationType(
+	id: ID!
+	educationTypeName: String
+	educationTypeCode: String
+	): EducationType!
+	updateRegistration(id: ID!): Registration!
+	createRegistration(
+	candidate: CandidateWhereUniqueInput!
+	specialty: SpecialtyWhereUniqueInput!
+	aptitude: String!
+	candExamSecretCode: String!
+	candExamSession: String!
+	candRegistrationNumber: String
+	EPF1: String
+	EPF2: String
+	centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereUniqueInput!
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	): Registration!
 
-  updateCenterExamSessionExaminer(id: ID!): CenterExamSessionExaminer!
-  createCenterExamSessionExaminer(
-    phaseRank: PhaseRankWhereUniqueInput!
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-    examiner: ExaminerWhereUniqueInput!
-  ): CenterExamSessionExaminer!
+	updateCenterExamSessionExaminer(id: ID!): CenterExamSessionExaminer!
+	createCenterExamSessionExaminer(
+	phaseRank: PhaseRankWhereUniqueInput!
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	examiner: ExaminerWhereUniqueInput!
+	): CenterExamSessionExaminer!
 
-  createDivision(
-    divName: String!
-    divCode: String!
-    region: RegionWhereUniqueInput!
-  ): Division!
-  updateDivision(id: ID!, divName: String, divCode: String): Division!
-  createSubDivision(
-    subDivName: String!
-    subDivCode: String!
-    division: DivisionWhereUniqueInput!
-  ): SubDivision!
-  updateSubDivision(
-    id: ID!
-    subDivName: String
-    subDivCode: String
-  ): SubDivision!
-  createTown(
-    townName: String!
-    townCode: String!
-    subDiv: SubDivisionWhereUniqueInput!
-  ): Town!
-  updateTown(id: ID!, townName: String, townCode: String): Town!
+	createDivision(
+	divName: String!
+	divCode: String!
+	region: RegionWhereUniqueInput!
+	): Division!
+	updateDivision(id: ID!, divName: String, divCode: String): Division!
+	createSubDivision(
+	subDivName: String!
+	subDivCode: String!
+	division: DivisionWhereUniqueInput!
+	): SubDivision!
+	updateSubDivision(
+	id: ID!
+	subDivName: String
+	subDivCode: String
+	): SubDivision!
+	createTown(
+	townName: String!
+	townCode: String!
+	subDiv: SubDivisionWhereUniqueInput!
+	): Town!
+	updateTown(id: ID!, townName: String, townCode: String): Town!
 
-  createCenter(
-    centerName: String!
-    centerSecretCode: String!
-    centerCode: String!
-    centerNumber: Int
-    town: TownWhereUniqueInput!
-  ): Center!
-  updateCenter(
-    id: ID!
-    centerName: String
-    centerCode: String
-    centerNumber: Int
-  ): Center!
+	createCenter(
+	centerName: String!
+	centerSecretCode: String!
+	centerCode: String!
+	centerNumber: Int
+	town: TownWhereUniqueInput!
+	): Center!
+	updateCenter(
+	id: ID!
+	centerName: String
+	centerCode: String
+	centerNumber: Int
+	): Center!
 
-  deleteCandidate(id: ID!): Candidate
-  deleteRegion(id: ID!): Region
+	deleteCandidate(id: ID!): Candidate
+	deleteRegion(id: ID!): Region
 
-  createSubjectSpecialty(
-    specialty: SpecialtyWhereUniqueInput!
-    subject: SubjectWhereUniqueInput!
-    coeff: Int!
-  ): SubjectSpecialty!
-  signout: SuccessMessage!
+	createSubjectSpecialty(
+	specialty: SpecialtyWhereUniqueInput!
+	subject: SubjectWhereUniqueInput!
+	coeff: Int!
+	): SubjectSpecialty!
+
+	createAttendance(
+	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
+	candExamSecretCode: String!
+	collected: String!
+	handin: String!
+	): Attendance!
+
+	signout: SuccessMessage!
 }
 
 type Query {
-  # candidateInSchool(id:ID!):Candidate
-  candidateSignIn(candCode: String!): Candidate!
-  candidates(orderBy: CandidateOrderByInput): [Candidate]!
-  candidate(id: ID!): Candidate!
-  candidateCode(candCode: String!): Candidate!
-  candidateRegistrationNumber(candRegistrationNumber: String!): Registration!
-  phaseRanks(
-    phase: PhaseWhereUniqueInput!
-    rank: RankWhereUniqueInput!
-  ): [PhaseRank]!
-  getPhaseRankID(
-    phase: PhaseWhereUniqueInput!
-    rank: RankWhereUniqueInput!
-  ): PhaseRank!
-  phaseRank(id: ID!): PhaseRank!
+	# candidateInSchool(id:ID!):Candidate
+	candidateSignIn(candCode: String!): Candidate!
+	candidates(orderBy: CandidateOrderByInput): [Candidate]!
+	candidate(id: ID!): Candidate!
+	candidateCode(candCode: String!): Candidate!
+	candidateRegistrationNumber(candRegistrationNumber: String!): Registration!
+	phaseRanks(
+	phase: PhaseWhereUniqueInput!
+	rank: RankWhereUniqueInput!
+	): [PhaseRank]!
+	getPhaseRankID(
+	phase: PhaseWhereUniqueInput!
+	rank: RankWhereUniqueInput!
+	): PhaseRank!
+	phaseRank(id: ID!): PhaseRank!
 
-  scores(candExamSecretCode: String!): [Score]!
-  score(id: ID!): Score!
-  singleCandidate(candCode: String!): Candidate!
-  regions(orderBy: RegionOrderByInput): [Region!]!
-  region(id: ID!): Region!
+	scores(candExamSecretCode: String!): [Score]!
+	score(id: ID!): Score!
+	singleCandidate(candCode: String!): Candidate!
+	regions(orderBy: RegionOrderByInput): [Region!]!
+	region(id: ID!): Region!
 
-  phases(orderBy: PhaseOrderByInput): [Phase!]!
-  phase(id: ID!): Phase!
-  exams(orderBy: ExamOrderByInput): [Exam]!
-  exam(id: ID!): Exam!
+	phases(orderBy: PhaseOrderByInput): [Phase!]!
+	phase(id: ID!): Phase!
+	exams(orderBy: ExamOrderByInput): [Exam]!
+	exam(id: ID!): Exam!
 
-  centerExamSessionExaminers: [CenterExamSessionExaminer]!
-  getCenterExamSessionExaminers(
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-    examiner: ExaminerWhereUniqueInput!
-  ): [CenterExamSessionExaminer]!
-  centerExamSessionExaminer(id: ID!): CenterExamSessionExaminer!
+	centerExamSessionExaminers: [CenterExamSessionExaminer]!
+	getCenterExamSessionExaminers(
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	examiner: ExaminerWhereUniqueInput!
+	): [CenterExamSessionExaminer]!
+	centerExamSessionExaminer(id: ID!): CenterExamSessionExaminer!
 
-  countRegisteredCandidates(id: ID!): [CenterExamSession]!
-  registrationsConnection(
-    where: RegistrationWhereInput
-  ): RegistrationConnection!
+	countRegisteredCandidates(id: ID!): [CenterExamSession]!
+	registrationsConnection(
+	where: RegistrationWhereInput
+	): RegistrationConnection!
 
-  centerExamSessions(
-    examSession: ExamSessionWhereUniqueInput!
-    center: CenterWhereUniqueInput!
-  ): [CenterExamSession]!
-  centerExamSessionsByCode(
-    examSession: ExamSessionWhereUniqueInput!
-    center: CenterWhereUniqueInput!
-  ): [CenterExamSession]!
-  centerExamSession(id: ID!): CenterExamSession!
-  examSessions(
-    exam: ExamWhereUniqueInput!
-    session: SessionWhereUniqueInput!
-  ): [ExamSession]!
-  examSession(id: ID!): ExamSession!
+	centerExamSessions(
+	examSession: ExamSessionWhereUniqueInput!
+	center: CenterWhereUniqueInput!
+	): [CenterExamSession]!
+	centerExamSessionsByCode(
+	examSession: ExamSessionWhereUniqueInput!
+	center: CenterWhereUniqueInput!
+	): [CenterExamSession]!
+	centerExamSession(id: ID!): CenterExamSession!
+	examSessions(
+	exam: ExamWhereUniqueInput!
+	session: SessionWhereUniqueInput!
+	): [ExamSession]!
+	examSession(id: ID!): ExamSession!
 
-  centerExamSessionSpecialties(
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-    specialty: SpecialtyWhereUniqueInput!
-  ): [CenterExamSessionSpecialty]!
-  centerExamSessionSpecialty(id: ID!): CenterExamSessionSpecialty!
+	centerExamSessionSpecialties(
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	specialty: SpecialtyWhereUniqueInput!
+	): [CenterExamSessionSpecialty]!
+	centerExamSessionSpecialty(id: ID!): CenterExamSessionSpecialty!
 
-  centerExamSessionForResults(centerExamSession: String!): [CenterExamSession]!
-  # centerExamSessionSpecialtyForResults(centerExamSessionSpecialty: CenterExamSessionWhereUniqueInput!):[CenterExamSession]!
+	centerExamSessionForResults(centerExamSession: String!): [CenterExamSession]!
+	# centerExamSessionSpecialtyForResults(centerExamSessionSpecialty: CenterExamSessionWhereUniqueInput!):[CenterExamSession]!
 
-  registrations: [Registration]!
-  getCandidateByCode(candCode: String!): Candidate!
-  candidateRegistrationID(
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-    candidate: CandidateWhereUniqueInput!
-  ): Registration!
-  candidateRegistrationIDs(candidate: CandidateWhereInput!): [Registration]!
-  getCenterResults(
-    centerExamSession: CenterExamSessionWhereUniqueInput!
-  ): [CenterExamSessionSpecialty]!
-  # centerExamSessionIDs(centerExamSession: CenterExamSessionWhereUniqueInput!):[CenterExamSession]!
-  getAllBoardResults(
-    exam: ExamWhereUniqueInput!
-    session: SessionWhereUniqueInput!
-  ): [Registration]!
-  registration(id: ID!): Registration!
+	registrations: [Registration]!
+	getCandidateByCode(candCode: String!): Candidate!
+	candidateRegistrationID(
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	candidate: CandidateWhereUniqueInput!
+	): Registration!
+	candidateRegistrationIDs(candidate: CandidateWhereInput!): [Registration]!
+	getCenterResults(
+	centerExamSession: CenterExamSessionWhereUniqueInput!
+	): [CenterExamSessionSpecialty]!
+	# centerExamSessionIDs(centerExamSession: CenterExamSessionWhereUniqueInput!):[CenterExamSession]!
+	getAllBoardResults(
+	exam: ExamWhereUniqueInput!
+	session: SessionWhereUniqueInput!
+	): [Registration]!
+	registration(id: ID!): Registration!
 
-  specialties(orderBy: SpecialtyOrderByInput): [Specialty]!
-  # allSpecialty(orderBy:SpecialtyOrderByInput):[Specialty]!
-  specialty(id: ID!): Specialty!
-  subjectSpecialty(id: ID!): SubjectSpecialty!
+	specialties(orderBy: SpecialtyOrderByInput): [Specialty]!
+	# allSpecialty(orderBy:SpecialtyOrderByInput):[Specialty]!
+	specialty(id: ID!): Specialty!
+	subjectSpecialty(id: ID!): SubjectSpecialty!
 
-  subjectSpecialties(orderBy: SubjectSpecialtyOrderByInput): [SubjectSpecialty]!
-  subjects(orderBy: SubjectOrderByInput): [Subject]!
+	subjectSpecialties(orderBy: SubjectSpecialtyOrderByInput): [SubjectSpecialty]!
+	subjects(orderBy: SubjectOrderByInput): [Subject]!
 
-  group1Subjects(
-    educType: EducationTypeWhereUniqueInput!
-    orderBy: SubjectOrderByInput
-  ): [Subject]!
-  group2Subjects(
-    educType: EducationTypeWhereUniqueInput!
-    orderBy: SubjectOrderByInput
-  ): [Subject]!
+	group1Subjects(
+	educType: EducationTypeWhereUniqueInput!
+	orderBy: SubjectOrderByInput
+	): [Subject]!
+	group2Subjects(
+	educType: EducationTypeWhereUniqueInput!
+	orderBy: SubjectOrderByInput
+	): [Subject]!
 
-  subject(id: ID!): Subject!
+	subject(id: ID!): Subject!
 
-  reports(orderBy: ReportOrderByInput): [Report]!
-  report(id: ID!): Report!
+	reports(orderBy: ReportOrderByInput): [Report]!
+	report(id: ID!): Report!
 
-  sessions(orderBy: SessionOrderByInput): [Session]!
-  session(id: ID!): Session!
+	sessions(orderBy: SessionOrderByInput): [Session]!
+	session(id: ID!): Session!
 
-  ranks(orderBy: RankOrderByInput): [Rank]!
-  rank(id: ID!): Rank!
-  educationTypes(orderBy: EducationTypeOrderByInput): [EducationType]!
-  educationType(id: ID!): EducationType!
-  # subjectSpecialty(id:ID! ): SubjectSpecialty!
+	ranks(orderBy: RankOrderByInput): [Rank]!
+	rank(id: ID!): Rank!
+	educationTypes(orderBy: EducationTypeOrderByInput): [EducationType]!
+	educationType(id: ID!): EducationType!
+	# subjectSpecialty(id:ID! ): SubjectSpecialty!
 
-  division(id: ID!): Division!
-  divisions(orderBy: DivisionOrderByInput): [Division]!
+	division(id: ID!): Division!
+	divisions(orderBy: DivisionOrderByInput): [Division]!
 
-  town(id: ID!): Town!
-  towns(orderBy: TownOrderByInput): [Town]!
-  subDivision(id: ID!): SubDivision!
-  subDivisions(orderBy: SubDivisionOrderByInput): [SubDivision]!
-  center(id: ID!): Center!
-  centerByNumber(centerNumber: Int!): Center!
-  examinerByCode(examinerCode: String!): Examiner!
-  examiner(id: ID!): Examiner!
-  getCenterByCode(centerSecretCode: String!): Center!
-  centers(orderBy: CenterOrderByInput): [Center]!
+	town(id: ID!): Town!
+	towns(orderBy: TownOrderByInput): [Town]!
+	subDivision(id: ID!): SubDivision!
+	subDivisions(orderBy: SubDivisionOrderByInput): [SubDivision]!
+	center(id: ID!): Center!
+	centerByNumber(centerNumber: Int!): Center!
+	examinerByCode(examinerCode: String!): Examiner!
+	examiner(id: ID!): Examiner!
+	getCenterByCode(centerSecretCode: String!): Center!
+	centers(orderBy: CenterOrderByInput): [Center]!
 
-  Region(where: RegionWhereUniqueInput!): Region!
-  me: User
-  users(orderBy: UserOrderByInput!): [User]!
+	Region(where: RegionWhereUniqueInput!): Region!
+	me: User
+	users(orderBy: UserOrderByInput!): [User]!
 }
 # type User {
 # id: ID!
@@ -374,16 +384,16 @@ type Query {
 # password: String!
 # }
 type Specialty {
-  id: ID!
-  specialtyName: String!
-  specialtyCode: String!
-  subjectSpecialty: [SubjectSpecialty]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  educationType: EducationType!
-  registration: [Registration]!
-  scores: [Score]!
+	id: ID!
+	specialtyName: String!
+	specialtyCode: String!
+	subjectSpecialty: [SubjectSpecialty]!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	educationType: EducationType!
+	registration: [Registration]!
+	scores: [Score]!
 }
 type SuccessMessage {
-  message: String!
+	message: String!
 }

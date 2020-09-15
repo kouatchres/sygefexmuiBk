@@ -1,3 +1,7 @@
+type AggregateAttendance {
+  count: Int!
+}
+
 type AggregateCandidate {
   count: Int!
 }
@@ -96,6 +100,215 @@ type AggregateTown {
 
 type AggregateUser {
   count: Int!
+}
+
+type Attendance {
+  id: ID!
+  subjectSpecialty: SubjectSpecialty!
+  registration: Registration!
+  candExamSecretCode: String!
+  collected: String!
+  handin: String!
+  user: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AttendanceConnection {
+  pageInfo: PageInfo!
+  edges: [AttendanceEdge]!
+  aggregate: AggregateAttendance!
+}
+
+input AttendanceCreateInput {
+  subjectSpecialty: SubjectSpecialtyCreateOneInput!
+  registration: RegistrationCreateOneWithoutAttendanceInput!
+  candExamSecretCode: String!
+  collected: String!
+  handin: String!
+  user: UserCreateOneInput!
+}
+
+input AttendanceCreateManyWithoutRegistrationInput {
+  create: [AttendanceCreateWithoutRegistrationInput!]
+  connect: [AttendanceWhereUniqueInput!]
+}
+
+input AttendanceCreateWithoutRegistrationInput {
+  subjectSpecialty: SubjectSpecialtyCreateOneInput!
+  candExamSecretCode: String!
+  collected: String!
+  handin: String!
+  user: UserCreateOneInput!
+}
+
+type AttendanceEdge {
+  node: Attendance!
+  cursor: String!
+}
+
+enum AttendanceOrderByInput {
+  id_ASC
+  id_DESC
+  candExamSecretCode_ASC
+  candExamSecretCode_DESC
+  collected_ASC
+  collected_DESC
+  handin_ASC
+  handin_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type AttendancePreviousValues {
+  id: ID!
+  candExamSecretCode: String!
+  collected: String!
+  handin: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AttendanceSubscriptionPayload {
+  mutation: MutationType!
+  node: Attendance
+  updatedFields: [String!]
+  previousValues: AttendancePreviousValues
+}
+
+input AttendanceSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: AttendanceWhereInput
+  AND: [AttendanceSubscriptionWhereInput!]
+  OR: [AttendanceSubscriptionWhereInput!]
+  NOT: [AttendanceSubscriptionWhereInput!]
+}
+
+input AttendanceUpdateInput {
+  subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
+  registration: RegistrationUpdateOneRequiredWithoutAttendanceInput
+  candExamSecretCode: String
+  collected: String
+  handin: String
+  user: UserUpdateOneRequiredInput
+}
+
+input AttendanceUpdateManyWithoutRegistrationInput {
+  create: [AttendanceCreateWithoutRegistrationInput!]
+  delete: [AttendanceWhereUniqueInput!]
+  connect: [AttendanceWhereUniqueInput!]
+  disconnect: [AttendanceWhereUniqueInput!]
+  update: [AttendanceUpdateWithWhereUniqueWithoutRegistrationInput!]
+  upsert: [AttendanceUpsertWithWhereUniqueWithoutRegistrationInput!]
+}
+
+input AttendanceUpdateWithoutRegistrationDataInput {
+  subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
+  candExamSecretCode: String
+  collected: String
+  handin: String
+  user: UserUpdateOneRequiredInput
+}
+
+input AttendanceUpdateWithWhereUniqueWithoutRegistrationInput {
+  where: AttendanceWhereUniqueInput!
+  data: AttendanceUpdateWithoutRegistrationDataInput!
+}
+
+input AttendanceUpsertWithWhereUniqueWithoutRegistrationInput {
+  where: AttendanceWhereUniqueInput!
+  update: AttendanceUpdateWithoutRegistrationDataInput!
+  create: AttendanceCreateWithoutRegistrationInput!
+}
+
+input AttendanceWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  subjectSpecialty: SubjectSpecialtyWhereInput
+  registration: RegistrationWhereInput
+  candExamSecretCode: String
+  candExamSecretCode_not: String
+  candExamSecretCode_in: [String!]
+  candExamSecretCode_not_in: [String!]
+  candExamSecretCode_lt: String
+  candExamSecretCode_lte: String
+  candExamSecretCode_gt: String
+  candExamSecretCode_gte: String
+  candExamSecretCode_contains: String
+  candExamSecretCode_not_contains: String
+  candExamSecretCode_starts_with: String
+  candExamSecretCode_not_starts_with: String
+  candExamSecretCode_ends_with: String
+  candExamSecretCode_not_ends_with: String
+  collected: String
+  collected_not: String
+  collected_in: [String!]
+  collected_not_in: [String!]
+  collected_lt: String
+  collected_lte: String
+  collected_gt: String
+  collected_gte: String
+  collected_contains: String
+  collected_not_contains: String
+  collected_starts_with: String
+  collected_not_starts_with: String
+  collected_ends_with: String
+  collected_not_ends_with: String
+  handin: String
+  handin_not: String
+  handin_in: [String!]
+  handin_not_in: [String!]
+  handin_lt: String
+  handin_lte: String
+  handin_gt: String
+  handin_gte: String
+  handin_contains: String
+  handin_not_contains: String
+  handin_starts_with: String
+  handin_not_starts_with: String
+  handin_ends_with: String
+  handin_not_ends_with: String
+  user: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [AttendanceWhereInput!]
+  OR: [AttendanceWhereInput!]
+  NOT: [AttendanceWhereInput!]
+}
+
+input AttendanceWhereUniqueInput {
+  id: ID
 }
 
 type BatchPayload {
@@ -2669,6 +2882,12 @@ input ExamWhereUniqueInput {
 scalar Long
 
 type Mutation {
+  createAttendance(data: AttendanceCreateInput!): Attendance!
+  updateAttendance(data: AttendanceUpdateInput!, where: AttendanceWhereUniqueInput!): Attendance
+  updateManyAttendances(data: AttendanceUpdateInput!, where: AttendanceWhereInput): BatchPayload!
+  upsertAttendance(where: AttendanceWhereUniqueInput!, create: AttendanceCreateInput!, update: AttendanceUpdateInput!): Attendance!
+  deleteAttendance(where: AttendanceWhereUniqueInput!): Attendance
+  deleteManyAttendances(where: AttendanceWhereInput): BatchPayload!
   createCandidate(data: CandidateCreateInput!): Candidate!
   updateCandidate(data: CandidateUpdateInput!, where: CandidateWhereUniqueInput!): Candidate
   updateManyCandidates(data: CandidateUpdateInput!, where: CandidateWhereInput): BatchPayload!
@@ -3217,6 +3436,9 @@ input PhaseWhereUniqueInput {
 }
 
 type Query {
+  attendance(where: AttendanceWhereUniqueInput!): Attendance
+  attendances(where: AttendanceWhereInput, orderBy: AttendanceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Attendance]!
+  attendancesConnection(where: AttendanceWhereInput, orderBy: AttendanceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AttendanceConnection!
   candidate(where: CandidateWhereUniqueInput!): Candidate
   candidates(where: CandidateWhereInput, orderBy: CandidateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Candidate]!
   candidatesConnection(where: CandidateWhereInput, orderBy: CandidateOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CandidateConnection!
@@ -3746,8 +3968,11 @@ type Registration {
   candExamSecretCode: String!
   candExamSession: String!
   scores(where: ScoreWhereInput, orderBy: ScoreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Score!]
+  attendance(where: AttendanceWhereInput, orderBy: AttendanceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Attendance!]
   aptitude: String!
   specialty: Specialty!
+  EPF1: String
+  EPF2: String
   optionalSubjects(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RegisterOptionalSubject!]
   candRegistrationNumber: String!
   serial: Int
@@ -3768,8 +3993,11 @@ input RegistrationCreateInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
+  attendance: AttendanceCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
@@ -3790,6 +4018,11 @@ input RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput {
   connect: [RegistrationWhereUniqueInput!]
 }
 
+input RegistrationCreateOneWithoutAttendanceInput {
+  create: RegistrationCreateWithoutAttendanceInput
+  connect: RegistrationWhereUniqueInput
+}
+
 input RegistrationCreateOneWithoutOptionalSubjectsInput {
   create: RegistrationCreateWithoutOptionalSubjectsInput
   connect: RegistrationWhereUniqueInput
@@ -3800,7 +4033,8 @@ input RegistrationCreateOneWithoutScoresInput {
   connect: RegistrationWhereUniqueInput
 }
 
-input RegistrationCreateWithoutCandidateInput {
+input RegistrationCreateWithoutAttendanceInput {
+  candidate: CandidateCreateOneWithoutRegistrationInput!
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutRegistrationInput!
   centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
   candExamSecretCode: String!
@@ -3808,6 +4042,24 @@ input RegistrationCreateWithoutCandidateInput {
   scores: ScoreCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
+  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
+  candRegistrationNumber: String!
+  serial: Int
+}
+
+input RegistrationCreateWithoutCandidateInput {
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutRegistrationInput!
+  centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
+  candExamSecretCode: String!
+  candExamSession: String!
+  scores: ScoreCreateManyWithoutRegistrationInput
+  attendance: AttendanceCreateManyWithoutRegistrationInput
+  aptitude: String!
+  specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
@@ -3819,8 +4071,11 @@ input RegistrationCreateWithoutCenterExamSessionInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
+  attendance: AttendanceCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
@@ -3832,8 +4087,11 @@ input RegistrationCreateWithoutCenterExamSessionSpecialtyInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
+  attendance: AttendanceCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
@@ -3846,8 +4104,11 @@ input RegistrationCreateWithoutOptionalSubjectsInput {
   candExamSecretCode: String!
   candExamSession: String!
   scores: ScoreCreateManyWithoutRegistrationInput
+  attendance: AttendanceCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   candRegistrationNumber: String!
   serial: Int
 }
@@ -3858,8 +4119,11 @@ input RegistrationCreateWithoutScoresInput {
   centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
   candExamSecretCode: String!
   candExamSession: String!
+  attendance: AttendanceCreateManyWithoutRegistrationInput
   aptitude: String!
   specialty: SpecialtyCreateOneInput!
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
@@ -3879,6 +4143,10 @@ enum RegistrationOrderByInput {
   candExamSession_DESC
   aptitude_ASC
   aptitude_DESC
+  EPF1_ASC
+  EPF1_DESC
+  EPF2_ASC
+  EPF2_DESC
   candRegistrationNumber_ASC
   candRegistrationNumber_DESC
   serial_ASC
@@ -3894,6 +4162,8 @@ type RegistrationPreviousValues {
   candExamSecretCode: String!
   candExamSession: String!
   aptitude: String!
+  EPF1: String
+  EPF2: String
   candRegistrationNumber: String!
   serial: Int
   createdAt: DateTime!
@@ -3925,8 +4195,11 @@ input RegistrationUpdateInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
@@ -3959,6 +4232,13 @@ input RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput {
   upsert: [RegistrationUpsertWithWhereUniqueWithoutCenterExamSessionSpecialtyInput!]
 }
 
+input RegistrationUpdateOneRequiredWithoutAttendanceInput {
+  create: RegistrationCreateWithoutAttendanceInput
+  update: RegistrationUpdateWithoutAttendanceDataInput
+  upsert: RegistrationUpsertWithoutAttendanceInput
+  connect: RegistrationWhereUniqueInput
+}
+
 input RegistrationUpdateOneRequiredWithoutOptionalSubjectsInput {
   create: RegistrationCreateWithoutOptionalSubjectsInput
   update: RegistrationUpdateWithoutOptionalSubjectsDataInput
@@ -3973,7 +4253,8 @@ input RegistrationUpdateOneRequiredWithoutScoresInput {
   connect: RegistrationWhereUniqueInput
 }
 
-input RegistrationUpdateWithoutCandidateDataInput {
+input RegistrationUpdateWithoutAttendanceDataInput {
+  candidate: CandidateUpdateOneRequiredWithoutRegistrationInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
   candExamSecretCode: String
@@ -3981,6 +4262,24 @@ input RegistrationUpdateWithoutCandidateDataInput {
   scores: ScoreUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
+  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
+  candRegistrationNumber: String
+  serial: Int
+}
+
+input RegistrationUpdateWithoutCandidateDataInput {
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput
+  centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
+  candExamSecretCode: String
+  candExamSession: String
+  scores: ScoreUpdateManyWithoutRegistrationInput
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
+  aptitude: String
+  specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
@@ -3992,8 +4291,11 @@ input RegistrationUpdateWithoutCenterExamSessionDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
@@ -4005,8 +4307,11 @@ input RegistrationUpdateWithoutCenterExamSessionSpecialtyDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
@@ -4019,8 +4324,11 @@ input RegistrationUpdateWithoutOptionalSubjectsDataInput {
   candExamSecretCode: String
   candExamSession: String
   scores: ScoreUpdateManyWithoutRegistrationInput
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   candRegistrationNumber: String
   serial: Int
 }
@@ -4031,8 +4339,11 @@ input RegistrationUpdateWithoutScoresDataInput {
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
   candExamSecretCode: String
   candExamSession: String
+  attendance: AttendanceUpdateManyWithoutRegistrationInput
   aptitude: String
   specialty: SpecialtyUpdateOneRequiredInput
+  EPF1: String
+  EPF2: String
   optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
@@ -4051,6 +4362,11 @@ input RegistrationUpdateWithWhereUniqueWithoutCenterExamSessionInput {
 input RegistrationUpdateWithWhereUniqueWithoutCenterExamSessionSpecialtyInput {
   where: RegistrationWhereUniqueInput!
   data: RegistrationUpdateWithoutCenterExamSessionSpecialtyDataInput!
+}
+
+input RegistrationUpsertWithoutAttendanceInput {
+  update: RegistrationUpdateWithoutAttendanceDataInput!
+  create: RegistrationCreateWithoutAttendanceInput!
 }
 
 input RegistrationUpsertWithoutOptionalSubjectsInput {
@@ -4130,6 +4446,9 @@ input RegistrationWhereInput {
   scores_every: ScoreWhereInput
   scores_some: ScoreWhereInput
   scores_none: ScoreWhereInput
+  attendance_every: AttendanceWhereInput
+  attendance_some: AttendanceWhereInput
+  attendance_none: AttendanceWhereInput
   aptitude: String
   aptitude_not: String
   aptitude_in: [String!]
@@ -4145,6 +4464,34 @@ input RegistrationWhereInput {
   aptitude_ends_with: String
   aptitude_not_ends_with: String
   specialty: SpecialtyWhereInput
+  EPF1: String
+  EPF1_not: String
+  EPF1_in: [String!]
+  EPF1_not_in: [String!]
+  EPF1_lt: String
+  EPF1_lte: String
+  EPF1_gt: String
+  EPF1_gte: String
+  EPF1_contains: String
+  EPF1_not_contains: String
+  EPF1_starts_with: String
+  EPF1_not_starts_with: String
+  EPF1_ends_with: String
+  EPF1_not_ends_with: String
+  EPF2: String
+  EPF2_not: String
+  EPF2_in: [String!]
+  EPF2_not_in: [String!]
+  EPF2_lt: String
+  EPF2_lte: String
+  EPF2_gt: String
+  EPF2_gte: String
+  EPF2_contains: String
+  EPF2_not_contains: String
+  EPF2_starts_with: String
+  EPF2_not_starts_with: String
+  EPF2_ends_with: String
+  EPF2_not_ends_with: String
   optionalSubjects_every: RegisterOptionalSubjectWhereInput
   optionalSubjects_some: RegisterOptionalSubjectWhereInput
   optionalSubjects_none: RegisterOptionalSubjectWhereInput
@@ -5272,7 +5619,7 @@ type Subject {
   subjectType: String!
   subjectGroup: String!
   educType: EducationType!
-  specialty(where: SubjectSpecialtyWhereInput, orderBy: SubjectSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectSpecialty!]
+  subjectSpecialty(where: SubjectSpecialtyWhereInput, orderBy: SubjectSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SubjectSpecialty!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -5289,7 +5636,7 @@ input SubjectCreateInput {
   subjectType: String!
   subjectGroup: String!
   educType: EducationTypeCreateOneWithoutSubjectInput!
-  specialty: SubjectSpecialtyCreateManyWithoutSubjectInput
+  subjectSpecialty: SubjectSpecialtyCreateManyWithoutSubjectInput
 }
 
 input SubjectCreateManyWithoutEducTypeInput {
@@ -5302,8 +5649,8 @@ input SubjectCreateOneInput {
   connect: SubjectWhereUniqueInput
 }
 
-input SubjectCreateOneWithoutSpecialtyInput {
-  create: SubjectCreateWithoutSpecialtyInput
+input SubjectCreateOneWithoutSubjectSpecialtyInput {
+  create: SubjectCreateWithoutSubjectSpecialtyInput
   connect: SubjectWhereUniqueInput
 }
 
@@ -5312,10 +5659,10 @@ input SubjectCreateWithoutEducTypeInput {
   subjectCode: String!
   subjectType: String!
   subjectGroup: String!
-  specialty: SubjectSpecialtyCreateManyWithoutSubjectInput
+  subjectSpecialty: SubjectSpecialtyCreateManyWithoutSubjectInput
 }
 
-input SubjectCreateWithoutSpecialtyInput {
+input SubjectCreateWithoutSubjectSpecialtyInput {
   subjectName: String!
   subjectCode: String!
   subjectType: String!
@@ -5372,7 +5719,7 @@ type SubjectSpecialtyConnection {
 
 input SubjectSpecialtyCreateInput {
   specialty: SpecialtyCreateOneWithoutSubjectSpecialtyInput!
-  subject: SubjectCreateOneWithoutSpecialtyInput!
+  subject: SubjectCreateOneWithoutSubjectSpecialtyInput!
   coeff: Int!
 }
 
@@ -5392,7 +5739,7 @@ input SubjectSpecialtyCreateOneInput {
 }
 
 input SubjectSpecialtyCreateWithoutSpecialtyInput {
-  subject: SubjectCreateOneWithoutSpecialtyInput!
+  subject: SubjectCreateOneWithoutSubjectSpecialtyInput!
   coeff: Int!
 }
 
@@ -5444,13 +5791,13 @@ input SubjectSpecialtySubscriptionWhereInput {
 
 input SubjectSpecialtyUpdateDataInput {
   specialty: SpecialtyUpdateOneRequiredWithoutSubjectSpecialtyInput
-  subject: SubjectUpdateOneRequiredWithoutSpecialtyInput
+  subject: SubjectUpdateOneRequiredWithoutSubjectSpecialtyInput
   coeff: Int
 }
 
 input SubjectSpecialtyUpdateInput {
   specialty: SpecialtyUpdateOneRequiredWithoutSubjectSpecialtyInput
-  subject: SubjectUpdateOneRequiredWithoutSpecialtyInput
+  subject: SubjectUpdateOneRequiredWithoutSubjectSpecialtyInput
   coeff: Int
 }
 
@@ -5480,7 +5827,7 @@ input SubjectSpecialtyUpdateOneRequiredInput {
 }
 
 input SubjectSpecialtyUpdateWithoutSpecialtyDataInput {
-  subject: SubjectUpdateOneRequiredWithoutSpecialtyInput
+  subject: SubjectUpdateOneRequiredWithoutSubjectSpecialtyInput
   coeff: Int
 }
 
@@ -5590,7 +5937,7 @@ input SubjectUpdateDataInput {
   subjectType: String
   subjectGroup: String
   educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
-  specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
+  subjectSpecialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
 
 input SubjectUpdateInput {
@@ -5599,7 +5946,7 @@ input SubjectUpdateInput {
   subjectType: String
   subjectGroup: String
   educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
-  specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
+  subjectSpecialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
 
 input SubjectUpdateManyWithoutEducTypeInput {
@@ -5618,10 +5965,10 @@ input SubjectUpdateOneRequiredInput {
   connect: SubjectWhereUniqueInput
 }
 
-input SubjectUpdateOneRequiredWithoutSpecialtyInput {
-  create: SubjectCreateWithoutSpecialtyInput
-  update: SubjectUpdateWithoutSpecialtyDataInput
-  upsert: SubjectUpsertWithoutSpecialtyInput
+input SubjectUpdateOneRequiredWithoutSubjectSpecialtyInput {
+  create: SubjectCreateWithoutSubjectSpecialtyInput
+  update: SubjectUpdateWithoutSubjectSpecialtyDataInput
+  upsert: SubjectUpsertWithoutSubjectSpecialtyInput
   connect: SubjectWhereUniqueInput
 }
 
@@ -5630,10 +5977,10 @@ input SubjectUpdateWithoutEducTypeDataInput {
   subjectCode: String
   subjectType: String
   subjectGroup: String
-  specialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
+  subjectSpecialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
 }
 
-input SubjectUpdateWithoutSpecialtyDataInput {
+input SubjectUpdateWithoutSubjectSpecialtyDataInput {
   subjectName: String
   subjectCode: String
   subjectType: String
@@ -5651,9 +5998,9 @@ input SubjectUpsertNestedInput {
   create: SubjectCreateInput!
 }
 
-input SubjectUpsertWithoutSpecialtyInput {
-  update: SubjectUpdateWithoutSpecialtyDataInput!
-  create: SubjectCreateWithoutSpecialtyInput!
+input SubjectUpsertWithoutSubjectSpecialtyInput {
+  update: SubjectUpdateWithoutSubjectSpecialtyDataInput!
+  create: SubjectCreateWithoutSubjectSpecialtyInput!
 }
 
 input SubjectUpsertWithWhereUniqueWithoutEducTypeInput {
@@ -5734,9 +6081,9 @@ input SubjectWhereInput {
   subjectGroup_ends_with: String
   subjectGroup_not_ends_with: String
   educType: EducationTypeWhereInput
-  specialty_every: SubjectSpecialtyWhereInput
-  specialty_some: SubjectSpecialtyWhereInput
-  specialty_none: SubjectSpecialtyWhereInput
+  subjectSpecialty_every: SubjectSpecialtyWhereInput
+  subjectSpecialty_some: SubjectSpecialtyWhereInput
+  subjectSpecialty_none: SubjectSpecialtyWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -5765,6 +6112,7 @@ input SubjectWhereUniqueInput {
 }
 
 type Subscription {
+  attendance(where: AttendanceSubscriptionWhereInput): AttendanceSubscriptionPayload
   candidate(where: CandidateSubscriptionWhereInput): CandidateSubscriptionPayload
   center(where: CenterSubscriptionWhereInput): CenterSubscriptionPayload
   centerExamSession(where: CenterExamSessionSubscriptionWhereInput): CenterExamSessionSubscriptionPayload

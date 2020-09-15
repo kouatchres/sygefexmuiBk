@@ -117,6 +117,48 @@ const Mutation = {
     }
   },
 
+  async createAttendance(
+    parents,
+    args,
+    { prismaDB, request: { userId, user } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      console.log(args);
+      hasPermissions(user, ["USER", "ADMIN", "CENTER_ADMIN"]);
+      const newAttendance = { ...args };
+      // show the region name from the new regions array because will not have to update the id
+
+      const { subjectSpecialty, candExamSecretCode, ...others } = newAttendance;
+
+      const attendance = await prismaDB.mutation.createAttendance(
+        {
+          data: {
+            user: {
+              connect: { id: userId },
+            },
+            registration: {
+              connect: { candExamSecretCode },
+            },
+            subjectSpecialty: {
+              connect: { id: subjectSpecialty.id },
+            },
+            candExamSecretCode,
+            ...others,
+          },
+        },
+        info
+      );
+
+      return attendance;
+    } catch (error) {
+      throw new Error(`Attendance Errors, ${error}`);
+    }
+  },
+
   async createCandidate(
     parents,
     args,
@@ -830,10 +872,11 @@ const Mutation = {
         centerExamSession,
         centerExamSessionSpecialty,
         candExamSecretCode,
-        optionalSubjects,
         candidate,
         aptitude,
         specialty,
+        EPF1,
+        EPF2,
         candRegistrationNumber,
       } = newRegistartionInfos;
 
@@ -878,6 +921,8 @@ const Mutation = {
             candExamSecretCode,
             candExamSession,
             aptitude,
+            EPF1,
+            EPF2,
             candRegistrationNumber: newCandRegistrationNumber,
             centerExamSessionSpecialty: {
               connect: {
@@ -897,9 +942,6 @@ const Mutation = {
             candidate: {
               connect: {
                 candCode: candidate.candCode,
-              },
-              optionalSubjects: {
-                create: optionalSubjects,
               },
             },
           },
