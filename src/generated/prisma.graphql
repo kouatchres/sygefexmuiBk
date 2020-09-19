@@ -58,10 +58,6 @@ type AggregateRegion {
   count: Int!
 }
 
-type AggregateRegisterOptionalSubject {
-  count: Int!
-}
-
 type AggregateRegistration {
   count: Int!
 }
@@ -110,6 +106,7 @@ type Attendance {
   collected: String!
   handin: String!
   user: User!
+  centerExamSessionSpecialty: CenterExamSessionSpecialty!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -127,11 +124,26 @@ input AttendanceCreateInput {
   collected: String!
   handin: String!
   user: UserCreateOneInput!
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutAttendanceInput!
+}
+
+input AttendanceCreateManyWithoutCenterExamSessionSpecialtyInput {
+  create: [AttendanceCreateWithoutCenterExamSessionSpecialtyInput!]
+  connect: [AttendanceWhereUniqueInput!]
 }
 
 input AttendanceCreateManyWithoutRegistrationInput {
   create: [AttendanceCreateWithoutRegistrationInput!]
   connect: [AttendanceWhereUniqueInput!]
+}
+
+input AttendanceCreateWithoutCenterExamSessionSpecialtyInput {
+  subjectSpecialty: SubjectSpecialtyCreateOneInput!
+  registration: RegistrationCreateOneWithoutAttendanceInput!
+  candExamSecretCode: String!
+  collected: String!
+  handin: String!
+  user: UserCreateOneInput!
 }
 
 input AttendanceCreateWithoutRegistrationInput {
@@ -140,6 +152,7 @@ input AttendanceCreateWithoutRegistrationInput {
   collected: String!
   handin: String!
   user: UserCreateOneInput!
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutAttendanceInput!
 }
 
 type AttendanceEdge {
@@ -196,6 +209,16 @@ input AttendanceUpdateInput {
   collected: String
   handin: String
   user: UserUpdateOneRequiredInput
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutAttendanceInput
+}
+
+input AttendanceUpdateManyWithoutCenterExamSessionSpecialtyInput {
+  create: [AttendanceCreateWithoutCenterExamSessionSpecialtyInput!]
+  delete: [AttendanceWhereUniqueInput!]
+  connect: [AttendanceWhereUniqueInput!]
+  disconnect: [AttendanceWhereUniqueInput!]
+  update: [AttendanceUpdateWithWhereUniqueWithoutCenterExamSessionSpecialtyInput!]
+  upsert: [AttendanceUpsertWithWhereUniqueWithoutCenterExamSessionSpecialtyInput!]
 }
 
 input AttendanceUpdateManyWithoutRegistrationInput {
@@ -207,17 +230,38 @@ input AttendanceUpdateManyWithoutRegistrationInput {
   upsert: [AttendanceUpsertWithWhereUniqueWithoutRegistrationInput!]
 }
 
-input AttendanceUpdateWithoutRegistrationDataInput {
+input AttendanceUpdateWithoutCenterExamSessionSpecialtyDataInput {
   subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
+  registration: RegistrationUpdateOneRequiredWithoutAttendanceInput
   candExamSecretCode: String
   collected: String
   handin: String
   user: UserUpdateOneRequiredInput
 }
 
+input AttendanceUpdateWithoutRegistrationDataInput {
+  subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
+  candExamSecretCode: String
+  collected: String
+  handin: String
+  user: UserUpdateOneRequiredInput
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutAttendanceInput
+}
+
+input AttendanceUpdateWithWhereUniqueWithoutCenterExamSessionSpecialtyInput {
+  where: AttendanceWhereUniqueInput!
+  data: AttendanceUpdateWithoutCenterExamSessionSpecialtyDataInput!
+}
+
 input AttendanceUpdateWithWhereUniqueWithoutRegistrationInput {
   where: AttendanceWhereUniqueInput!
   data: AttendanceUpdateWithoutRegistrationDataInput!
+}
+
+input AttendanceUpsertWithWhereUniqueWithoutCenterExamSessionSpecialtyInput {
+  where: AttendanceWhereUniqueInput!
+  update: AttendanceUpdateWithoutCenterExamSessionSpecialtyDataInput!
+  create: AttendanceCreateWithoutCenterExamSessionSpecialtyInput!
 }
 
 input AttendanceUpsertWithWhereUniqueWithoutRegistrationInput {
@@ -286,6 +330,7 @@ input AttendanceWhereInput {
   handin_ends_with: String
   handin_not_ends_with: String
   user: UserWhereInput
+  centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -1161,6 +1206,7 @@ type CenterExamSessionSpecialty {
   createdAt: DateTime!
   updatedAt: DateTime!
   registration(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Registration!]
+  attendance(where: AttendanceWhereInput, orderBy: AttendanceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Attendance!]
 }
 
 type CenterExamSessionSpecialtyConnection {
@@ -1173,6 +1219,7 @@ input CenterExamSessionSpecialtyCreateInput {
   centerExamSession: CenterExamSessionCreateOneWithoutCenterExamSessionSpecialtyInput!
   specialty: SpecialtyCreateOneWithoutCenterExamSessionSpecialtyInput!
   registration: RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceCreateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput {
@@ -1185,24 +1232,38 @@ input CenterExamSessionSpecialtyCreateManyWithoutSpecialtyInput {
   connect: [CenterExamSessionSpecialtyWhereUniqueInput!]
 }
 
+input CenterExamSessionSpecialtyCreateOneWithoutAttendanceInput {
+  create: CenterExamSessionSpecialtyCreateWithoutAttendanceInput
+  connect: CenterExamSessionSpecialtyWhereUniqueInput
+}
+
 input CenterExamSessionSpecialtyCreateOneWithoutRegistrationInput {
   create: CenterExamSessionSpecialtyCreateWithoutRegistrationInput
   connect: CenterExamSessionSpecialtyWhereUniqueInput
 }
 
+input CenterExamSessionSpecialtyCreateWithoutAttendanceInput {
+  centerExamSession: CenterExamSessionCreateOneWithoutCenterExamSessionSpecialtyInput!
+  specialty: SpecialtyCreateOneWithoutCenterExamSessionSpecialtyInput!
+  registration: RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput
+}
+
 input CenterExamSessionSpecialtyCreateWithoutCenterExamSessionInput {
   specialty: SpecialtyCreateOneWithoutCenterExamSessionSpecialtyInput!
   registration: RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceCreateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyCreateWithoutRegistrationInput {
   centerExamSession: CenterExamSessionCreateOneWithoutCenterExamSessionSpecialtyInput!
   specialty: SpecialtyCreateOneWithoutCenterExamSessionSpecialtyInput!
+  attendance: AttendanceCreateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyCreateWithoutSpecialtyInput {
   centerExamSession: CenterExamSessionCreateOneWithoutCenterExamSessionSpecialtyInput!
   registration: RegistrationCreateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceCreateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 type CenterExamSessionSpecialtyEdge {
@@ -1247,6 +1308,7 @@ input CenterExamSessionSpecialtyUpdateInput {
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
   specialty: SpecialtyUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
   registration: RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceUpdateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput {
@@ -1267,6 +1329,13 @@ input CenterExamSessionSpecialtyUpdateManyWithoutSpecialtyInput {
   upsert: [CenterExamSessionSpecialtyUpsertWithWhereUniqueWithoutSpecialtyInput!]
 }
 
+input CenterExamSessionSpecialtyUpdateOneRequiredWithoutAttendanceInput {
+  create: CenterExamSessionSpecialtyCreateWithoutAttendanceInput
+  update: CenterExamSessionSpecialtyUpdateWithoutAttendanceDataInput
+  upsert: CenterExamSessionSpecialtyUpsertWithoutAttendanceInput
+  connect: CenterExamSessionSpecialtyWhereUniqueInput
+}
+
 input CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput {
   create: CenterExamSessionSpecialtyCreateWithoutRegistrationInput
   update: CenterExamSessionSpecialtyUpdateWithoutRegistrationDataInput
@@ -1274,19 +1343,28 @@ input CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput {
   connect: CenterExamSessionSpecialtyWhereUniqueInput
 }
 
+input CenterExamSessionSpecialtyUpdateWithoutAttendanceDataInput {
+  centerExamSession: CenterExamSessionUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
+  specialty: SpecialtyUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
+  registration: RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput
+}
+
 input CenterExamSessionSpecialtyUpdateWithoutCenterExamSessionDataInput {
   specialty: SpecialtyUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
   registration: RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceUpdateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyUpdateWithoutRegistrationDataInput {
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
   specialty: SpecialtyUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceUpdateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyUpdateWithoutSpecialtyDataInput {
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutCenterExamSessionSpecialtyInput
   registration: RegistrationUpdateManyWithoutCenterExamSessionSpecialtyInput
+  attendance: AttendanceUpdateManyWithoutCenterExamSessionSpecialtyInput
 }
 
 input CenterExamSessionSpecialtyUpdateWithWhereUniqueWithoutCenterExamSessionInput {
@@ -1297,6 +1375,11 @@ input CenterExamSessionSpecialtyUpdateWithWhereUniqueWithoutCenterExamSessionInp
 input CenterExamSessionSpecialtyUpdateWithWhereUniqueWithoutSpecialtyInput {
   where: CenterExamSessionSpecialtyWhereUniqueInput!
   data: CenterExamSessionSpecialtyUpdateWithoutSpecialtyDataInput!
+}
+
+input CenterExamSessionSpecialtyUpsertWithoutAttendanceInput {
+  update: CenterExamSessionSpecialtyUpdateWithoutAttendanceDataInput!
+  create: CenterExamSessionSpecialtyCreateWithoutAttendanceInput!
 }
 
 input CenterExamSessionSpecialtyUpsertWithoutRegistrationInput {
@@ -1352,6 +1435,9 @@ input CenterExamSessionSpecialtyWhereInput {
   registration_every: RegistrationWhereInput
   registration_some: RegistrationWhereInput
   registration_none: RegistrationWhereInput
+  attendance_every: AttendanceWhereInput
+  attendance_some: AttendanceWhereInput
+  attendance_none: AttendanceWhereInput
   AND: [CenterExamSessionSpecialtyWhereInput!]
   OR: [CenterExamSessionSpecialtyWhereInput!]
   NOT: [CenterExamSessionSpecialtyWhereInput!]
@@ -2972,12 +3058,6 @@ type Mutation {
   upsertRegion(where: RegionWhereUniqueInput!, create: RegionCreateInput!, update: RegionUpdateInput!): Region!
   deleteRegion(where: RegionWhereUniqueInput!): Region
   deleteManyRegions(where: RegionWhereInput): BatchPayload!
-  createRegisterOptionalSubject(data: RegisterOptionalSubjectCreateInput!): RegisterOptionalSubject!
-  updateRegisterOptionalSubject(data: RegisterOptionalSubjectUpdateInput!, where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
-  updateManyRegisterOptionalSubjects(data: RegisterOptionalSubjectUpdateInput!, where: RegisterOptionalSubjectWhereInput): BatchPayload!
-  upsertRegisterOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!, create: RegisterOptionalSubjectCreateInput!, update: RegisterOptionalSubjectUpdateInput!): RegisterOptionalSubject!
-  deleteRegisterOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
-  deleteManyRegisterOptionalSubjects(where: RegisterOptionalSubjectWhereInput): BatchPayload!
   createRegistration(data: RegistrationCreateInput!): Registration!
   updateRegistration(data: RegistrationUpdateInput!, where: RegistrationWhereUniqueInput!): Registration
   updateManyRegistrations(data: RegistrationUpdateInput!, where: RegistrationWhereInput): BatchPayload!
@@ -3481,9 +3561,6 @@ type Query {
   region(where: RegionWhereUniqueInput!): Region
   regions(where: RegionWhereInput, orderBy: RegionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Region]!
   regionsConnection(where: RegionWhereInput, orderBy: RegionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegionConnection!
-  registerOptionalSubject(where: RegisterOptionalSubjectWhereUniqueInput!): RegisterOptionalSubject
-  registerOptionalSubjects(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RegisterOptionalSubject]!
-  registerOptionalSubjectsConnection(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegisterOptionalSubjectConnection!
   registration(where: RegistrationWhereUniqueInput!): Registration
   registrations(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Registration]!
   registrationsConnection(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RegistrationConnection!
@@ -3823,143 +3900,6 @@ input RegionWhereUniqueInput {
   regCode: String
 }
 
-type RegisterOptionalSubject {
-  id: ID!
-  registration: Registration!
-  Subject: Subject!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type RegisterOptionalSubjectConnection {
-  pageInfo: PageInfo!
-  edges: [RegisterOptionalSubjectEdge]!
-  aggregate: AggregateRegisterOptionalSubject!
-}
-
-input RegisterOptionalSubjectCreateInput {
-  registration: RegistrationCreateOneWithoutOptionalSubjectsInput!
-  Subject: SubjectCreateOneInput!
-}
-
-input RegisterOptionalSubjectCreateManyWithoutRegistrationInput {
-  create: [RegisterOptionalSubjectCreateWithoutRegistrationInput!]
-  connect: [RegisterOptionalSubjectWhereUniqueInput!]
-}
-
-input RegisterOptionalSubjectCreateWithoutRegistrationInput {
-  Subject: SubjectCreateOneInput!
-}
-
-type RegisterOptionalSubjectEdge {
-  node: RegisterOptionalSubject!
-  cursor: String!
-}
-
-enum RegisterOptionalSubjectOrderByInput {
-  id_ASC
-  id_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type RegisterOptionalSubjectPreviousValues {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type RegisterOptionalSubjectSubscriptionPayload {
-  mutation: MutationType!
-  node: RegisterOptionalSubject
-  updatedFields: [String!]
-  previousValues: RegisterOptionalSubjectPreviousValues
-}
-
-input RegisterOptionalSubjectSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: RegisterOptionalSubjectWhereInput
-  AND: [RegisterOptionalSubjectSubscriptionWhereInput!]
-  OR: [RegisterOptionalSubjectSubscriptionWhereInput!]
-  NOT: [RegisterOptionalSubjectSubscriptionWhereInput!]
-}
-
-input RegisterOptionalSubjectUpdateInput {
-  registration: RegistrationUpdateOneRequiredWithoutOptionalSubjectsInput
-  Subject: SubjectUpdateOneRequiredInput
-}
-
-input RegisterOptionalSubjectUpdateManyWithoutRegistrationInput {
-  create: [RegisterOptionalSubjectCreateWithoutRegistrationInput!]
-  delete: [RegisterOptionalSubjectWhereUniqueInput!]
-  connect: [RegisterOptionalSubjectWhereUniqueInput!]
-  disconnect: [RegisterOptionalSubjectWhereUniqueInput!]
-  update: [RegisterOptionalSubjectUpdateWithWhereUniqueWithoutRegistrationInput!]
-  upsert: [RegisterOptionalSubjectUpsertWithWhereUniqueWithoutRegistrationInput!]
-}
-
-input RegisterOptionalSubjectUpdateWithoutRegistrationDataInput {
-  Subject: SubjectUpdateOneRequiredInput
-}
-
-input RegisterOptionalSubjectUpdateWithWhereUniqueWithoutRegistrationInput {
-  where: RegisterOptionalSubjectWhereUniqueInput!
-  data: RegisterOptionalSubjectUpdateWithoutRegistrationDataInput!
-}
-
-input RegisterOptionalSubjectUpsertWithWhereUniqueWithoutRegistrationInput {
-  where: RegisterOptionalSubjectWhereUniqueInput!
-  update: RegisterOptionalSubjectUpdateWithoutRegistrationDataInput!
-  create: RegisterOptionalSubjectCreateWithoutRegistrationInput!
-}
-
-input RegisterOptionalSubjectWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  registration: RegistrationWhereInput
-  Subject: SubjectWhereInput
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  AND: [RegisterOptionalSubjectWhereInput!]
-  OR: [RegisterOptionalSubjectWhereInput!]
-  NOT: [RegisterOptionalSubjectWhereInput!]
-}
-
-input RegisterOptionalSubjectWhereUniqueInput {
-  id: ID
-}
-
 type Registration {
   id: ID!
   candidate: Candidate!
@@ -3973,7 +3913,6 @@ type Registration {
   specialty: Specialty!
   EPF1: String
   EPF2: String
-  optionalSubjects(where: RegisterOptionalSubjectWhereInput, orderBy: RegisterOptionalSubjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RegisterOptionalSubject!]
   candRegistrationNumber: String!
   serial: Int
   createdAt: DateTime!
@@ -3998,7 +3937,6 @@ input RegistrationCreateInput {
   specialty: SpecialtyCreateOneInput!
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4023,11 +3961,6 @@ input RegistrationCreateOneWithoutAttendanceInput {
   connect: RegistrationWhereUniqueInput
 }
 
-input RegistrationCreateOneWithoutOptionalSubjectsInput {
-  create: RegistrationCreateWithoutOptionalSubjectsInput
-  connect: RegistrationWhereUniqueInput
-}
-
 input RegistrationCreateOneWithoutScoresInput {
   create: RegistrationCreateWithoutScoresInput
   connect: RegistrationWhereUniqueInput
@@ -4044,7 +3977,6 @@ input RegistrationCreateWithoutAttendanceInput {
   specialty: SpecialtyCreateOneInput!
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4060,7 +3992,6 @@ input RegistrationCreateWithoutCandidateInput {
   specialty: SpecialtyCreateOneInput!
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4076,30 +4007,12 @@ input RegistrationCreateWithoutCenterExamSessionInput {
   specialty: SpecialtyCreateOneInput!
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
 
 input RegistrationCreateWithoutCenterExamSessionSpecialtyInput {
   candidate: CandidateCreateOneWithoutRegistrationInput!
-  centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
-  candExamSecretCode: String!
-  candExamSession: String!
-  scores: ScoreCreateManyWithoutRegistrationInput
-  attendance: AttendanceCreateManyWithoutRegistrationInput
-  aptitude: String!
-  specialty: SpecialtyCreateOneInput!
-  EPF1: String
-  EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
-  candRegistrationNumber: String!
-  serial: Int
-}
-
-input RegistrationCreateWithoutOptionalSubjectsInput {
-  candidate: CandidateCreateOneWithoutRegistrationInput!
-  centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutRegistrationInput!
   centerExamSession: CenterExamSessionCreateOneWithoutRegistrationInput!
   candExamSecretCode: String!
   candExamSession: String!
@@ -4124,7 +4037,6 @@ input RegistrationCreateWithoutScoresInput {
   specialty: SpecialtyCreateOneInput!
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectCreateManyWithoutRegistrationInput
   candRegistrationNumber: String!
   serial: Int
 }
@@ -4200,7 +4112,6 @@ input RegistrationUpdateInput {
   specialty: SpecialtyUpdateOneRequiredInput
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4239,13 +4150,6 @@ input RegistrationUpdateOneRequiredWithoutAttendanceInput {
   connect: RegistrationWhereUniqueInput
 }
 
-input RegistrationUpdateOneRequiredWithoutOptionalSubjectsInput {
-  create: RegistrationCreateWithoutOptionalSubjectsInput
-  update: RegistrationUpdateWithoutOptionalSubjectsDataInput
-  upsert: RegistrationUpsertWithoutOptionalSubjectsInput
-  connect: RegistrationWhereUniqueInput
-}
-
 input RegistrationUpdateOneRequiredWithoutScoresInput {
   create: RegistrationCreateWithoutScoresInput
   update: RegistrationUpdateWithoutScoresDataInput
@@ -4264,7 +4168,6 @@ input RegistrationUpdateWithoutAttendanceDataInput {
   specialty: SpecialtyUpdateOneRequiredInput
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4280,7 +4183,6 @@ input RegistrationUpdateWithoutCandidateDataInput {
   specialty: SpecialtyUpdateOneRequiredInput
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4296,30 +4198,12 @@ input RegistrationUpdateWithoutCenterExamSessionDataInput {
   specialty: SpecialtyUpdateOneRequiredInput
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
 
 input RegistrationUpdateWithoutCenterExamSessionSpecialtyDataInput {
   candidate: CandidateUpdateOneRequiredWithoutRegistrationInput
-  centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
-  candExamSecretCode: String
-  candExamSession: String
-  scores: ScoreUpdateManyWithoutRegistrationInput
-  attendance: AttendanceUpdateManyWithoutRegistrationInput
-  aptitude: String
-  specialty: SpecialtyUpdateOneRequiredInput
-  EPF1: String
-  EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
-  candRegistrationNumber: String
-  serial: Int
-}
-
-input RegistrationUpdateWithoutOptionalSubjectsDataInput {
-  candidate: CandidateUpdateOneRequiredWithoutRegistrationInput
-  centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutRegistrationInput
   centerExamSession: CenterExamSessionUpdateOneRequiredWithoutRegistrationInput
   candExamSecretCode: String
   candExamSession: String
@@ -4344,7 +4228,6 @@ input RegistrationUpdateWithoutScoresDataInput {
   specialty: SpecialtyUpdateOneRequiredInput
   EPF1: String
   EPF2: String
-  optionalSubjects: RegisterOptionalSubjectUpdateManyWithoutRegistrationInput
   candRegistrationNumber: String
   serial: Int
 }
@@ -4367,11 +4250,6 @@ input RegistrationUpdateWithWhereUniqueWithoutCenterExamSessionSpecialtyInput {
 input RegistrationUpsertWithoutAttendanceInput {
   update: RegistrationUpdateWithoutAttendanceDataInput!
   create: RegistrationCreateWithoutAttendanceInput!
-}
-
-input RegistrationUpsertWithoutOptionalSubjectsInput {
-  update: RegistrationUpdateWithoutOptionalSubjectsDataInput!
-  create: RegistrationCreateWithoutOptionalSubjectsInput!
 }
 
 input RegistrationUpsertWithoutScoresInput {
@@ -4492,9 +4370,6 @@ input RegistrationWhereInput {
   EPF2_not_starts_with: String
   EPF2_ends_with: String
   EPF2_not_ends_with: String
-  optionalSubjects_every: RegisterOptionalSubjectWhereInput
-  optionalSubjects_some: RegisterOptionalSubjectWhereInput
-  optionalSubjects_none: RegisterOptionalSubjectWhereInput
   candRegistrationNumber: String
   candRegistrationNumber_not: String
   candRegistrationNumber_in: [String!]
@@ -5644,11 +5519,6 @@ input SubjectCreateManyWithoutEducTypeInput {
   connect: [SubjectWhereUniqueInput!]
 }
 
-input SubjectCreateOneInput {
-  create: SubjectCreateInput
-  connect: SubjectWhereUniqueInput
-}
-
 input SubjectCreateOneWithoutSubjectSpecialtyInput {
   create: SubjectCreateWithoutSubjectSpecialtyInput
   connect: SubjectWhereUniqueInput
@@ -5931,15 +5801,6 @@ input SubjectSubscriptionWhereInput {
   NOT: [SubjectSubscriptionWhereInput!]
 }
 
-input SubjectUpdateDataInput {
-  subjectName: String
-  subjectCode: String
-  subjectType: String
-  subjectGroup: String
-  educType: EducationTypeUpdateOneRequiredWithoutSubjectInput
-  subjectSpecialty: SubjectSpecialtyUpdateManyWithoutSubjectInput
-}
-
 input SubjectUpdateInput {
   subjectName: String
   subjectCode: String
@@ -5956,13 +5817,6 @@ input SubjectUpdateManyWithoutEducTypeInput {
   disconnect: [SubjectWhereUniqueInput!]
   update: [SubjectUpdateWithWhereUniqueWithoutEducTypeInput!]
   upsert: [SubjectUpsertWithWhereUniqueWithoutEducTypeInput!]
-}
-
-input SubjectUpdateOneRequiredInput {
-  create: SubjectCreateInput
-  update: SubjectUpdateDataInput
-  upsert: SubjectUpsertNestedInput
-  connect: SubjectWhereUniqueInput
 }
 
 input SubjectUpdateOneRequiredWithoutSubjectSpecialtyInput {
@@ -5991,11 +5845,6 @@ input SubjectUpdateWithoutSubjectSpecialtyDataInput {
 input SubjectUpdateWithWhereUniqueWithoutEducTypeInput {
   where: SubjectWhereUniqueInput!
   data: SubjectUpdateWithoutEducTypeDataInput!
-}
-
-input SubjectUpsertNestedInput {
-  update: SubjectUpdateDataInput!
-  create: SubjectCreateInput!
 }
 
 input SubjectUpsertWithoutSubjectSpecialtyInput {
@@ -6127,7 +5976,6 @@ type Subscription {
   phaseRank(where: PhaseRankSubscriptionWhereInput): PhaseRankSubscriptionPayload
   rank(where: RankSubscriptionWhereInput): RankSubscriptionPayload
   region(where: RegionSubscriptionWhereInput): RegionSubscriptionPayload
-  registerOptionalSubject(where: RegisterOptionalSubjectSubscriptionWhereInput): RegisterOptionalSubjectSubscriptionPayload
   registration(where: RegistrationSubscriptionWhereInput): RegistrationSubscriptionPayload
   report(where: ReportSubscriptionWhereInput): ReportSubscriptionPayload
   score(where: ScoreSubscriptionWhereInput): ScoreSubscriptionPayload

@@ -239,6 +239,7 @@ type Mutation {
 
 	createAttendance(
 	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
+	centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereUniqueInput!
 	candExamSecretCode: String!
 	collected: String!
 	handin: String!

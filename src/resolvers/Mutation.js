@@ -129,11 +129,26 @@ const Mutation = {
       }
       console.log(args);
       hasPermissions(user, ["USER", "ADMIN", "CENTER_ADMIN"]);
+
       const newAttendance = { ...args };
-      // show the region name from the new regions array because will not have to update the id
+      // todo has the student already been checked for subject attendance
+      const { subjectSpecialty, candExamSecretCode,centerExamSessionSpecialty, ...others } = newAttendance;
+      const [verifyAttendance] = await prismaDB.query.attendances(
+        {
+          where: {
+            subjectSpecialty,
+            candExamSecretCode,
+          },
+        },
+        `{ id }`
+      );
+      console.log(verifyAttendance);
 
-      const { subjectSpecialty, candExamSecretCode, ...others } = newAttendance;
-
+      if (verifyAttendance) {
+        throw new Error(
+          "Candidat(e) déjà controllé(e) pour remise des copies et collecte des matériels"
+        );
+      }
       const attendance = await prismaDB.mutation.createAttendance(
         {
           data: {
@@ -145,6 +160,9 @@ const Mutation = {
             },
             subjectSpecialty: {
               connect: { id: subjectSpecialty.id },
+            },
+            centerExamSessionSpecialty: {
+              connect: { id: centerExamSessionSpecialty.id },
             },
             candExamSecretCode,
             ...others,
@@ -599,9 +617,7 @@ const Mutation = {
 
       const { specialty, subject, ...others } = newSubjSpec;
 
-      const [
-        subjectSpecialtyRegistered,
-      ] = await prismaDB.query.subjectSpecialties({
+      const subjectSpecialtyRegistered= await prismaDB.query.subjectSpecialties({
         where: {
           subject: {
             id: subject.id,
@@ -611,7 +627,7 @@ const Mutation = {
           },
         },
       });
-      if (subjectSpecialtyRegistered) {
+      if (subjectSpecialtyRegistered.length>0) {
         throw new Error("Cette Matière est déjà inscrite à cette specialité.");
       }
 
