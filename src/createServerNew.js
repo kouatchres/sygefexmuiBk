@@ -2,34 +2,18 @@ const { GraphQLServer } = require("graphql-yoga");
 const Mutation = require("./resolvers/Mutation");
 const Query = require("./resolvers/Query");
 const prismaDB = require("./prismaDB");
-const { ApolloServer, makeExecutableSchema } = require("apollo-server");
-const { applyMiddleware } = require("graphql-middleware");
-
+const {ApolloSever}= require("apollo-server-express")
+const express =require("express")
 //create graphql yoga server
-const createServer = () => {
-  const schema = applyMiddleware(
-    makeExecutableSchema({
-      typeDefs: "src/schema.graphql",
-      resolvers: {
-        Mutation,
-        Query,
-      },
-    }),
-    permissions
-  );
 
-  // const server = new ApolloServer({
-  //   schema,
-  //   context: ...,
-  // });
-
+const app = express()
+const  createServer=() =>{
   return new GraphQLServer({
     typeDefs: "src/schema.graphql",
     resolvers: {
       Mutation,
       Query,
     },
-    schema,
     resolverValidationOptions: {
       requireResolversForResolveType: false,
     },
@@ -39,6 +23,9 @@ const createServer = () => {
       prismaDB,
     }),
   });
-};
+
+  
+}
+GraphQLServer.applyMiddleware({app})
 
 module.exports = createServer;

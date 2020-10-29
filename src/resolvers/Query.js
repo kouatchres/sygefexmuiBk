@@ -21,7 +21,7 @@ const Query = {
       });
       return allCandidates;
     } catch (error) {
-      throw new Error(`Candidates Errors, ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async candidate(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -48,7 +48,7 @@ const Query = {
       // }
       return oneCandidate;
     } catch (error) {
-      throw new Error(`Candidate Errors, ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -63,7 +63,7 @@ const Query = {
       const oneRegion = await prismaDB.query.region({ where }, info);
       return oneRegion;
     } catch (error) {
-      throw new Error(`Region Errors, ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -112,7 +112,7 @@ const Query = {
       );
       return allUsers;
     } catch (error) {
-      throw new Error(`users Errors, ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -126,7 +126,7 @@ const Query = {
       });
       return allPhases;
     } catch (error) {
-      throw new Error(`Phase Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -142,7 +142,7 @@ const Query = {
       const onePhase = await prismaDB.query.phase({ where }, info);
       return onePhase;
     } catch (error) {
-      throw new Error(`Phases Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -156,7 +156,7 @@ const Query = {
       });
       return allDivisions;
     } catch (error) {
-      throw new Error(`divisions Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async division(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -175,7 +175,7 @@ const Query = {
       );
       return oneDivision;
     } catch (error) {
-      throw new Error(`Division Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -194,7 +194,7 @@ const Query = {
       });
       return allSubDivisions;
     } catch (error) {
-      throw new Error(`Sub Divs Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async subDivision(
@@ -218,7 +218,7 @@ const Query = {
       );
       return oneSubDivision;
     } catch (error) {
-      throw new Error(`A sub div Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -242,9 +242,7 @@ const Query = {
 
       return getCount;
     } catch (error) {
-      throw new Error(
-        `Count registered Students Query error: ${error.message}`
-      );
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -256,7 +254,7 @@ const Query = {
       const allTowns = await prismaDB.query.towns({ orderBy: "townName_ASC" });
       return allTowns;
     } catch (error) {
-      throw new Error(`towns Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async town(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -270,7 +268,7 @@ const Query = {
       const oneTown = await prismaDB.query.town({ where }, info);
       return oneTown;
     } catch (error) {
-      throw new Error(`Town Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -284,7 +282,7 @@ const Query = {
       });
       return allCenters;
     } catch (error) {
-      throw new Error(`all centers Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async center(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -296,7 +294,7 @@ const Query = {
       const oneCenter = await prismaDB.query.center({ where }, info);
       return oneCenter;
     } catch (error) {
-      throw new Error(`center Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async centerByNumber(
@@ -319,7 +317,7 @@ const Query = {
       }
       return oneCenter;
     } catch (error) {
-      throw new Error(`center by number Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -343,7 +341,30 @@ const Query = {
       }
       return oneCenter;
     } catch (error) {
-      throw new Error(`Center by code Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
+    }
+  },
+  async centerBySecretCode(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      console.log(args);
+      const { CESCode } = { ...args };
+      const where = { CESCode };
+      const oneCenter = await prismaDB.query.center({ where }, info);
+
+      if (!oneCenter) {
+        throw new Error("Code centre inexistent");
+      }
+      return oneCenter;
+    } catch (error) {
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -367,7 +388,7 @@ const Query = {
       }
       return oneProf;
     } catch (error) {
-      throw new Error(`Examiner by code Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -379,7 +400,7 @@ const Query = {
       const allExams = await prismaDB.query.exams({ orderBy: "examName_ASC" });
       return allExams;
     } catch (error) {
-      throw new Error(`exams all Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async examiner(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -393,7 +414,7 @@ const Query = {
       const examinerDetails = await prismaDB.query.examiner({ where }, info);
       return examinerDetails;
     } catch (error) {
-      throw new Error(`Examiner Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async exam(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -407,7 +428,7 @@ const Query = {
       const oneExam = await prismaDB.query.exam({ where }, info);
       return oneExam;
     } catch (error) {
-      throw new Error(`an Exam Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -420,11 +441,12 @@ const Query = {
       console.log(args);
       const where = {
         candExamSecretCode: args.candExamSecretCode,
+        orderBy: "subjectName_ASC",
       };
       const allScores = await prismaDB.query.scores({ where }, info);
       return allScores;
     } catch (error) {
-      throw new Error(`all Scores Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async score(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -438,7 +460,7 @@ const Query = {
       const oneScore = await prismaDB.query.score({ where }, info);
       return oneScore;
     } catch (error) {
-      throw new Error(`score Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -457,7 +479,7 @@ const Query = {
       });
       return allSpecialty;
     } catch (error) {
-      throw new Error(`specialties Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -472,7 +494,7 @@ const Query = {
       const oneSpecialty = await prismaDB.query.specialty({ where }, info);
       return oneSpecialty;
     } catch (error) {
-      throw new Error(`specialty Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -493,7 +515,7 @@ const Query = {
       const oneCanndidate = await prismaDB.query.candidates({ where }, info);
       return oneCanndidate;
     } catch (error) {
-      throw new Error(`Candidate by code Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -507,7 +529,7 @@ const Query = {
       });
       return allSubject;
     } catch (error) {
-      throw new Error(`Subjects Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -528,7 +550,7 @@ const Query = {
       });
       return allSubject;
     } catch (error) {
-      throw new Error(`Subjects Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -548,7 +570,7 @@ const Query = {
       });
       return allSubject;
     } catch (error) {
-      throw new Error(`Subjects Query error: ${error.message}`);
+      throw new Error(`Subjects Query ${error.message}`);
     }
   },
 
@@ -563,7 +585,7 @@ const Query = {
       const oneSubject = await prismaDB.query.subject({ where }, info);
       return oneSubject;
     } catch (error) {
-      throw new Error(`Subject Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -582,7 +604,7 @@ const Query = {
       });
       return allSubjectSpecialty;
     } catch (error) {
-      throw new Error(`Subjs specialty Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async subjectSpecialty(
@@ -604,7 +626,7 @@ const Query = {
       );
       return oneSubjectSpecialty;
     } catch (error) {
-      throw new Error(`a Subj specialty Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -618,7 +640,7 @@ const Query = {
       });
       return allReport;
     } catch (error) {
-      throw new Error(`Reports Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async report(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -632,7 +654,7 @@ const Query = {
       const oneReport = await prismaDB.query.report({ where }, info);
       return oneReport;
     } catch (error) {
-      throw new Error(`Report Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -662,7 +684,7 @@ const Query = {
       );
       return allCenterExamSessionSpecialties;
     } catch (error) {
-      throw new Error(`CESS's Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -694,7 +716,34 @@ const Query = {
         info
       ));
     } catch (error) {
-      throw new Error(`CESs Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async getRegistration(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      console.log(args);
+      const { candExamSecretCode } = { ...args };
+
+      const isRegistered = await prismaDB.query.registration(
+        { where: { candExamSecretCode } },
+        info
+      );
+      if (!isRegistered) {
+        throw new Error("Numéro d'Anomymat inexistant");
+      }
+
+      return isRegistered;
+    } catch (error) {
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -722,7 +771,30 @@ const Query = {
         info
       ));
     } catch (error) {
-      throw new Error(`CES by code Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
+    }
+  },
+
+  async centerExamSessionBySecretCode(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      console.log(args);
+      const { CESCode } = { ...args };
+
+      const where = { CESCode };
+      return ([allCenterExamSession] = await prismaDB.query.centerExamSessions(
+        { where },
+        info
+      ));
+    } catch (error) {
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -745,7 +817,7 @@ const Query = {
       );
       return oneCenterExamSession;
     } catch (error) {
-      throw new Error(`Ces Query error: ${error.message}`);
+      throw new Error(`Ces Query ${error.message}`);
     }
   },
 
@@ -769,7 +841,7 @@ const Query = {
       );
       return oneCenterExamSession;
     } catch (error) {
-      throw new Error(`CESS  error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -794,7 +866,7 @@ const Query = {
       );
       return allCenterExamSessionSpecialties;
     } catch (error) {
-      throw new Error(`CESSpecialties error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -808,7 +880,7 @@ const Query = {
       });
       return allSession;
     } catch (error) {
-      throw new Error(`Sessions Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async session(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -822,7 +894,7 @@ const Query = {
       const oneSession = await prismaDB.query.session({ where }, info);
       return oneSession;
     } catch (error) {
-      throw new Error(`Session Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async ranks(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -833,7 +905,7 @@ const Query = {
       const allRank = await prismaDB.query.ranks({ orderBy: "rankName_ASC" });
       return allRank;
     } catch (error) {
-      throw new Error(`ranks Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async rank(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -847,7 +919,7 @@ const Query = {
       const oneRank = await prismaDB.query.rank({ where }, info);
       return oneRank;
     } catch (error) {
-      throw new Error(`Rank Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async examSessions(
@@ -872,7 +944,7 @@ const Query = {
       );
       return allExamSessions;
     } catch (error) {
-      throw new Error(`Exam Sessions Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -892,7 +964,7 @@ const Query = {
       const oneExamSession = await prismaDB.query.examSession({ where }, info);
       return oneExamSession;
     } catch (error) {
-      throw new Error(`Exam Session Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -912,7 +984,7 @@ const Query = {
       });
       return allEducationType;
     } catch (error) {
-      throw new Error(`EducTypes Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async educationType(
@@ -934,7 +1006,7 @@ const Query = {
       );
       return oneEducationType;
     } catch (error) {
-      throw new Error(`EducType Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -955,7 +1027,7 @@ const Query = {
       const allRegistration = await prismaDB.query.registrations();
       return allRegistration;
     } catch (error) {
-      throw new Error(`Registrations Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -978,7 +1050,7 @@ const Query = {
       );
       return oneRegistration;
     } catch (error) {
-      throw new Error(`Registration Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1017,9 +1089,7 @@ const Query = {
 
       return candidateRegisIDs;
     } catch (error) {
-      throw new Error(
-        `Cand Reg ID vis cand code Query error: ${error.message}`
-      );
+      throw new Error(` ${error.message}`);
     }
   },
   // obtain all rsults for a given center
@@ -1054,7 +1124,7 @@ const Query = {
 
       return phaseRankID;
     } catch (error) {
-      throw new Error(`get Phase rank ID Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   // obtain all results for a given center
@@ -1091,7 +1161,7 @@ const Query = {
 
       return candidateRegisIDs;
     } catch (error) {
-      throw new Error(`Cand Reg IDs Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1117,7 +1187,7 @@ const Query = {
 
       return candidateRegisIDs;
     } catch (error) {
-      throw new Error(`Cand Reg IDs Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async candidateRegistrationNumber(
@@ -1142,7 +1212,7 @@ const Query = {
 
       return candidateRegisIDs;
     } catch (error) {
-      throw new Error(`Cand Reg ID Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1159,7 +1229,7 @@ const Query = {
       const allCenterExamSessionExaminer = await prismaDB.query.centerExamSessionExaminers();
       return allCenterExamSessionExaminer;
     } catch (error) {
-      throw new Error(`CESS Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
   async getCenterExamSessionExaminers(
@@ -1185,7 +1255,7 @@ const Query = {
       );
       return allCenterExamSessionExaminer;
     } catch (error) {
-      throw new Error(`CESExaminer Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async getCenterResults(
@@ -1207,7 +1277,7 @@ const Query = {
       );
       return allCenterExamSessionExaminer;
     } catch (error) {
-      throw new Error(`Get Center Results Query error: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   async centerExamSessionExaminer(
@@ -1227,7 +1297,7 @@ const Query = {
       );
       return oneCenterExamSessionExaminer;
     } catch (error) {
-      throw new Error(`CESS Query error: ${error.message}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1240,7 +1310,7 @@ const Query = {
       }
       return prismaDB.query.user({ where: { id: getUserID }, info });
     } catch (error) {
-      throw new Error.log(`User Query error: ${error.message}`);
+      throw new Error.log(` ${error.message}`);
     }
   },
 };

@@ -84,6 +84,7 @@ type Mutation {
 	enterMarks(
 	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
 	candExamSecretCode: String!
+	subjectName: String!
 	subjectAve: Float! # user: UserWhereUniqueInput!
 	): Score!
 	resetPassword(
@@ -97,6 +98,7 @@ type Mutation {
 	login(email: String!, password: String!): User!
 	createCenterExamSession(
 	center: CenterWhereUniqueInput!
+	CESCode: String!
 	examSession: ExamSessionWhereUniqueInput!
 	): CenterExamSession!
 	createExamSession(
@@ -126,8 +128,7 @@ type Mutation {
 	createPhase(phaseName: String!, phaseCode: String!): Phase!
 	createPhaseRank(
 	phase: PhaseWhereUniqueInput!
-	rankName: String!
-	rankCode: String!
+	rank: RankWhereUniqueInput!
 	): PhaseRank!
 	updatePhase(id: ID!, phaseName: String, phaseCode: String): Phase!
 
@@ -296,6 +297,7 @@ type Query {
 	examSession: ExamSessionWhereUniqueInput!
 	center: CenterWhereUniqueInput!
 	): [CenterExamSession]!
+	centerExamSessionBySecretCode( CESCode:String!): [CenterExamSession]!
 	centerExamSession(id: ID!): CenterExamSession!
 	examSessions(
 	exam: ExamWhereUniqueInput!
@@ -328,6 +330,7 @@ type Query {
 	session: SessionWhereUniqueInput!
 	): [Registration]!
 	registration(id: ID!): Registration!
+	getRegistration(candExamSecretCode: String!): Registration!
 
 	specialties(orderBy: SpecialtyOrderByInput): [Specialty]!
 	# allSpecialty(orderBy:SpecialtyOrderByInput):[Specialty]!
@@ -369,6 +372,7 @@ type Query {
 	subDivisions(orderBy: SubDivisionOrderByInput): [SubDivision]!
 	center(id: ID!): Center!
 	centerByNumber(centerNumber: Int!): Center!
+	centerBySecretCode(CESCode: String!): Center!
 	examinerByCode(examinerCode: String!): Examiner!
 	examiner(id: ID!): Examiner!
 	getCenterByCode(centerSecretCode: String!): Center!

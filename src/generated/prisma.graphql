@@ -886,6 +886,7 @@ type CenterExamSession {
   id: ID!
   examSession: ExamSession!
   center: Center!
+  CESCode: String!
   registration(where: RegistrationWhereInput, orderBy: RegistrationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Registration!]
   centerExamSessionSpecialty(where: CenterExamSessionSpecialtyWhereInput, orderBy: CenterExamSessionSpecialtyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CenterExamSessionSpecialty!]
   createdAt: DateTime!
@@ -902,6 +903,7 @@ type CenterExamSessionConnection {
 input CenterExamSessionCreateInput {
   examSession: ExamSessionCreateOneWithoutCenterExamSessionInput!
   center: CenterCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   registration: RegistrationCreateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerCreateManyWithoutCenterExamSessionInput
@@ -935,6 +937,7 @@ input CenterExamSessionCreateOneWithoutRegistrationInput {
 input CenterExamSessionCreateWithoutCenterExamSessionExaminerInput {
   examSession: ExamSessionCreateOneWithoutCenterExamSessionInput!
   center: CenterCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   registration: RegistrationCreateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput
 }
@@ -942,12 +945,14 @@ input CenterExamSessionCreateWithoutCenterExamSessionExaminerInput {
 input CenterExamSessionCreateWithoutCenterExamSessionSpecialtyInput {
   examSession: ExamSessionCreateOneWithoutCenterExamSessionInput!
   center: CenterCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   registration: RegistrationCreateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerCreateManyWithoutCenterExamSessionInput
 }
 
 input CenterExamSessionCreateWithoutCenterInput {
   examSession: ExamSessionCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   registration: RegistrationCreateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerCreateManyWithoutCenterExamSessionInput
@@ -955,6 +960,7 @@ input CenterExamSessionCreateWithoutCenterInput {
 
 input CenterExamSessionCreateWithoutExamSessionInput {
   center: CenterCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   registration: RegistrationCreateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerCreateManyWithoutCenterExamSessionInput
@@ -963,6 +969,7 @@ input CenterExamSessionCreateWithoutExamSessionInput {
 input CenterExamSessionCreateWithoutRegistrationInput {
   examSession: ExamSessionCreateOneWithoutCenterExamSessionInput!
   center: CenterCreateOneWithoutCenterExamSessionInput!
+  CESCode: String!
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerCreateManyWithoutCenterExamSessionInput
 }
@@ -1187,6 +1194,8 @@ input CenterExamSessionExaminerWhereUniqueInput {
 enum CenterExamSessionOrderByInput {
   id_ASC
   id_DESC
+  CESCode_ASC
+  CESCode_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -1195,6 +1204,7 @@ enum CenterExamSessionOrderByInput {
 
 type CenterExamSessionPreviousValues {
   id: ID!
+  CESCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1468,6 +1478,7 @@ input CenterExamSessionSubscriptionWhereInput {
 input CenterExamSessionUpdateInput {
   examSession: ExamSessionUpdateOneRequiredWithoutCenterExamSessionInput
   center: CenterUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   registration: RegistrationUpdateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerUpdateManyWithoutCenterExamSessionInput
@@ -1514,6 +1525,7 @@ input CenterExamSessionUpdateOneRequiredWithoutRegistrationInput {
 
 input CenterExamSessionUpdateWithoutCenterDataInput {
   examSession: ExamSessionUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   registration: RegistrationUpdateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerUpdateManyWithoutCenterExamSessionInput
@@ -1522,6 +1534,7 @@ input CenterExamSessionUpdateWithoutCenterDataInput {
 input CenterExamSessionUpdateWithoutCenterExamSessionExaminerDataInput {
   examSession: ExamSessionUpdateOneRequiredWithoutCenterExamSessionInput
   center: CenterUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   registration: RegistrationUpdateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput
 }
@@ -1529,12 +1542,14 @@ input CenterExamSessionUpdateWithoutCenterExamSessionExaminerDataInput {
 input CenterExamSessionUpdateWithoutCenterExamSessionSpecialtyDataInput {
   examSession: ExamSessionUpdateOneRequiredWithoutCenterExamSessionInput
   center: CenterUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   registration: RegistrationUpdateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerUpdateManyWithoutCenterExamSessionInput
 }
 
 input CenterExamSessionUpdateWithoutExamSessionDataInput {
   center: CenterUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   registration: RegistrationUpdateManyWithoutCenterExamSessionInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerUpdateManyWithoutCenterExamSessionInput
@@ -1543,6 +1558,7 @@ input CenterExamSessionUpdateWithoutExamSessionDataInput {
 input CenterExamSessionUpdateWithoutRegistrationDataInput {
   examSession: ExamSessionUpdateOneRequiredWithoutCenterExamSessionInput
   center: CenterUpdateOneRequiredWithoutCenterExamSessionInput
+  CESCode: String
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateManyWithoutCenterExamSessionInput
   centerExamSessionExaminer: CenterExamSessionExaminerUpdateManyWithoutCenterExamSessionInput
 }
@@ -1601,6 +1617,20 @@ input CenterExamSessionWhereInput {
   id_not_ends_with: ID
   examSession: ExamSessionWhereInput
   center: CenterWhereInput
+  CESCode: String
+  CESCode_not: String
+  CESCode_in: [String!]
+  CESCode_not_in: [String!]
+  CESCode_lt: String
+  CESCode_lte: String
+  CESCode_gt: String
+  CESCode_gte: String
+  CESCode_contains: String
+  CESCode_not_contains: String
+  CESCode_starts_with: String
+  CESCode_not_starts_with: String
+  CESCode_ends_with: String
+  CESCode_not_ends_with: String
   registration_every: RegistrationWhereInput
   registration_some: RegistrationWhereInput
   registration_none: RegistrationWhereInput
@@ -1633,6 +1663,7 @@ input CenterExamSessionWhereInput {
 
 input CenterExamSessionWhereUniqueInput {
   id: ID
+  CESCode: String
 }
 
 enum CenterOrderByInput {
@@ -3208,8 +3239,7 @@ type PhasePreviousValues {
 type PhaseRank {
   id: ID!
   phase: Phase!
-  rankName: String!
-  rankCode: String!
+  rank: Rank!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -3222,8 +3252,7 @@ type PhaseRankConnection {
 
 input PhaseRankCreateInput {
   phase: PhaseCreateOneWithoutPhaseRankInput!
-  rankName: String!
-  rankCode: String!
+  rank: RankCreateOneInput!
 }
 
 input PhaseRankCreateManyWithoutPhaseInput {
@@ -3237,8 +3266,7 @@ input PhaseRankCreateOneInput {
 }
 
 input PhaseRankCreateWithoutPhaseInput {
-  rankName: String!
-  rankCode: String!
+  rank: RankCreateOneInput!
 }
 
 type PhaseRankEdge {
@@ -3249,10 +3277,6 @@ type PhaseRankEdge {
 enum PhaseRankOrderByInput {
   id_ASC
   id_DESC
-  rankName_ASC
-  rankName_DESC
-  rankCode_ASC
-  rankCode_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -3261,8 +3285,6 @@ enum PhaseRankOrderByInput {
 
 type PhaseRankPreviousValues {
   id: ID!
-  rankName: String!
-  rankCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -3287,14 +3309,12 @@ input PhaseRankSubscriptionWhereInput {
 
 input PhaseRankUpdateDataInput {
   phase: PhaseUpdateOneRequiredWithoutPhaseRankInput
-  rankName: String
-  rankCode: String
+  rank: RankUpdateOneRequiredInput
 }
 
 input PhaseRankUpdateInput {
   phase: PhaseUpdateOneRequiredWithoutPhaseRankInput
-  rankName: String
-  rankCode: String
+  rank: RankUpdateOneRequiredInput
 }
 
 input PhaseRankUpdateManyWithoutPhaseInput {
@@ -3314,8 +3334,7 @@ input PhaseRankUpdateOneRequiredInput {
 }
 
 input PhaseRankUpdateWithoutPhaseDataInput {
-  rankName: String
-  rankCode: String
+  rank: RankUpdateOneRequiredInput
 }
 
 input PhaseRankUpdateWithWhereUniqueWithoutPhaseInput {
@@ -3350,34 +3369,7 @@ input PhaseRankWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   phase: PhaseWhereInput
-  rankName: String
-  rankName_not: String
-  rankName_in: [String!]
-  rankName_not_in: [String!]
-  rankName_lt: String
-  rankName_lte: String
-  rankName_gt: String
-  rankName_gte: String
-  rankName_contains: String
-  rankName_not_contains: String
-  rankName_starts_with: String
-  rankName_not_starts_with: String
-  rankName_ends_with: String
-  rankName_not_ends_with: String
-  rankCode: String
-  rankCode_not: String
-  rankCode_in: [String!]
-  rankCode_not_in: [String!]
-  rankCode_lt: String
-  rankCode_lte: String
-  rankCode_gt: String
-  rankCode_gte: String
-  rankCode_contains: String
-  rankCode_not_contains: String
-  rankCode_starts_with: String
-  rankCode_not_starts_with: String
-  rankCode_ends_with: String
-  rankCode_not_ends_with: String
+  rank: RankWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -3613,6 +3605,11 @@ input RankCreateInput {
   rankCode: String!
 }
 
+input RankCreateOneInput {
+  create: RankCreateInput
+  connect: RankWhereUniqueInput
+}
+
 type RankEdge {
   node: Rank!
   cursor: String!
@@ -3657,9 +3654,26 @@ input RankSubscriptionWhereInput {
   NOT: [RankSubscriptionWhereInput!]
 }
 
+input RankUpdateDataInput {
+  rankName: String
+  rankCode: String
+}
+
 input RankUpdateInput {
   rankName: String
   rankCode: String
+}
+
+input RankUpdateOneRequiredInput {
+  create: RankCreateInput
+  update: RankUpdateDataInput
+  upsert: RankUpsertNestedInput
+  connect: RankWhereUniqueInput
+}
+
+input RankUpsertNestedInput {
+  update: RankUpdateDataInput!
+  create: RankCreateInput!
 }
 
 input RankWhereInput {
@@ -4607,8 +4621,8 @@ type Score {
   subjectTotal: Float
   registration: Registration!
   subjectSpecialty: SubjectSpecialty!
-  presence: Boolean
   coeff: Int!
+  subjectName: String!
   user: User!
   candExamSecretCode: String!
   createdAt: DateTime!
@@ -4626,8 +4640,8 @@ input ScoreCreateInput {
   subjectTotal: Float
   registration: RegistrationCreateOneWithoutScoresInput!
   subjectSpecialty: SubjectSpecialtyCreateOneInput!
-  presence: Boolean
   coeff: Int!
+  subjectName: String!
   user: UserCreateOneInput!
   candExamSecretCode: String!
 }
@@ -4641,8 +4655,8 @@ input ScoreCreateWithoutRegistrationInput {
   subjectAve: Float
   subjectTotal: Float
   subjectSpecialty: SubjectSpecialtyCreateOneInput!
-  presence: Boolean
   coeff: Int!
+  subjectName: String!
   user: UserCreateOneInput!
   candExamSecretCode: String!
 }
@@ -4659,10 +4673,10 @@ enum ScoreOrderByInput {
   subjectAve_DESC
   subjectTotal_ASC
   subjectTotal_DESC
-  presence_ASC
-  presence_DESC
   coeff_ASC
   coeff_DESC
+  subjectName_ASC
+  subjectName_DESC
   candExamSecretCode_ASC
   candExamSecretCode_DESC
   createdAt_ASC
@@ -4675,8 +4689,8 @@ type ScorePreviousValues {
   id: ID!
   subjectAve: Float
   subjectTotal: Float
-  presence: Boolean
   coeff: Int!
+  subjectName: String!
   candExamSecretCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -4705,8 +4719,8 @@ input ScoreUpdateInput {
   subjectTotal: Float
   registration: RegistrationUpdateOneRequiredWithoutScoresInput
   subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
-  presence: Boolean
   coeff: Int
+  subjectName: String
   user: UserUpdateOneRequiredInput
   candExamSecretCode: String
 }
@@ -4724,8 +4738,8 @@ input ScoreUpdateWithoutRegistrationDataInput {
   subjectAve: Float
   subjectTotal: Float
   subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
-  presence: Boolean
   coeff: Int
+  subjectName: String
   user: UserUpdateOneRequiredInput
   candExamSecretCode: String
 }
@@ -4774,8 +4788,6 @@ input ScoreWhereInput {
   subjectTotal_gte: Float
   registration: RegistrationWhereInput
   subjectSpecialty: SubjectSpecialtyWhereInput
-  presence: Boolean
-  presence_not: Boolean
   coeff: Int
   coeff_not: Int
   coeff_in: [Int!]
@@ -4784,6 +4796,20 @@ input ScoreWhereInput {
   coeff_lte: Int
   coeff_gt: Int
   coeff_gte: Int
+  subjectName: String
+  subjectName_not: String
+  subjectName_in: [String!]
+  subjectName_not_in: [String!]
+  subjectName_lt: String
+  subjectName_lte: String
+  subjectName_gt: String
+  subjectName_gte: String
+  subjectName_contains: String
+  subjectName_not_contains: String
+  subjectName_starts_with: String
+  subjectName_not_starts_with: String
+  subjectName_ends_with: String
+  subjectName_not_ends_with: String
   user: UserWhereInput
   candExamSecretCode: String
   candExamSecretCode_not: String

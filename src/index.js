@@ -1,7 +1,7 @@
 const cookieParser = require("cookie-parser");
 const { verify } = require("jsonwebtoken");
 const cors = require("cors");
-
+const permissions = require("./utils/hasPermissions")
 require("dotenv").config({ path: "./variables.env" });
 const createYogaServer = require("./createServer");
 const prismaDB = require("./prismaDB");

@@ -162,8 +162,7 @@ type Phase {
 type PhaseRank {
   id: ID! @id @unique
   phase: Phase!
-  rankName: String!
-  rankCode: String!
+  rank: Rank!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
@@ -207,6 +206,7 @@ type CenterExamSession {
   id: ID! @id @unique
   examSession: ExamSession!
   center: Center!
+  CESCode: String!@unique
   registration: [Registration]!
   centerExamSessionSpecialty: [CenterExamSessionSpecialty]!
   createdAt: DateTime! @createdAt
@@ -239,8 +239,8 @@ type Score {
   subjectTotal: Float
   registration: Registration!
   subjectSpecialty: SubjectSpecialty!
-  presence: Boolean
   coeff: Int!
+  subjectName: String!
   user: User!
   candExamSecretCode: String!
   createdAt: DateTime! @createdAt

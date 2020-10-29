@@ -48,7 +48,7 @@ const Mutation = {
 
   async resetPassword(parent, args, { prismaDB, response }, info) {
     // 1 check if passwords match
-    if (!args.password === args.confirmPassword) {
+    if (args.password !==  args.confirmPassword) {
       throw new Error("Your passwords do not match");
     }
     // 2 check if it is  a legit token
@@ -173,7 +173,7 @@ const Mutation = {
 
       return attendance;
     } catch (error) {
-      throw new Error(`Attendance Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 
@@ -217,7 +217,7 @@ const Mutation = {
 
       return candidate;
     } catch (error) {
-      throw new Error(`Candidate Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -261,7 +261,7 @@ const Mutation = {
 
       return candidate;
     } catch (error) {
-      throw new Error(`Multi cand Errors, ${error}`);
+     throw new Error(`${error.message}`);
     }
   },
 
@@ -292,7 +292,7 @@ const Mutation = {
 
       return newExaminer;
     } catch (error) {
-      throw new Error(`Examiner new Errors, ${error}`);
+      throw new Error(`  ${error.message}`);
     }
   },
 
@@ -330,7 +330,7 @@ const Mutation = {
       console.log(args);
       return division;
     } catch (error) {
-      throw new Error(`Division Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -349,7 +349,7 @@ const Mutation = {
       const newRank = {
         ...args,
       };
-      const { phase, ...others } = newRank;
+      const { phase, rank,...others } = newRank;
 
       const newPhaseRank = await prismaDB.mutation.createPhaseRank(
         {
@@ -359,6 +359,11 @@ const Mutation = {
                 id: phase.id,
               },
             },
+            rank: {
+              connect: {
+                id: rank.id,
+              },
+            },
             ...others,
           },
         },
@@ -366,7 +371,7 @@ const Mutation = {
       );
       return newPhaseRank;
     } catch (error) {
-      throw new Error(`Phase Rank Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -405,7 +410,7 @@ const Mutation = {
       console.log(args);
       return subDivision;
     } catch (error) {
-      throw new Error(`Sub Division Errors, ${error}`);
+    throw new Error(`${error.message}`);
     }
   },
 
@@ -443,7 +448,7 @@ const Mutation = {
       console.log(args);
       return town;
     } catch (error) {
-      throw new Error(`Town Errors, ${error}`);
+      throw  new Error( `${error.message}`);
     }
   },
 
@@ -458,13 +463,15 @@ const Mutation = {
         throw new Error("Veuillez vous connecter");
       }
       hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      const newCenters = {
-        ...args,
-      };
-      // show the region name from the new regions array because will not have to update the id
+      const newCenters = { ...args};
 
-      const { town, ...others } = newCenters;
-
+      const { town,centerNumber, ...others } = newCenters;
+      const centerNumberPresent = await prismaDB.query.center({where:{
+        centerNumber
+      }})
+if(centerNumberPresent) {
+  throw new Error("Ce numéro de centre existe déjà.")
+}
       const center = await prismaDB.mutation.createCenter(
         {
           data: {
@@ -473,6 +480,7 @@ const Mutation = {
                 id: town.id,
               },
             },
+            centerNumber,
             ...others,
           },
         },
@@ -481,7 +489,7 @@ const Mutation = {
       console.log(args);
       return center;
     } catch (error) {
-      throw new Error(`Center Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -498,7 +506,7 @@ const Mutation = {
       };
       // show the region name from the new regions array because will not have to update the id
 
-      const { examSession, center } = newCenterRegistration;
+      const { examSession, center, CESCode } = newCenterRegistration;
 
       const [alreadyRegistered] = await prismaDB.query.centerExamSessions({
         where: {
@@ -508,6 +516,7 @@ const Mutation = {
           examSession: {
             id: examSession.id,
           },
+        
         },
       });
       if (alreadyRegistered) {
@@ -530,6 +539,7 @@ const Mutation = {
                 id: center.id,
               },
             },
+              CESCode,
           },
         },
         info
@@ -537,7 +547,7 @@ const Mutation = {
       console.log(args);
       return centerExamSession;
     } catch (error) {
-      throw new Error(`Candidate Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -597,7 +607,7 @@ const Mutation = {
       console.log(args);
       return ExamSession;
     } catch (error) {
-      throw new Error(`Exam session Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -653,7 +663,7 @@ const Mutation = {
       console.log(args);
       return subjSpecs;
     } catch (error) {
-      throw new Error(`Subject Specialty Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -708,7 +718,7 @@ const Mutation = {
       console.log(args);
       return CESS;
     } catch (error) {
-      throw new Error(`CESS Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -859,7 +869,7 @@ const Mutation = {
 
   //     return newRegistration;
   //   } catch (error) {
-  //     throw new Error(`new Registration Errors, ${error}`);
+  //     throw new Error(` ${error.message}`);
   //   }
   // },
 
@@ -967,7 +977,7 @@ const Mutation = {
 
       return newRegistration;
     } catch (error) {
-      throw new Error(`new Registration Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1026,7 +1036,7 @@ const Mutation = {
       );
       return prof;
     } catch (error) {
-      throw new Error(`Prof Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1078,7 +1088,7 @@ const Mutation = {
   //     console.log(args);
   //     return newSubjSpecialty;
   //   } catch (error) {
-  //     throw new Error(`new subj specialty Errors, ${error}`);
+  //     throw new Error(`${error.message}`);
   //   }
   // },
 
@@ -1099,7 +1109,7 @@ const Mutation = {
       );
       return region;
     } catch (error) {
-      throw new Error(`create Region Error ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1122,7 +1132,7 @@ const Mutation = {
 
       return user;
     } catch (error) {
-      throw new Error(`create user Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1145,7 +1155,7 @@ const Mutation = {
       );
       return phase;
     } catch (error) {
-      throw new Error(`create phase Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1196,7 +1206,7 @@ const Mutation = {
       );
       return session;
     } catch (error) {
-      throw new Error(`create Session Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1221,7 +1231,7 @@ const Mutation = {
       );
       return rank;
     } catch (error) {
-      throw new Error(`create rank Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1242,7 +1252,7 @@ const Mutation = {
       );
       return educationType;
     } catch (error) {
-      throw new Error(`create educ type Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1267,7 +1277,7 @@ const Mutation = {
       );
       return exam;
     } catch (error) {
-      throw new Error(`create Exam Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1301,7 +1311,7 @@ const Mutation = {
       );
       return report;
     } catch (error) {
-      throw new Error(`create report Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1335,7 +1345,7 @@ const Mutation = {
       );
       return specialty;
     } catch (error) {
-      throw new Error(`create specialty Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1371,16 +1381,12 @@ const Mutation = {
       );
       return subject;
     } catch (error) {
-      throw new Error(`create subj  Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
-  async enterMarks(
-    parents,
-    args,
-    { prismaDB, request: { user, userId } },
-    info
-  ) {
+  async enterMarks( parents, args,{ prismaDB, request: { user, userId } }, info)
+  {
     try {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
@@ -1404,9 +1410,11 @@ const Mutation = {
       );
       console.log(marksExist);
 
+      // const [isCandSpecialty]= await prismaDB.query.registrations({where:{candExamSecretCode}},`{specialty,}`)
+
       if (marksExist) {
-        throw new Error("Ce candidate a déjà une note en cette Matière");
-      }
+        throw new Error("Ce(tte) candidat(e) a déjà une note en cette Matière");
+      }   
       const getSubjCoeff = await prismaDB.query.subjectSpecialty(
         { where: { id: subjectSpecialty.id } },
         `{coeff}`
@@ -1435,7 +1443,7 @@ const Mutation = {
       console.log(candMarks);
       return candMarks;
     } catch (error) {
-      throw new Error(`Cand Marks Errors, ${error}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1459,7 +1467,7 @@ const Mutation = {
         info
       );
     } catch (error) {
-      throw new Error(`Update candidate Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1488,7 +1496,7 @@ const Mutation = {
         info
       );
     } catch (error) {
-      throw new Error(`Update Examiner Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1514,7 +1522,7 @@ const Mutation = {
       );
       console.log(updates);
     } catch (error) {
-      throw new Error(`Update division Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1572,7 +1580,7 @@ const Mutation = {
         info
       );
     } catch (error) {
-      throw new Error(`Update score Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1597,7 +1605,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update region Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1622,7 +1630,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update Phase Errors, ${error}`);
+      throw new Error(` ${error.message}`);
     }
   },
 
@@ -1646,7 +1654,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update specialty Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
   updateRank(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -1669,7 +1677,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`uodate rank Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
   updateSession(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -1692,7 +1700,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update session Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
   updateEducationType(
@@ -1720,7 +1728,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update educ type Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 
@@ -1744,7 +1752,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update exam Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 
@@ -1768,7 +1776,7 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update subject Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 
@@ -1790,10 +1798,10 @@ const Mutation = {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update town Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
-  updateSubDivision(
+ async updateSubDivision(
     parent,
     args,
     { prismaDB, request: { user, userId } },
@@ -1810,35 +1818,39 @@ const Mutation = {
       return prismaDB.mutation.updateSubDivision(
         {
           data: updates,
-          where: { id: args.id },
+          where: { id },
         },
         info
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error(`update sub div Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
-  updateCenter(parent, args, { prismaDB, request: { user, userId } }, info) {
+  async updateCenter(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
       }
       hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
       console.log(args);
-      const { id, ...updates } = args;
+      const { id,...updates} = args;
       // run the update method
+//  const centerNumberPresent = await prismaDB.query.center({where:{id, centerNumber:args.centerNumber}})
+
+//  if(!centerNumberPresent) {
+//   throw new Error("Numéro de centre inexistant.")
+// }
       console.log("calling the update center mutation!!");
       return prismaDB.mutation.updateCenter(
         {
           data: updates,
-          where: { id: args.id },
+          where: { id },
         },
         info
       );
-      console.log(args.id);
     } catch (error) {
-      throw new Error(`update center Errors, ${error}`);
+      (`${error.message}`);
     }
   },
 
@@ -1861,7 +1873,7 @@ const Mutation = {
       const delCand = await prismaDB.mutation.deleteCandidate({ where }, info);
       return { message: "Candidate Deletion Successful" };
     } catch (error) {
-      throw new Error(` Delete Candidate Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 
@@ -1885,7 +1897,7 @@ const Mutation = {
       // todo delete it  from the database and note its absence
       return prismaDB.mutation.deleteRegion({ where }, info);
     } catch (error) {
-      throw new Error(`delete region Errors, ${error}`);
+      throw new Error( `${error.message}`);
     }
   },
 };
