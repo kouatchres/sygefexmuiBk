@@ -2,11 +2,11 @@ const { GraphQLServer } = require("graphql-yoga");
 const Mutation = require("./resolvers/Mutation");
 const Query = require("./resolvers/Query");
 const prismaDB = require("./prismaDB");
-const {ApolloSever}= require("apollo-server-express")
+const { ApolloSever } = require("apollo-server-express");
 
 //create graphql yoga server
 
-function createServer() {
+const createServer = () => {
   return new GraphQLServer({
     typeDefs: "src/schema.graphql",
     resolvers: {
@@ -22,6 +22,6 @@ function createServer() {
       prismaDB,
     }),
   });
-}
+};
 
 module.exports = createServer;

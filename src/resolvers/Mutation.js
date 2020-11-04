@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const { hash, compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 const hasPermissions = require("../utils/hasPermissions");
+const puppeteer = require("puppeteer");
 
 const Mutation = {
   signout(parent, args, { prismaDB, response }, info) {
@@ -48,7 +49,7 @@ const Mutation = {
 
   async resetPassword(parent, args, { prismaDB, response }, info) {
     // 1 check if passwords match
-    if (args.password !==  args.confirmPassword) {
+    if (args.password !== args.confirmPassword) {
       throw new Error("Your passwords do not match");
     }
     // 2 check if it is  a legit token
@@ -132,7 +133,12 @@ const Mutation = {
 
       const newAttendance = { ...args };
       // todo has the student already been checked for subject attendance
-      const { subjectSpecialty, candExamSecretCode,centerExamSessionSpecialty, ...others } = newAttendance;
+      const {
+        subjectSpecialty,
+        candExamSecretCode,
+        centerExamSessionSpecialty,
+        ...others
+      } = newAttendance;
       const [verifyAttendance] = await prismaDB.query.attendances(
         {
           where: {
@@ -173,7 +179,7 @@ const Mutation = {
 
       return attendance;
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -261,7 +267,7 @@ const Mutation = {
 
       return candidate;
     } catch (error) {
-     throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -349,7 +355,7 @@ const Mutation = {
       const newRank = {
         ...args,
       };
-      const { phase, rank,...others } = newRank;
+      const { phase, rank, ...others } = newRank;
 
       const newPhaseRank = await prismaDB.mutation.createPhaseRank(
         {
@@ -410,7 +416,7 @@ const Mutation = {
       console.log(args);
       return subDivision;
     } catch (error) {
-    throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -448,7 +454,7 @@ const Mutation = {
       console.log(args);
       return town;
     } catch (error) {
-      throw  new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -463,15 +469,17 @@ const Mutation = {
         throw new Error("Veuillez vous connecter");
       }
       hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      const newCenters = { ...args};
+      const newCenters = { ...args };
 
-      const { town,centerNumber, ...others } = newCenters;
-      const centerNumberPresent = await prismaDB.query.center({where:{
-        centerNumber
-      }})
-if(centerNumberPresent) {
-  throw new Error("Ce numéro de centre existe déjà.")
-}
+      const { town, centerNumber, ...others } = newCenters;
+      const centerNumberPresent = await prismaDB.query.center({
+        where: {
+          centerNumber,
+        },
+      });
+      if (centerNumberPresent) {
+        throw new Error("Ce numéro de centre existe déjà.");
+      }
       const center = await prismaDB.mutation.createCenter(
         {
           data: {
@@ -516,7 +524,6 @@ if(centerNumberPresent) {
           examSession: {
             id: examSession.id,
           },
-        
         },
       });
       if (alreadyRegistered) {
@@ -539,7 +546,7 @@ if(centerNumberPresent) {
                 id: center.id,
               },
             },
-              CESCode,
+            CESCode,
           },
         },
         info
@@ -627,17 +634,19 @@ if(centerNumberPresent) {
 
       const { specialty, subject, ...others } = newSubjSpec;
 
-      const subjectSpecialtyRegistered= await prismaDB.query.subjectSpecialties({
-        where: {
-          subject: {
-            id: subject.id,
+      const subjectSpecialtyRegistered = await prismaDB.query.subjectSpecialties(
+        {
+          where: {
+            subject: {
+              id: subject.id,
+            },
+            specialty: {
+              id: specialty.id,
+            },
           },
-          specialty: {
-            id: specialty.id,
-          },
-        },
-      });
-      if (subjectSpecialtyRegistered.length>0) {
+        }
+      );
+      if (subjectSpecialtyRegistered.length > 0) {
         throw new Error("Cette Matière est déjà inscrite à cette specialité.");
       }
 
@@ -1385,8 +1394,12 @@ if(centerNumberPresent) {
     }
   },
 
-  async enterMarks( parents, args,{ prismaDB, request: { user, userId } }, info)
-  {
+  async enterMarks(
+    parents,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
     try {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
@@ -1414,7 +1427,7 @@ if(centerNumberPresent) {
 
       if (marksExist) {
         throw new Error("Ce(tte) candidat(e) a déjà une note en cette Matière");
-      }   
+      }
       const getSubjCoeff = await prismaDB.query.subjectSpecialty(
         { where: { id: subjectSpecialty.id } },
         `{coeff}`
@@ -1654,7 +1667,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   updateRank(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -1677,7 +1690,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   updateSession(parent, args, { prismaDB, request: { user, userId } }, info) {
@@ -1700,7 +1713,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
   updateEducationType(
@@ -1728,7 +1741,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1752,7 +1765,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1776,7 +1789,7 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1798,10 +1811,10 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
- async updateSubDivision(
+  async updateSubDivision(
     parent,
     args,
     { prismaDB, request: { user, userId } },
@@ -1824,23 +1837,28 @@ if(centerNumberPresent) {
       );
       console.log(args.id);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
-  async updateCenter(parent, args, { prismaDB, request: { user, userId } }, info) {
+  async updateCenter(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
     try {
       if (!userId) {
         throw new Error("Veuillez vous connecter");
       }
       hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
       console.log(args);
-      const { id,...updates} = args;
+      const { id, ...updates } = args;
       // run the update method
-//  const centerNumberPresent = await prismaDB.query.center({where:{id, centerNumber:args.centerNumber}})
+      //  const centerNumberPresent = await prismaDB.query.center({where:{id, centerNumber:args.centerNumber}})
 
-//  if(!centerNumberPresent) {
-//   throw new Error("Numéro de centre inexistant.")
-// }
+      //  if(!centerNumberPresent) {
+      //   throw new Error("Numéro de centre inexistant.")
+      // }
       console.log("calling the update center mutation!!");
       return prismaDB.mutation.updateCenter(
         {
@@ -1850,9 +1868,41 @@ if(centerNumberPresent) {
         info
       );
     } catch (error) {
-      (`${error.message}`);
+      `${error.message}`;
     }
   },
+
+  async printPDF(parent, args, { prismaDB, request: { user, userId } }, info) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
+      console.log(args);
+
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+      await page.goto(
+        "http://localhost:10000/show/results/candResults?id=ckfzupb6z8e2t0a35hr13yvq3",
+        { waitUntil: "networkidle0" }
+      );
+      await page.addStyleTag({
+        // 'Content-Type': 'application/pdf', 'Content-Length': pdf.length
+        content:
+          ".nav { display: none} .navbar { border: 0px} #print-button {display: none}",
+      });
+      const pdfPage = await page.pdf({ format: "A4" });
+
+      await browser.close();
+      return pdfPage;
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  // async printPDF.then(pdf => {
+  // 	res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
+  // 	res.send(pdf)})
 
   async deleteCandidate(
     parent,
@@ -1873,7 +1923,7 @@ if(centerNumberPresent) {
       const delCand = await prismaDB.mutation.deleteCandidate({ where }, info);
       return { message: "Candidate Deletion Successful" };
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 
@@ -1897,7 +1947,7 @@ if(centerNumberPresent) {
       // todo delete it  from the database and note its absence
       return prismaDB.mutation.deleteRegion({ where }, info);
     } catch (error) {
-      throw new Error( `${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 };

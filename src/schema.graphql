@@ -125,6 +125,8 @@ type Mutation {
 	createRegion(regName: String!, regCode: String!): Region!
 	updateRegion(id: ID!, regName: String, regCode: String): Region!
 
+          printPDF(url:String!): SuccessMessage!
+   
 	createPhase(phaseName: String!, phaseCode: String!): Phase!
 	createPhaseRank(
 	phase: PhaseWhereUniqueInput!
@@ -247,7 +249,7 @@ type Mutation {
 	): Attendance!
 
 	signout: SuccessMessage!
-}
+},
 
 type Query {
 	# candidateInSchool(id:ID!):Candidate
@@ -381,7 +383,7 @@ type Query {
 	Region(where: RegionWhereUniqueInput!): Region!
 	me: User
 	users(orderBy: UserOrderByInput!): [User]!
-}
+},
 # type User {
 # id: ID!
 # email : String!
@@ -398,7 +400,7 @@ type Specialty {
 	educationType: EducationType!
 	registration: [Registration]!
 	scores: [Score]!
-}
+},
 type SuccessMessage {
 	message: String!
 }
