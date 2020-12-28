@@ -12,7 +12,6 @@ type Mutation {
 	image: String
 	dateOfBirth: DateTime
 	birthCertNumber: String
-	candCode: String
 	placeOfBirth: String
 	gender: String!
 	): Candidate!
@@ -28,7 +27,6 @@ type Mutation {
 	image: String
 	dateOfBirth: DateTime
 	birthCertNumber: String
-	candCode: String
 	placeOfBirth: String
 	gender: String!
 	): Candidate!
@@ -58,7 +56,6 @@ type Mutation {
 	examinerCNI: String!
 	examinerPhone: Int!
 	examinerMatricule: String!
-	examinerCode: String!
 	examinerEmail: String!
 	gender: String!
 	): Examiner!
@@ -70,7 +67,6 @@ type Mutation {
 	examinerCNI: String!
 	examinerPhone: Int!
 	examinerMatricule: String!
-	examinerCode: String!
 	examinerEmail: String!
 	gender: String!
 	): Examiner!
@@ -84,7 +80,6 @@ type Mutation {
 	enterMarks(
 	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
 	candExamSecretCode: String!
-	subjectName: String!
 	subjectAve: Float! # user: UserWhereUniqueInput!
 	): Score!
 	resetPassword(
@@ -98,7 +93,6 @@ type Mutation {
 	login(email: String!, password: String!): User!
 	createCenterExamSession(
 	center: CenterWhereUniqueInput!
-	CESCode: String!
 	examSession: ExamSessionWhereUniqueInput!
 	): CenterExamSession!
 	createExamSession(
@@ -111,7 +105,8 @@ type Mutation {
 	): CenterExamSessionSpecialty!
 
 	updateScore(
-	user: UserWhereUniqueInput!
+	# user: UserWhereUniqueInput!
+	# id: ID!,
 	subjectSpecialty: SubjectSpecialtyWhereUniqueInput!
 	subjectAve: Float!
 	candExamSecretCode: String!
@@ -178,7 +173,6 @@ type Mutation {
 	candidate: CandidateWhereUniqueInput!
 	specialty: SpecialtyWhereUniqueInput!
 	aptitude: String!
-	candExamSecretCode: String!
 	candExamSession: String!
 	candRegistrationNumber: String
 	EPF1: String
@@ -219,7 +213,6 @@ type Mutation {
 
 	createCenter(
 	centerName: String!
-	centerSecretCode: String!
 	centerCode: String!
 	centerNumber: Int
 	town: TownWhereUniqueInput!
@@ -233,7 +226,12 @@ type Mutation {
 
 	deleteCandidate(id: ID!): Candidate
 	deleteRegion(id: ID!): Region
+	deleteDivision(id: ID!): Division
 
+	deleteSubDivision(id: ID!): SubDivision
+	deleteSubject(id: ID!): Subject
+	deleteTown(id: ID!): Town
+	deleteCenter(id: ID!): Center
 	createSubjectSpecialty(
 	specialty: SpecialtyWhereUniqueInput!
 	subject: SubjectWhereUniqueInput!

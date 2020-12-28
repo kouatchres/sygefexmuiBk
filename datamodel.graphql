@@ -240,7 +240,6 @@ type Score {
   registration: Registration!
   subjectSpecialty: SubjectSpecialty!
   coeff: Int!
-  subjectName: String!
   user: User!
   candExamSecretCode: String!
   createdAt: DateTime! @createdAt

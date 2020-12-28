@@ -4622,7 +4622,6 @@ type Score {
   registration: Registration!
   subjectSpecialty: SubjectSpecialty!
   coeff: Int!
-  subjectName: String!
   user: User!
   candExamSecretCode: String!
   createdAt: DateTime!
@@ -4641,7 +4640,6 @@ input ScoreCreateInput {
   registration: RegistrationCreateOneWithoutScoresInput!
   subjectSpecialty: SubjectSpecialtyCreateOneInput!
   coeff: Int!
-  subjectName: String!
   user: UserCreateOneInput!
   candExamSecretCode: String!
 }
@@ -4656,7 +4654,6 @@ input ScoreCreateWithoutRegistrationInput {
   subjectTotal: Float
   subjectSpecialty: SubjectSpecialtyCreateOneInput!
   coeff: Int!
-  subjectName: String!
   user: UserCreateOneInput!
   candExamSecretCode: String!
 }
@@ -4675,8 +4672,6 @@ enum ScoreOrderByInput {
   subjectTotal_DESC
   coeff_ASC
   coeff_DESC
-  subjectName_ASC
-  subjectName_DESC
   candExamSecretCode_ASC
   candExamSecretCode_DESC
   createdAt_ASC
@@ -4690,7 +4685,6 @@ type ScorePreviousValues {
   subjectAve: Float
   subjectTotal: Float
   coeff: Int!
-  subjectName: String!
   candExamSecretCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -4720,7 +4714,6 @@ input ScoreUpdateInput {
   registration: RegistrationUpdateOneRequiredWithoutScoresInput
   subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
   coeff: Int
-  subjectName: String
   user: UserUpdateOneRequiredInput
   candExamSecretCode: String
 }
@@ -4739,7 +4732,6 @@ input ScoreUpdateWithoutRegistrationDataInput {
   subjectTotal: Float
   subjectSpecialty: SubjectSpecialtyUpdateOneRequiredInput
   coeff: Int
-  subjectName: String
   user: UserUpdateOneRequiredInput
   candExamSecretCode: String
 }
@@ -4796,20 +4788,6 @@ input ScoreWhereInput {
   coeff_lte: Int
   coeff_gt: Int
   coeff_gte: Int
-  subjectName: String
-  subjectName_not: String
-  subjectName_in: [String!]
-  subjectName_not_in: [String!]
-  subjectName_lt: String
-  subjectName_lte: String
-  subjectName_gt: String
-  subjectName_gte: String
-  subjectName_contains: String
-  subjectName_not_contains: String
-  subjectName_starts_with: String
-  subjectName_not_starts_with: String
-  subjectName_ends_with: String
-  subjectName_not_ends_with: String
   user: UserWhereInput
   candExamSecretCode: String
   candExamSecretCode_not: String

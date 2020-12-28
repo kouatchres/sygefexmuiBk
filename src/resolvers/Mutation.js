@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const { hash, compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 const hasPermissions = require("../utils/hasPermissions");
+const { uniqueCodeGen, removeTypename } = require("../utils/Functions");
 const puppeteer = require("puppeteer");
 
 const Mutation = {
@@ -215,6 +216,7 @@ const Mutation = {
                 id: userId,
               },
             },
+            candCode: uniqueCodeGen(14),
             ...args,
           },
         },
@@ -259,6 +261,7 @@ const Mutation = {
                 email: args.email,
               },
             },
+            candCode: uniqueCodeGen(14),
             ...args,
           },
         },
@@ -290,6 +293,7 @@ const Mutation = {
                 id: userId,
               },
             },
+            examinerCode: uniqueCodeGen(14),
             ...args,
           },
         },
@@ -352,10 +356,8 @@ const Mutation = {
       }
       hasPermissions(user, ["ADMIN"]);
       //    make a copy  of the argsRankphase rank
-      const newRank = {
-        ...args,
-      };
-      const { phase, rank, ...others } = newRank;
+
+      const { phase, rank } = { ...args };
 
       const newPhaseRank = await prismaDB.mutation.createPhaseRank(
         {
@@ -370,7 +372,6 @@ const Mutation = {
                 id: rank.id,
               },
             },
-            ...others,
           },
         },
         info
@@ -489,6 +490,7 @@ const Mutation = {
               },
             },
             centerNumber,
+            centerSecretCode: uniqueCodeGen(18),
             ...others,
           },
         },
@@ -514,7 +516,7 @@ const Mutation = {
       };
       // show the region name from the new regions array because will not have to update the id
 
-      const { examSession, center, CESCode } = newCenterRegistration;
+      const { examSession, center } = newCenterRegistration;
 
       const [alreadyRegistered] = await prismaDB.query.centerExamSessions({
         where: {
@@ -546,7 +548,7 @@ const Mutation = {
                 id: center.id,
               },
             },
-            CESCode,
+            CESCode: uniqueCodeGen(21),
           },
         },
         info
@@ -906,7 +908,6 @@ const Mutation = {
         candExamSession,
         centerExamSession,
         centerExamSessionSpecialty,
-        candExamSecretCode,
         candidate,
         aptitude,
         specialty,
@@ -953,7 +954,7 @@ const Mutation = {
       const newRegistration = prismaDB.mutation.createRegistration(
         {
           data: {
-            candExamSecretCode,
+            candExamSecretCode: uniqueCodeGen(20),
             candExamSession,
             aptitude,
             EPF1,
@@ -1185,10 +1186,11 @@ const Mutation = {
           "Aucun Examem n'est enrégistré. Veuillez enrégistrer tous les examens d'abord"
         );
       }
-      const refinedExams = allExams.map(
-        ({ __typename, createdAt, updatedAt, examName, examCode, ...others }) =>
-          others
-      );
+      // const refinedExams = allExams.map(
+      //   ({ __typename, createdAt, updatedAt, examName, examCode, ...others }) =>
+      //     others
+      // );
+      const refinedExams = removeTypename(allExams);
 
       const getExamItems = refinedExams.map((item) => {
         const getExamItems = {
@@ -1374,7 +1376,7 @@ const Mutation = {
         ...args,
       };
       const { educType, ...others } = newSubjectTypes;
-
+      console.log({ educType });
       const subject = await prismaDB.mutation.createSubject(
         {
           data: {
@@ -1581,9 +1583,9 @@ const Mutation = {
         {
           data: {
             ...updates,
-            user: {
-              connect: { id: userId },
-            },
+            // user: {
+            //   connect: { id: userId },
+            // },
           },
 
           where: {
@@ -1946,6 +1948,126 @@ const Mutation = {
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
       return prismaDB.mutation.deleteRegion({ where }, info);
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async deleteDivision(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN"]);
+      // make a where variable
+      const where = { id: args.id };
+      // 1 find the item
+      // const regionToDelete = await prismaDB.query.region({ where }, info);
+
+      // todo check if they own the item or have the permissions for the item
+      // todo delete it  from the database and note its absence
+      return prismaDB.mutation.deleteDivision({ where }, info);
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async deleteSubDivision(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN"]);
+      // make a where variable
+      const where = { id: args.id };
+      // 1 find the item
+      // const regionToDelete = await prismaDB.query.region({ where }, info);
+
+      // todo check if they own the item or have the permissions for the item
+      // todo delete it  from the database and note its absence
+      return prismaDB.mutation.deleteSubDivision({ where }, info);
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async deleteSubject(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN"]);
+      // make a where variable
+      const where = { id: args.id };
+      // 1 find the item
+      // const regionToDelete = await prismaDB.query.region({ where }, info);
+
+      // todo check if they own the item or have the permissions for the item
+      // todo delete it  from the database and note its absence
+      return prismaDB.mutation.deleteSubject({ where }, info);
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async deleteTown(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN"]);
+      // make a where variable
+      const where = { id: args.id };
+      // 1 find the item
+      // const regionToDelete = await prismaDB.query.region({ where }, info);
+
+      // todo check if they own the item or have the permissions for the item
+      // todo delete it  from the database and note its absence
+      return prismaDB.mutation.deleteTown({ where }, info);
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
+  async deleteCenter(
+    parent,
+    args,
+    { prismaDB, request: { user, userId } },
+    info
+  ) {
+    try {
+      if (!userId) {
+        throw new Error("Veuillez vous connecter");
+      }
+      hasPermissions(user, ["ADMIN"]);
+      // make a where variable
+      const where = { id: args.id };
+      // 1 find the item
+      // const regionToDelete = await prismaDB.query.region({ where }, info);
+
+      // todo check if they own the item or have the permissions for the item
+      // todo delete it  from the database and note its absence
+      return prismaDB.mutation.deleteCenter({ where }, info);
     } catch (error) {
       throw new Error(`${error.message}`);
     }

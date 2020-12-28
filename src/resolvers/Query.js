@@ -441,7 +441,6 @@ const Query = {
       console.log(args);
       const where = {
         candExamSecretCode: args.candExamSecretCode,
-        orderBy: "subjectName_ASC",
       };
       const allScores = await prismaDB.query.scores({ where }, info);
       return allScores;
@@ -490,6 +489,7 @@ const Query = {
       }
       const where = {
         id: args.id,
+        //  orderBy: "subjectName_ASC",
       };
       const oneSpecialty = await prismaDB.query.specialty({ where }, info);
       return oneSpecialty;

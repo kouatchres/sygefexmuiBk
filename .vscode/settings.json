@@ -19,7 +19,7 @@
             
         },
       
-        "window.zoomLevel": -1,
+        "window.zoomLevel": 0,
         "editor.tabSize": 10,
         "editor.fontSize": 16,
         "git.ignoreLimitWarning": true,
