@@ -12,7 +12,7 @@ const hasPermissions = (user, requiredPermissions) => {
 
 const isCenterAdmin = user => {
   const matchedPermissions = user.permissions.filter(permissionsUserHas =>
-    [ 'ADMIN', 'CENTER_ADMIN'].includes(permissionsUserHas),
+    ['USER', 'ADMIN', 'CENTER_ADMIN'].includes(permissionsUserHas),
   )
 
   if (!matchedPermissions.length) {
@@ -21,7 +21,7 @@ const isCenterAdmin = user => {
 }
 const isBoardAdmin = user => {
   const matchedPermissions = user.permissions.filter(permissionsUserHas =>
-    [ 'ADMIN'].includes(permissionsUserHas),
+    ['USER', 'ADMIN'].includes(permissionsUserHas),
   )
 
   if (!matchedPermissions.length) {
@@ -30,7 +30,7 @@ const isBoardAdmin = user => {
 }
 const isExaminer = user => {
   const matchedPermissions = user.permissions.filter(permissionsUserHas =>
-    ['EXAMINER', 'ADMIN'].includes(permissionsUserHas),
+    ['USER', 'EXAMINER', 'ADMIN'].includes(permissionsUserHas),
   )
 
   if (!matchedPermissions.length) {

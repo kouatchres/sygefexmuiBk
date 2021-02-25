@@ -105,6 +105,7 @@ type Attendance {
   candExamSecretCode: String!
   collected: String!
   handin: String!
+  presence: String!
   user: User!
   centerExamSessionSpecialty: CenterExamSessionSpecialty!
   createdAt: DateTime!
@@ -123,6 +124,7 @@ input AttendanceCreateInput {
   candExamSecretCode: String!
   collected: String!
   handin: String!
+  presence: String!
   user: UserCreateOneInput!
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutAttendanceInput!
 }
@@ -143,6 +145,7 @@ input AttendanceCreateWithoutCenterExamSessionSpecialtyInput {
   candExamSecretCode: String!
   collected: String!
   handin: String!
+  presence: String!
   user: UserCreateOneInput!
 }
 
@@ -151,6 +154,7 @@ input AttendanceCreateWithoutRegistrationInput {
   candExamSecretCode: String!
   collected: String!
   handin: String!
+  presence: String!
   user: UserCreateOneInput!
   centerExamSessionSpecialty: CenterExamSessionSpecialtyCreateOneWithoutAttendanceInput!
 }
@@ -169,6 +173,8 @@ enum AttendanceOrderByInput {
   collected_DESC
   handin_ASC
   handin_DESC
+  presence_ASC
+  presence_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -180,6 +186,7 @@ type AttendancePreviousValues {
   candExamSecretCode: String!
   collected: String!
   handin: String!
+  presence: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -208,6 +215,7 @@ input AttendanceUpdateInput {
   candExamSecretCode: String
   collected: String
   handin: String
+  presence: String
   user: UserUpdateOneRequiredInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutAttendanceInput
 }
@@ -236,6 +244,7 @@ input AttendanceUpdateWithoutCenterExamSessionSpecialtyDataInput {
   candExamSecretCode: String
   collected: String
   handin: String
+  presence: String
   user: UserUpdateOneRequiredInput
 }
 
@@ -244,6 +253,7 @@ input AttendanceUpdateWithoutRegistrationDataInput {
   candExamSecretCode: String
   collected: String
   handin: String
+  presence: String
   user: UserUpdateOneRequiredInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyUpdateOneRequiredWithoutAttendanceInput
 }
@@ -329,6 +339,20 @@ input AttendanceWhereInput {
   handin_not_starts_with: String
   handin_ends_with: String
   handin_not_ends_with: String
+  presence: String
+  presence_not: String
+  presence_in: [String!]
+  presence_not_in: [String!]
+  presence_lt: String
+  presence_lte: String
+  presence_gt: String
+  presence_gte: String
+  presence_contains: String
+  presence_not_contains: String
+  presence_starts_with: String
+  presence_not_starts_with: String
+  presence_ends_with: String
+  presence_not_ends_with: String
   user: UserWhereInput
   centerExamSessionSpecialty: CenterExamSessionSpecialtyWhereInput
   createdAt: DateTime

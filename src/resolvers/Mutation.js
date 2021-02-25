@@ -1,57 +1,63 @@
-require("dotenv").config({ path: "../.env" });
-const hashPassword = require("../utils/hashPassword");
-const { randomBytes } = require("crypto");
-const { promisify } = require("util");
-const { hash, compare } = require("bcryptjs");
-const { sign } = require("jsonwebtoken");
-const hasPermissions = require("../utils/hasPermissions");
-const { uniqueCodeGen, removeTypename } = require("../utils/Functions");
-const puppeteer = require("puppeteer");
+require('dotenv').config({ path: '../.env' })
+const hashPassword = require('../utils/hashPassword')
+const { randomBytes } = require('crypto')
+const { promisify } = require('util')
+const { hash, compare } = require('bcryptjs')
+const { sign } = require('jsonwebtoken')
+const isAuthenticated = require('../utils/authentication')
+const {
+  isBoardAdmin,
+  isUser,
+  isExaminer,
+  isCenterAdmin,
+  hasPermissions }= require("../utils/hasPermissions")
+const { uniqueCodeGen, removeTypename } = require('../utils/Functions')
+const puppeteer = require('puppeteer')
 
 const Mutation = {
   signout(parent, args, { prismaDB, response }, info) {
-    response.clearCookie("token");
-    return { message: "Aurevoir de Sygefex!" };
+    response.clearCookie('token')
+    return { message: 'Aurevoir de Sygefex!' }
   },
 
   async requestReset(
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      console.log(args);
+      console.log(args)
       //check if the email exists
       const user = await prismaDB.query.user(
         {
           where: { email: args.email },
         },
-        info
-      );
+        info,
+      )
       if (!user) {
-        throw new Error("No such email found");
+        throw new Error('No such email found')
       }
 
-      const resetToken = (await promisify(randomBytes)(20)).toString("hex");
-      const resetTokenExpiry = Date.now() + 3600000; // 1hr from now
+      const resetToken = (await promisify(randomBytes)(20)).toString('hex')
+      const resetTokenExpiry = Date.now() + 3600000 // 1hr from now
 
       // save the just created variables to the user object
       const res = await prismaDB.mutation.updateUser({
         where: { email: args.email },
         data: { resetToken, resetTokenExpiry },
-      });
-      console.log(res);
-      return { message: "Password Reset link has been emailed to you" };
+      })
+      console.log(res)
+      return { message: 'Password Reset link has been emailed to you' }
     } catch (err) {
-      throw new Error(err);
+      throw new Error(err)
     }
   },
 
   async resetPassword(parent, args, { prismaDB, response }, info) {
     // 1 check if passwords match
     if (args.password !== args.confirmPassword) {
-      throw new Error("Your passwords do not match");
+      throw new Error('Your passwords do not match')
     }
     // 2 check if it is  a legit token
     // 3 check if its expired
@@ -60,12 +66,12 @@ const Mutation = {
         resetToken: args.resetToken,
         resetTokenExpiry: Date.now() - 3600000,
       },
-    });
+    })
     if (!updatedUser) {
-      throw new Error("Token is either invalid or expired");
+      throw new Error('Token is either invalid or expired')
     }
     // 4 hash new password
-    const password = await hash(args.password, 10);
+    const password = await hash(args.password, 10)
     // 5 save new password to the user
     const res = await prismaDB.mutation.updateUser({
       where: { email: updatedUser.email },
@@ -74,48 +80,48 @@ const Mutation = {
         resetToken: null,
         resetTokenExpiry: null,
       },
-    });
+    })
     // 6 generate jwt
-    const token = sign({ userId: updatedUser.id }, process.env.APP_SECRET);
+    const token = sign({ userId: updatedUser.id }, process.env.APP_SECRET)
     // 7  set jwt cookie
-    response.cookie("token", token, {
+    response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 90 * 90 * 24 * 365,
-    });
+    })
     // 8 check passwords match
 
-    return updatedUser;
+    return updatedUser
   },
 
   async login(parents, args, { prismaDB, response }, info) {
     try {
-      console.log({ args });
+      console.log({ args })
       //check if the email exists
       const user = await prismaDB.query.user(
         {
           where: { email: args.email },
         },
-        info
-      );
+        info,
+      )
       if (!user) {
-        throw new Error("Unable to login");
+        throw new Error('Unable to login')
       }
       //compare the provided password with the hashed one coming from the user object
-      const isMatched = await compare(args.password, user.password);
+      const isMatched = await compare(args.password, user.password)
       if (!isMatched) {
-        throw new Error("Unable to login");
+        throw new Error('Unable to login')
       }
 
       //generate the jwt for the user
-      const token = sign({ userId: user.id }, process.env.APP_SECRET);
+      const token = sign({ userId: user.id }, process.env.APP_SECRET)
       // set the cookie with the token for subsequent transactions
-      response.cookie("token", token, {
+      response.cookie('token', token, {
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 365 * 1000,
-      });
-      return user;
+      })
+      return user
     } catch (err) {
-      throw new Error(err.message);
+      throw new Error(err.message)
     }
   },
 
@@ -123,23 +129,21 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(args);
-      hasPermissions(user, ["USER", "ADMIN", "CENTER_ADMIN"]);
-
-      const newAttendance = { ...args };
+      isAuthenticated
+     isBoardAdmin(user)
+      const newAttendance = { ...args }
       // todo has the student already been checked for subject attendance
       const {
         subjectSpecialty,
         candExamSecretCode,
         centerExamSessionSpecialty,
+        collected,
+        handin,
         ...others
-      } = newAttendance;
+      } = newAttendance
       const [verifyAttendance] = await prismaDB.query.attendances(
         {
           where: {
@@ -147,14 +151,14 @@ const Mutation = {
             candExamSecretCode,
           },
         },
-        `{ id }`
-      );
-      console.log(verifyAttendance);
+        `{ id }`,
+      )
+      console.log(verifyAttendance)
 
       if (verifyAttendance) {
         throw new Error(
-          "Candidat(e) déjà controllé(e) pour remise des copies et collecte des matériels"
-        );
+          'Candidat(e) déjà controllé(e) pour remise des copies et collecte des matériels',
+        )
       }
       const attendance = await prismaDB.mutation.createAttendance(
         {
@@ -172,15 +176,18 @@ const Mutation = {
               connect: { id: centerExamSessionSpecialty.id },
             },
             candExamSecretCode,
+            collected,
+            handin,
+            presence: (collected === 'O' && handin === 'O') ? 'P' : 'A',
             ...others,
           },
         },
-        info
-      );
+        info,
+      )
 
-      return attendance;
+      return attendance
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -188,25 +195,11 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-
-      hasPermissions(user, ["USER", "ADMIN", "CENTER_ADMIN"]);
-      // const userCreatedCand = await prismaDB.query.candidates(
-      //   {
-      //     where: {
-      //       user: { id: userId },
-      //     },
-      //   },
-      //   info
-      // );
-      // if (userCreatedCand) {
-      //   throw new Error("Vous avez déjà enregistré un candidat");
-      // }
+      isAuthenticated
+     isBoardAdmin(user)
 
       const candidate = await prismaDB.mutation.createCandidate(
         {
@@ -220,12 +213,12 @@ const Mutation = {
             ...args,
           },
         },
-        info
-      );
+        info,
+      )
 
-      return candidate;
+      return candidate
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -233,24 +226,21 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      console.log(args);
+      isAuthenticated
+      isUser(user)
+      console.log(args)
 
       const verifyUserEmailExists = await prismaDB.query.users(
         { where: { email: args.email } },
-        info
-      );
+        info,
+      )
       if (!verifyUserEmailExists) {
         throw new Error(
-          "l'utilisateur avec cet e-mail n'a pas de compte et ne peut pas être enregistré"
-        );
+          "l'utilisateur avec cet e-mail n'a pas de compte et ne peut pas être enregistré",
+        )
       }
 
       const candidate = await prismaDB.mutation.createCandidate(
@@ -265,12 +255,12 @@ const Mutation = {
             ...args,
           },
         },
-        info
-      );
+        info,
+      )
 
-      return candidate;
+      return candidate
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -278,13 +268,11 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "EXAMINER"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const newExaminer = await prismaDB.mutation.createExaminer(
         {
           data: {
@@ -297,12 +285,12 @@ const Mutation = {
             ...args,
           },
         },
-        info
-      );
+        info,
+      )
 
-      return newExaminer;
+      return newExaminer
     } catch (error) {
-      throw new Error(`  ${error.message}`);
+      throw new Error(`  ${error.message}`)
     }
   },
 
@@ -310,19 +298,17 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const newRegs = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { region, ...others } = newRegs;
+      const { region, ...others } = newRegs
 
       const division = await prismaDB.mutation.createDivision(
         {
@@ -335,12 +321,12 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      console.log(args);
-      return division;
+        info,
+      )
+      console.log(args)
+      return division
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -348,16 +334,14 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the argsRankphase rank
 
-      const { phase, rank } = { ...args };
+      const { phase, rank } = { ...args }
 
       const newPhaseRank = await prismaDB.mutation.createPhaseRank(
         {
@@ -374,11 +358,11 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      return newPhaseRank;
+        info,
+      )
+      return newPhaseRank
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -386,20 +370,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the args
       const newDivs = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { division, ...others } = newDivs;
+      const { division, ...others } = newDivs
 
       const subDivision = await prismaDB.mutation.createSubDivision(
         {
@@ -412,12 +394,12 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      console.log(args);
-      return subDivision;
+        info,
+      )
+      console.log(args)
+      return subDivision
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -425,19 +407,17 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const newTowns = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { subDiv, ...others } = newTowns;
+      const { subDiv, ...others } = newTowns
 
       const town = await prismaDB.mutation.createTown(
         {
@@ -450,12 +430,12 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      console.log(args);
-      return town;
+        info,
+      )
+      console.log(args)
+      return town
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -463,23 +443,21 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      const newCenters = { ...args };
+      isAuthenticated
+     isBoardAdmin(user)
+      const newCenters = { ...args }
 
-      const { town, centerNumber, ...others } = newCenters;
+      const { town, centerNumber, ...others } = newCenters
       const centerNumberPresent = await prismaDB.query.center({
         where: {
           centerNumber,
         },
-      });
+      })
       if (centerNumberPresent) {
-        throw new Error("Ce numéro de centre existe déjà.");
+        throw new Error('Ce numéro de centre existe déjà.')
       }
       const center = await prismaDB.mutation.createCenter(
         {
@@ -494,12 +472,12 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      console.log(args);
-      return center;
+        info,
+      )
+      console.log(args)
+      return center
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -507,16 +485,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
+       isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the args
       const newCenterRegistration = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { examSession, center } = newCenterRegistration;
+      const { examSession, center } = newCenterRegistration
 
       const [alreadyRegistered] = await prismaDB.query.centerExamSessions({
         where: {
@@ -527,11 +507,11 @@ const Mutation = {
             id: examSession.id,
           },
         },
-      });
+      })
       if (alreadyRegistered) {
         throw new Error(
-          "Ce Centre est déjà inscrit à cet examen pour cette session."
-        );
+          'Ce Centre est déjà inscrit à cet examen pour cette session.',
+        )
       }
 
       const centerExamSession = await prismaDB.mutation.createCenterExamSession(
@@ -551,12 +531,12 @@ const Mutation = {
             CESCode: uniqueCodeGen(21),
           },
         },
-        info
-      );
-      console.log(args);
-      return centerExamSession;
+        info,
+      )
+      console.log(args)
+      return centerExamSession
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -564,20 +544,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the args
       const newExamSessionRegistration = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { exam, session } = newExamSessionRegistration;
+      const { exam, session } = newExamSessionRegistration
 
       const [alreadyRegistered] = await prismaDB.query.centerExamSessions({
         where: {
@@ -588,11 +566,11 @@ const Mutation = {
             id: exam.id,
           },
         },
-      });
+      })
       if (alreadyRegistered) {
         throw new Error(
-          "Ceci est déjà inscrit à cet examen pour cette session."
-        );
+          'Ceci est déjà inscrit à cet examen pour cette session.',
+        )
       }
 
       const ExamSession = await prismaDB.mutation.createExamSession(
@@ -611,12 +589,12 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      console.log(args);
-      return ExamSession;
+        info,
+      )
+      console.log(args)
+      return ExamSession
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -624,17 +602,15 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the args
-      const newSubjSpec = { ...args };
+      const newSubjSpec = { ...args }
 
-      const { specialty, subject, ...others } = newSubjSpec;
+      const { specialty, subject, ...others } = newSubjSpec
 
       const subjectSpecialtyRegistered = await prismaDB.query.subjectSpecialties(
         {
@@ -646,10 +622,10 @@ const Mutation = {
               id: specialty.id,
             },
           },
-        }
-      );
+        },
+      )
       if (subjectSpecialtyRegistered.length > 0) {
-        throw new Error("Cette Matière est déjà inscrite à cette specialité.");
+        throw new Error('Cette Matière est déjà inscrite à cette specialité.')
       }
 
       const subjSpecs = await prismaDB.mutation.createSubjectSpecialty(
@@ -669,12 +645,12 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      console.log(args);
-      return subjSpecs;
+        info,
+      )
+      console.log(args)
+      return subjSpecs
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -682,16 +658,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
+       isAuthenticated
+     isBoardAdmin(user)
       //    make a copy  of the args
       const newCenterRegistration = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { centerExamSession, specialty } = newCenterRegistration;
+      const { centerExamSession, specialty } = newCenterRegistration
 
       const [
         alreadyRegistered,
@@ -704,9 +682,9 @@ const Mutation = {
             id: specialty.id,
           },
         },
-      });
+      })
       if (alreadyRegistered) {
-        throw new Error("Cette Séries est déjà inscrite à ce centre.");
+        throw new Error('Cette Séries est déjà inscrite à ce centre.')
       }
 
       const CESS = await prismaDB.mutation.createCenterExamSessionSpecialty(
@@ -724,185 +702,36 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      console.log(args);
-      return CESS;
+        info,
+      )
+      console.log(args)
+      return CESS
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
-
-  //todo registration including subjects in the scores table
-  // async createRegistrationWithScores(
-  //   parents,
-  //   args,
-  //   { prismaDB, request: { user, userId } },
-  //   info
-  // ) {
-  //   try {
-  //     // the function that helps to addleading zeroes infront of an interger number
-  //     Number.prototype.pad = function(size) {
-  //       var s = String(this);
-  //       while (s.length < (size || 2)) {
-  //         s = "0" + s;
-  //       }
-  //       return s;
-  //     };
-
-  //     console.log(args);
-  //     //    make a copy  of the args
-  //     const newRegistartionInfos = {
-  //       ...args,
-  //     };
-
-  //     // show the region name from the new regions array because will not have to update the id
-  //     const {
-  //       candExamSession,
-  //       centerExamSession,
-  //       centerExamSessionSpecialty,
-  //       candExamSecretCode,
-  //       candidate,
-  //       specialty,
-  //       candRegistrationNumber,
-  //     } = newRegistartionInfos;
-
-  //     const [
-  //       hasRegisteredForExamInSession,
-  //     ] = await prismaDB.query.registrations(
-  //       {
-  //         where: {
-  //           candExamSession,
-  //         },
-  //       },
-  //       info
-  //     );
-  //     if (hasRegisteredForExamInSession) {
-  //       throw new Error(
-  //         "Vous êtes déjà inscrit à cet examen pour cette session."
-  //       );
-  //     }
-
-  //     // get the specialty with all associated subjects while adding the coeff, cand secret code etc
-  //     let subjsOfSpecialty = await prismaDB.query.specialty(
-  //       {
-  //         where: {
-  //           id: specialty.id,
-  //         },
-  //       },
-  //       `{
-  //       id
-  //       subjectSpecialty{
-  //         id
-  //         coeff
-  //         subjectName
-  //         subjectCode
-  //     }}`
-  //     );
-
-  //     const { subjectSpecialty } = subjsOfSpecialty;
-
-  //     // //make an array of the subjects for the candidate according to the chosen specialty
-  //     const subjectList = subjectSpecialty.map((item) => {
-  //       // each subject with the accompanying attributes
-  //       const subjectList = {
-  //         subjectSpecialty: {
-  //           connect: {
-  //             id: item.id,
-  //           },
-  //         },
-  //         candExamSecretCode,
-  //         coeff: item.coeff,
-  //       };
-
-  //       return subjectList;
-  //     });
-
-  //     if (subjectList && subjectList.length === 0) {
-  //       throw new Error(
-  //         "Pour l'instant, cette série n'est pas disponible pour les inscriptions"
-  //       );
-  //     }
-
-  //     // cross check  in the registration table to get the count of all records of a given centerExamSession
-  //     const candCount = await prismaDB.query.registrationsConnection(
-  //       {
-  //         where: {
-  //           candRegistrationNumber_contains: candRegistrationNumber,
-  //         },
-  //       },
-  //       `{
-  // 		aggregate{
-  // 			count
-  // 		}
-  // 	}`
-  //     );
-
-  //     const newCount = candCount.aggregate.count + 1;
-  //     // recreate the next candidate registration Number
-  //     const newCandRegistrationNumber = `${candRegistrationNumber +
-  //       newCount.pad(5)}`;
-  //     // now  drop the list of subjects on the score table linking it up with the just created registration
-  //     const newRegistration = prismaDB.mutation.createRegistration(
-  //       {
-  //         data: {
-  //           candExamSecretCode,
-  //           candExamSession,
-  //           candRegistrationNumber: newCandRegistrationNumber,
-  //           centerExamSessionSpecialty: {
-  //             connect: {
-  //               id: centerExamSessionSpecialty.id,
-  //             },
-  //           },
-  //           specialty: {
-  //             connect: {
-  //               id: specialty.id,
-  //             },
-  //           },
-  //           centerExamSession: {
-  //             connect: {
-  //               id: centerExamSession.id,
-  //             },
-  //           },
-
-  //           candidate: {
-  //             connect: {
-  //               candCode: candidate.candCode,
-  //             },
-  //           },
-  //           scores: {
-  //             create: subjectList,
-  //           },
-  //         },
-  //       },
-  //       info
-  //     );
-
-  //     return newRegistration;
-  //   } catch (error) {
-  //     throw new Error(` ${error.message}`);
-  //   }
-  // },
 
   async createRegistration(
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
+       isAuthenticated
+     isUser(user)
       // the function that helps to addleading zeroes infront of an interger number
       Number.prototype.pad = function(size) {
-        var s = String(this);
+        var s = String(this)
         while (s.length < (size || 2)) {
-          s = "0" + s;
+          s = '0' + s
         }
-        return s;
-      };
+        return s
+      }
 
-      console.log(args);
+      console.log(args)
       //    make a copy  of the args
-      const newRegistartionInfos = { ...args };
+      const newRegistartionInfos = { ...args }
 
       const {
         candExamSession,
@@ -914,7 +743,7 @@ const Mutation = {
         EPF1,
         EPF2,
         candRegistrationNumber,
-      } = newRegistartionInfos;
+      } = newRegistartionInfos
 
       const [
         hasRegisteredForExamInSession,
@@ -924,12 +753,12 @@ const Mutation = {
             candExamSession,
           },
         },
-        info
-      );
+        info,
+      )
       if (hasRegisteredForExamInSession) {
         throw new Error(
-          "Vous êtes déjà inscrit à cet examen pour cette session."
-        );
+          'Vous êtes déjà inscrit à cet examen pour cette session.',
+        )
       }
 
       // cross check  in the registration table to get the count of all records of a given centerExamSession
@@ -943,13 +772,13 @@ const Mutation = {
 			aggregate{
 				count
 			}
-		}`
-      );
+		}`,
+      )
 
-      const newCount = candCount.aggregate.count + 1;
+      const newCount = candCount.aggregate.count + 1
       // recreate the next candidate registration Number
       const newCandRegistrationNumber = `${candRegistrationNumber +
-        newCount.pad(5)}`;
+        newCount.pad(5)}`
       // now  drop the list of subjects on the score table linking it up with the just created registration
       const newRegistration = prismaDB.mutation.createRegistration(
         {
@@ -982,12 +811,12 @@ const Mutation = {
             },
           },
         },
-        info
-      );
+        info,
+      )
 
-      return newRegistration;
+      return newRegistration
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -995,16 +824,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      console.log(args);
+       isAuthenticated
+       isBoardAdmin(user)
+      console.log(args)
       //    make a copy  of the args
       const newCenterAdminInfos = {
         ...args,
-      };
+      }
 
-      const { centerExamSession, phaseRank, examiner } = newCenterAdminInfos;
+      const { centerExamSession, phaseRank, examiner } = newCenterAdminInfos
 
       const [rankRegistered] = await prismaDB.query.centerExamSessionExaminers({
         where: {
@@ -1015,11 +846,11 @@ const Mutation = {
             id: phaseRank.id,
           },
         },
-      });
+      })
       if (rankRegistered) {
         throw new Error(
-          "Poste déjà occupé, Veuillez Verifier avec le chef de centre"
-        );
+          'Poste déjà occupé, Veuillez Verifier avec le chef de centre',
+        )
       }
 
       const prof = await prismaDB.mutation.createCenterExamSessionExaminer(
@@ -1042,84 +873,31 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      return prof;
+        info,
+      )
+      return prof
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
-  // async createSubjectSpecialty(
-  //   parents,
-  //   args,
-  //   { prismaDB, request: { user, userId } },
-  //   info
-  // ) {
-  //   try {
-  //     if (!userId) {
-  //       throw new Error("Veuillez vous connecter");
-  //     }
-  //     hasPermissions(user, ["ADMIN"]);
-
-  //     //    make a copy  of the args
-  //     const subjSpecialtyInfos = {
-  //       ...args,
-  //     };
-  //     // show the region name from the new regions array because will not have to update the id
-  //     console.log(subjSpecialtyInfos);
-  //     const { specialty, subjectName, ...others } = subjSpecialtyInfos;
-  //     const [existingSubj] = await prismaDB.query.subjectSpecialties({
-  //       where: {
-  //         specialty: {
-  //           id: specialty.id,
-  //         },
-  //         subjectName,
-  //       },
-  //     });
-  //     if (existingSubj) {
-  //       throw new Error("Matière déjà présente pour cette séries");
-  //     }
-
-  //     const newSubjSpecialty = await prismaDB.mutation.createSubjectSpecialty(
-  //       {
-  //         data: {
-  //           specialty: {
-  //             connect: {
-  //               id: specialty.id,
-  //             },
-  //           },
-  //           ...others,
-  //           subjectName,
-  //         },
-  //       },
-  //       info
-  //     );
-  //     console.log(args);
-  //     return newSubjSpecialty;
-  //   } catch (error) {
-  //     throw new Error(`${error.message}`);
-  //   }
-  // },
 
   async createRegion(
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const region = await prismaDB.mutation.createRegion(
         { data: { ...args } },
-        info
-      );
-      return region;
+        info,
+      )
+      return region
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1130,19 +908,19 @@ const Mutation = {
           ...args,
           email: args.email.toLowerCase(),
           password: await hashPassword(args.password),
-          permissions: { set: ["USER", "ADMIN"] },
+          permissions: { set: ['USER', 'ADMIN', 'CENTER_ADMIN'] },
         },
-      });
-      const token = sign({ userId: user.id }, process.env.APP_SECRET);
+      })
+      const token = sign({ userId: user.id }, process.env.APP_SECRET)
       // set the jwt as a cookie to be sent along for each transaction
-      response.cookie("token", token, {
+      response.cookie('token', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365, // token valid for 1 year
-      });
+      })
 
-      return user;
+      return user
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -1150,22 +928,20 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const phase = await prismaDB.mutation.createPhase(
         {
           data: { ...args },
         },
-        info
-      );
-      return phase;
+        info,
+      )
+      return phase
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1173,35 +949,33 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const allExams = await prismaDB.query.exams();
+      isAuthenticated
+     isBoardAdmin(user)
+      const allExams = await prismaDB.query.exams()
       if (allExams.length === 0) {
         throw new Error(
-          "Aucun Examem n'est enrégistré. Veuillez enrégistrer tous les examens d'abord"
-        );
+          "Aucun Examem n'est enrégistré. Veuillez enrégistrer tous les examens d'abord",
+        )
       }
       // const refinedExams = allExams.map(
       //   ({ __typename, createdAt, updatedAt, examName, examCode, ...others }) =>
       //     others
       // );
-      const refinedExams = removeTypename(allExams);
+      const refinedExams = removeTypename(allExams)
 
-      const getExamItems = refinedExams.map((item) => {
+      const getExamItems = refinedExams.map(item => {
         const getExamItems = {
           exam: {
             connect: {
               id: item.id,
             },
           },
-        };
-        return getExamItems;
-      });
+        }
+        return getExamItems
+      })
 
       const session = await prismaDB.mutation.createSession(
         {
@@ -1213,11 +987,11 @@ const Mutation = {
             },
           },
         },
-        info
-      );
-      return session;
+        info,
+      )
+      return session
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -1225,24 +999,22 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const rank = await prismaDB.mutation.createRank(
         {
           data: {
             ...args,
           },
         },
-        info
-      );
-      return rank;
+        info,
+      )
+      return rank
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1250,20 +1022,22 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
+       isAuthenticated
+     isBoardAdmin(user)
       const educationType = await prismaDB.mutation.createEducationType(
         {
           data: {
             ...args,
           },
         },
-        info
-      );
-      return educationType;
+        info,
+      )
+      return educationType
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1271,24 +1045,22 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const exam = await prismaDB.mutation.createExam(
         {
           data: {
             ...args,
           },
         },
-        info
-      );
-      return exam;
+        info,
+      )
+      return exam
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1296,17 +1068,15 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       const allArgs = {
         ...args,
-      };
-      const { centerExamSessionExaminer, ...others } = allArgs;
+      }
+      const { centerExamSessionExaminer, ...others } = allArgs
       const report = await prismaDB.mutation.createReport(
         {
           data: {
@@ -1318,11 +1088,11 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      return report;
+        info,
+      )
+      return report
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1330,16 +1100,18 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
+       isAuthenticated
+     isBoardAdmin(user)
       // make a copy  of the args
       const newEducTypes = {
         ...args,
-      };
+      }
       // show the region name from the new regions array because will not have to update the id
 
-      const { educationType, ...others } = newEducTypes;
+      const { educationType, ...others } = newEducTypes
 
       const specialty = await prismaDB.mutation.createSpecialty(
         {
@@ -1352,11 +1124,11 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      return specialty;
+        info,
+      )
+      return specialty
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
@@ -1364,19 +1136,17 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { userId, user } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
 
       const newSubjectTypes = {
         ...args,
-      };
-      const { educType, ...others } = newSubjectTypes;
-      console.log({ educType });
+      }
+      const { educType, ...others } = newSubjectTypes
+      console.log({ educType })
       const subject = await prismaDB.mutation.createSubject(
         {
           data: {
@@ -1388,11 +1158,11 @@ const Mutation = {
             ...others,
           },
         },
-        info
-      );
-      return subject;
+        info,
+      )
+      return subject
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1400,16 +1170,14 @@ const Mutation = {
     parents,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "MARKS_ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       //TODO verify if marks exist for the given subject
-      console.log(args);
-      const { subjectSpecialty, candExamSecretCode, ...updates } = args;
+      console.log(args)
+      const { subjectSpecialty, candExamSecretCode, ...updates } = args
       const [marksExist] = await prismaDB.query.scores(
         {
           where: {
@@ -1421,19 +1189,19 @@ const Mutation = {
                 id
                 subjectAve
                 coeff
-                }`
-      );
-      console.log(marksExist);
+                }`,
+      )
+      console.log(marksExist)
 
       // const [isCandSpecialty]= await prismaDB.query.registrations({where:{candExamSecretCode}},`{specialty,}`)
 
       if (marksExist) {
-        throw new Error("Ce(tte) candidat(e) a déjà une note en cette Matière");
+        throw new Error('Ce(tte) candidat(e) a déjà une note en cette Matière')
       }
       const getSubjCoeff = await prismaDB.query.subjectSpecialty(
         { where: { id: subjectSpecialty.id } },
-        `{coeff}`
-      );
+        `{coeff}`,
+      )
       //todo
       const candMarks = await prismaDB.mutation.createScore(
         {
@@ -1452,25 +1220,23 @@ const Mutation = {
             ...updates,
           },
         },
-        info
-      );
+        info,
+      )
 
-      console.log(candMarks);
-      return candMarks;
+      console.log(candMarks)
+      return candMarks
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
   updateCandidate(parent, args, { prismaDB, request: { userId, user } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       //todo make sure it is the owner carrying out the operation
 
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      const { id, ...updates } = args;
+      const { id, ...updates } = args
       // run the update method
       return prismaDB.mutation.updateCandidate(
         {
@@ -1479,28 +1245,26 @@ const Mutation = {
           },
           where: { id: args.id },
         },
-        info
-      );
+        info,
+      )
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   updateExaminer(parent, args, { prismaDB, request: [userId, user] }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       //todo make sure it is the owner carrying out the operation
-      const samePerson = userId === args.user.id;
+      const samePerson = userId === args.user.id
       if (!samePerson) {
-        throw new Error("Cette operation vous est interdite");
+        throw new Error('Cette operation vous est interdite')
       }
-      // hasPermissions(user, ["ADMIN", "CENTER_ADMIN", "EXAMINER"])
       // first get a copy of the updates
-      const { id, ...updates } = args;
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the Examiner update mutation!!");
+      console.log('calling the Examiner update mutation!!')
       return prismaDB.mutation.updateExaminer(
         {
           data: {
@@ -1508,23 +1272,21 @@ const Mutation = {
           },
           where: { id: userId },
         },
-        info
-      );
+        info,
+      )
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   updateDivision(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
 
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling division update mutation!");
+      console.log('calling division update mutation!')
 
       return prismaDB.mutation.updateDivision(
         {
@@ -1533,35 +1295,35 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(updates);
+        info,
+      )
+      console.log(updates)
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   async updateScore(
     parent,
     args,
-    { prismaDB, request: { user, userId } },
-    info
+    { prismaDB, request: { user, userId }, response },
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
 
-      hasPermissions(user, ["ADMIN", "ACCESSOR"]);
 
-      const { subjectSpecialty, candExamSecretCode, ...updates } = args;
+      const { subjectSpecialty, candExamSecretCode, ...updates } = args
 
-      console.log("calling scores update mutation!!");
       if (!subjectSpecialty) {
-        throw new Error("Vous n'avez pas choisi de Matière");
+        throw new Error("Vous n'avez pas choisi de matière")
       }
-      // looking for the score id of the record whose marks will be updated
-      const [getScoreID] = await prismaDB.query.scores(
+      if (!candExamSecretCode) {
+        throw new Error('Code Anonymat candidat absent')
+      }
+
+      const [markExists] = await prismaDB.query.scores(
         {
           where: {
             subjectSpecialty,
@@ -1572,43 +1334,34 @@ const Mutation = {
                 id
                 subjectAve
                 coeff
-                }`
-      );
-      console.log(getScoreID);
-      if (!getScoreID) {
-        throw new Error("Code candidat erroné ");
+                }`,
+      )
+      const { id } = { ...markExists }
+      console.log({ id })
+      if (id === undefined || id === null) {
+        throw new Error('Pas encore de note en la matière')
       }
       // updating the marks for the given subject for the given student
       return prismaDB.mutation.updateScore(
         {
-          data: {
-            ...updates,
-            // user: {
-            //   connect: { id: userId },
-            // },
-          },
-
-          where: {
-            id: getScoreID.id,
-          },
+          data: updates,
+          where: { id },
         },
-        info
-      );
+        info,
+      )
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   updateRegion(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
 
-      const { id, ...updates } = args;
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updateRegion(
         {
           data: updates,
@@ -1616,24 +1369,22 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   updatePhase(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
 
-      const { id, ...updates } = args;
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updatePhase(
         {
           data: updates,
@@ -1641,23 +1392,21 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(` ${error.message}`);
+      throw new Error(` ${error.message}`)
     }
   },
 
   updateSpecialty(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the update specialty mutation!!");
+      console.log('calling the update specialty mutation!!')
       return prismaDB.mutation.updateSpecialty(
         {
           data: updates,
@@ -1665,22 +1414,20 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
   updateRank(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the update Rank mutation!!");
+      console.log('calling the update Rank mutation!!')
       return prismaDB.mutation.updateRank(
         {
           data: updates,
@@ -1688,22 +1435,20 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
   updateSession(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the update Session mutation!!");
+      console.log('calling the update Session mutation!!')
       return prismaDB.mutation.updateSession(
         {
           data: updates,
@@ -1711,27 +1456,25 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
   updateEducationType(
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the update Educ Type mutation!!");
+      console.log('calling the update Educ Type mutation!!')
       return prismaDB.mutation.updateEducationType(
         {
           data: updates,
@@ -1739,23 +1482,21 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
   updateExam(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updateExam(
         {
           data: updates,
@@ -1763,23 +1504,21 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
   updateSubject(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updateSubject(
         {
           data: updates,
@@ -1787,118 +1526,105 @@ const Mutation = {
             id: args.id,
           },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
   updateTown(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updateTown(
         {
           data: updates,
           where: { id: args.id },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
   async updateSubDivision(
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
-      const { id, ...updates } = args;
+      isAuthenticated
+     isBoardAdmin(user)
+      const { id, ...updates } = args
       // run the update method
-      console.log("calling the mutation!!");
+      console.log('calling the mutation!!')
       return prismaDB.mutation.updateSubDivision(
         {
           data: updates,
           where: { id },
         },
-        info
-      );
-      console.log(args.id);
+        info,
+      )
+      console.log(args.id)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
   async updateCenter(
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      console.log(args);
-      const { id, ...updates } = args;
-      // run the update method
-      //  const centerNumberPresent = await prismaDB.query.center({where:{id, centerNumber:args.centerNumber}})
-
-      //  if(!centerNumberPresent) {
-      //   throw new Error("Numéro de centre inexistant.")
-      // }
-      console.log("calling the update center mutation!!");
+      isAuthenticated
+     isBoardAdmin(user)
+      console.log(args)
+      const { id, ...updates } = args
+      
+      console.log('calling the update center mutation!!')
       return prismaDB.mutation.updateCenter(
         {
           data: updates,
           where: { id },
         },
-        info
-      );
+        info,
+      )
     } catch (error) {
-      `${error.message}`;
+      ;`${error.message}`
     }
   },
 
   async printPDF(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      console.log(args);
+      isAuthenticated
+     isBoardAdmin(user)
+      console.log(args)
 
-      const browser = await puppeteer.launch({ headless: true });
-      const page = await browser.newPage();
+      const browser = await puppeteer.launch({ headless: true })
+      const page = await browser.newPage()
       await page.goto(
-        "http://localhost:10000/show/results/candResults?id=ckfzupb6z8e2t0a35hr13yvq3",
-        { waitUntil: "networkidle0" }
-      );
+        'http://localhost:10000/show/results/candResults?id=ckfzupb6z8e2t0a35hr13yvq3',
+        { waitUntil: 'networkidle0' },
+      )
       await page.addStyleTag({
         // 'Content-Type': 'application/pdf', 'Content-Length': pdf.length
         content:
-          ".nav { display: none} .navbar { border: 0px} #print-button {display: none}",
-      });
-      const pdfPage = await page.pdf({ format: "A4" });
+          '.nav { display: none} .navbar { border: 0px} #print-button {display: none}',
+      })
+      const pdfPage = await page.pdf({ format: 'A4' })
 
-      await browser.close();
-      return pdfPage;
+      await browser.close()
+      return pdfPage
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1910,22 +1636,20 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
 
-      hasPermissions(user, ["ADMIN", "CENTER_ADMIN"]);
-      const userId = getUserID(request);
+      const userId = getUserID(request)
       // make a where variable
-      const where = { id: userId };
+      const where = { id: userId }
       // 3.delete it
-      const delCand = await prismaDB.mutation.deleteCandidate({ where }, info);
-      return { message: "Candidate Deletion Successful" };
+      const delCand = await prismaDB.mutation.deleteCandidate({ where }, info)
+      return { message: 'Candidate Deletion Successful' }
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1933,23 +1657,21 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteRegion({ where }, info);
+      return prismaDB.mutation.deleteRegion({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1957,23 +1679,21 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteDivision({ where }, info);
+      return prismaDB.mutation.deleteDivision({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -1981,23 +1701,21 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteSubDivision({ where }, info);
+      return prismaDB.mutation.deleteSubDivision({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -2005,23 +1723,21 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteSubject({ where }, info);
+      return prismaDB.mutation.deleteSubject({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -2029,23 +1745,21 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteTown({ where }, info);
+      return prismaDB.mutation.deleteTown({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
 
@@ -2053,24 +1767,22 @@ const Mutation = {
     parent,
     args,
     { prismaDB, request: { user, userId } },
-    info
+    info,
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      hasPermissions(user, ["ADMIN"]);
+      isAuthenticated
+     isBoardAdmin(user)
       // make a where variable
-      const where = { id: args.id };
+      const where = { id: args.id }
       // 1 find the item
       // const regionToDelete = await prismaDB.query.region({ where }, info);
 
       // todo check if they own the item or have the permissions for the item
       // todo delete it  from the database and note its absence
-      return prismaDB.mutation.deleteCenter({ where }, info);
+      return prismaDB.mutation.deleteCenter({ where }, info)
     } catch (error) {
-      throw new Error(`${error.message}`);
+      throw new Error(`${error.message}`)
     }
   },
-};
-module.exports = Mutation;
+}
+module.exports = Mutation

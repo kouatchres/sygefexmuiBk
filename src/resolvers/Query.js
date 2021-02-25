@@ -1,7 +1,12 @@
 const { forwardTo } = require("prisma-binding");
-const hashPassword = require("../utils/hashPassword");
-const hasPermissions = require("../utils/hasPermissions");
-const getUserID = require("../utils/getUserID");
+const isAuthenticated = require('../utils/authentication')
+const {
+  isBoardAdmin,
+  isUser,
+  isExaminer,
+  isCenterAdmin,
+  hasPermissions,
+} = require('../utils/hasPermissions')
 
 const Query = {
   registrationsConnection: forwardTo("prismaDB"),
@@ -13,9 +18,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const allCandidates = await prismaDB.query.candidates({
         orderBy: { AND: ["cand1stName_ASC", "cand2ndName_ASC"] },
       });
@@ -26,15 +30,8 @@ const Query = {
   },
   async candidate(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(args);
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-
-      hasPermissions(user, ["USER", "ADMIN", "CENTER_ADMIN"]);
+      isAuthenticated
+     isUser(user)
       const where = {
         id: args.id,
       };
@@ -42,10 +39,6 @@ const Query = {
 
       //todo make sure it is the owner carrying out the operation
 
-      // console.log(oneCandidate);
-      // if (userId !== oneCandidate.user.id) {
-      //   throw new Error("Cette operation vous est interdite");
-      // }
       return oneCandidate;
     } catch (error) {
       throw new Error(` ${error.message}`);
@@ -54,9 +47,8 @@ const Query = {
 
   async region(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -69,16 +61,8 @@ const Query = {
 
   async regions(parent, args, { prismaDB, request: { userId, user } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if they are logged in
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if he haas the permissions to query all the users.
-      hasPermissions(user, ["USER", "ADMIN", "PERMISSION_UPDATE"]);
-
+      isAuthenticated
+     isBoardAdmin(user)
       //todo if they do, then query all the regions.
       const allRegions = await prismaDB.query.regions(
         { orderBy: "regName_ASC" },
@@ -92,18 +76,8 @@ const Query = {
 
   async users(parent, args, { prismaDB, request: { userId, user } }, info) {
     try {
-      console.log("getting all users!!!!");
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if they are logged in
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      // todo check if he haas the permissions to query all the users.
-      hasPermissions(user, ["USER", "ADMIN", "PERMISSION_UPDATE"]);
-      //todo if they do then query all the users.
-
+     isAuthenticated
+     isBoardAdmin(user)
       const allUsers = await prismaDB.query.users(
         {
           orderBy: "name_ASC",
@@ -118,9 +92,8 @@ const Query = {
 
   async phases(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+    isAuthenticated
+     isBoardAdmin(user)
       const allPhases = await prismaDB.query.phases({
         orderBy: "phaseName_ASC",
       });
@@ -132,9 +105,8 @@ const Query = {
 
   async phase(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+    isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const where = {
         id: args.id,
@@ -148,9 +120,8 @@ const Query = {
 
   async divisions(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const allDivisions = await prismaDB.query.divisions({
         orderBy: "divName_ASC",
       });
@@ -161,9 +132,8 @@ const Query = {
   },
   async division(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -186,9 +156,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSubDivisions = await prismaDB.query.subDivisions({
         orderBy: "subDivName_ASC",
       });
@@ -204,9 +173,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -229,12 +197,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log("in countRegistered Candidates");
-      console.log(args);
-
+     isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -248,9 +212,8 @@ const Query = {
 
   async towns(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const allTowns = await prismaDB.query.towns({ orderBy: "townName_ASC" });
       return allTowns;
     } catch (error) {
@@ -259,9 +222,8 @@ const Query = {
   },
   async town(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -274,9 +236,8 @@ const Query = {
 
   async centers(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const allCenters = await prismaDB.query.centers({
         orderBy: "centerName_ASC",
       });
@@ -287,9 +248,8 @@ const Query = {
   },
   async center(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isBoardAdmin(user)
       const where = { id: args.id };
       const oneCenter = await prismaDB.query.center({ where }, info);
       return oneCenter;
@@ -304,10 +264,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(args);
+     isAuthenticated
+     isBoardAdmin(user)
       const { centerNumber } = { ...args };
       const where = { centerNumber };
       const oneCenter = await prismaDB.query.center({ where }, info);
@@ -328,10 +286,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(args);
+     isAuthenticated
+     isBoardAdmin(user)
       const { centerSecretCode } = { ...args };
       const where = { centerSecretCode };
       const oneCenter = await prismaDB.query.center({ where }, info);
@@ -351,10 +307,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(args);
+     isAuthenticated
+     isBoardAdmin(user)
       const { CESCode } = { ...args };
       const where = { CESCode };
       const oneCenter = await prismaDB.query.center({ where }, info);
@@ -375,10 +329,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
-      console.log(prismaDB);
+     isAuthenticated
+     isBoardAdmin(user)
       const { examinerCode } = { ...args };
       const where = { examinerCode };
       const oneProf = await prismaDB.query.examiner({ where }, info);
@@ -394,9 +346,8 @@ const Query = {
 
   async exams(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allExams = await prismaDB.query.exams({ orderBy: "examName_ASC" });
       return allExams;
     } catch (error) {
@@ -405,9 +356,8 @@ const Query = {
   },
   async examiner(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -419,9 +369,8 @@ const Query = {
   },
   async exam(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -434,9 +383,8 @@ const Query = {
 
   async scores(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log("this is in the scores query");
       console.log(args);
       const where = {
@@ -450,9 +398,8 @@ const Query = {
   },
   async score(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -470,9 +417,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSpecialty = await prismaDB.query.specialties({
         orderBy: "specialtyName_ASC",
       });
@@ -484,9 +430,8 @@ const Query = {
 
   async specialty(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
         //  orderBy: "subjectName_ASC",
@@ -505,9 +450,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const where = {
         candCode: args.candCode,
@@ -521,9 +465,8 @@ const Query = {
 
   async subjects(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSubject = await prismaDB.query.subjects({
         orderBy: "subjectName_ASC",
       });
@@ -540,9 +483,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const allSubject = await prismaDB.query.subjects({
         where: { subjectGroup: "EPF1", educType: args.educType },
@@ -561,9 +503,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSubject = await prismaDB.query.subjects({
         where: { subjectGroup: "EPF2", educType: args.educType },
         orderBy: "subjectName_ASC",
@@ -576,9 +517,8 @@ const Query = {
 
   async subject(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -596,9 +536,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSubjectSpecialty = await prismaDB.query.subjectSpecialties({
         orderBy: "subjectSpecialtyName_ASC",
       });
@@ -614,9 +553,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -632,9 +570,8 @@ const Query = {
 
   async reports(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allReport = await prismaDB.query.reports({
         orderBy: "createdAt_DESC",
       });
@@ -645,9 +582,8 @@ const Query = {
   },
   async report(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -665,9 +601,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { centerExamSession } = {
         ...args,
@@ -695,9 +630,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { center, examSession } = {
         ...args,
@@ -727,9 +661,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { candExamSecretCode } = { ...args };
 
@@ -754,9 +687,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { center, examSession } = {
         ...args,
@@ -782,9 +714,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { CESCode } = { ...args };
 
@@ -805,9 +736,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -828,9 +758,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const where = {
         id: args.id,
@@ -852,9 +781,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const where = {
         centerExamSession: args.centerExamSession.id,
@@ -872,9 +800,8 @@ const Query = {
 
   async sessions(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allSession = await prismaDB.query.sessions({
         orderBy: "createdAt_DESC",
       });
@@ -885,9 +812,8 @@ const Query = {
   },
   async session(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -899,9 +825,8 @@ const Query = {
   },
   async ranks(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allRank = await prismaDB.query.ranks({ orderBy: "rankName_ASC" });
       return allRank;
     } catch (error) {
@@ -910,9 +835,8 @@ const Query = {
   },
   async rank(parent, args, { prismaDB, request: { user, userId } }, info) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -929,9 +853,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { session, exam } = { ...args };
       const where = {
@@ -955,9 +878,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -975,9 +897,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log({ args });
       const allEducationType = await prismaDB.query.educationTypes({
         orderBy: "educationTypeName_ASC",
@@ -994,9 +915,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -1017,9 +937,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const where = {
         id: args.id,
@@ -1038,9 +957,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = {
         id: args.id,
       };
@@ -1062,9 +980,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log("cand registration  infos");
       console.log(args);
       const { candidate, centerExamSession } = args;
@@ -1100,9 +1017,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log("cand registration  infos");
       console.log(args);
       const { phase, rank } = args;
@@ -1135,9 +1051,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log("cand registration  infos");
       console.log(args);
       const { candidate } = {
@@ -1172,9 +1087,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+     isAuthenticated
+     isUser(user)
       console.log("cand ID  infos");
       console.log(args);
       const where = {
@@ -1197,9 +1111,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log("cand ID  infos");
       console.log(args);
       const where = {
@@ -1223,9 +1136,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const allCenterExamSessionExaminer = await prismaDB.query.centerExamSessionExaminers();
       return allCenterExamSessionExaminer;
     } catch (error) {
@@ -1239,9 +1151,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { examiner, centerExamSession, ...others } = args;
 
@@ -1265,9 +1176,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       console.log(args);
       const { centerExamSession } = { ...args };
       const where = { centerExamSession: centerExamSession.id };
@@ -1287,9 +1197,8 @@ const Query = {
     info
   ) {
     try {
-      if (!userId) {
-        throw new Error("Veuillez vous connecter");
-      }
+      isAuthenticated
+     isBoardAdmin(user)
       const where = { id: args.id };
       const oneCenterExamSessionExaminer = await prismaDB.query.centerExamSessionExaminer(
         { where },

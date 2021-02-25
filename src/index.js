@@ -1,7 +1,6 @@
 const cookieParser = require("cookie-parser");
 const { verify } = require("jsonwebtoken");
 const cors = require("cors");
-const permissions = require("./utils/hasPermissions")
 require("dotenv").config({ path: "./variables.env" });
 const createYogaServer = require("./createServer");
 const prismaDB = require("./prismaDB");
@@ -25,7 +24,7 @@ server.express.use((req, res, next) => {
     // send the userId along with every request for easy access of the user id
     req.userId = userId;
   }
-  console.log(token);
+  console.log({token});
   next();
 });
 //todo create a middleware that populates the user on each request

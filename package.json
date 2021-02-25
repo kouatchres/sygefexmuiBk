@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "apollo-link": "^1.2.14",
+    "apollo-server": "^2.19.1",
     "apollo-server-express": "^2.15.1",
     "babel-preset-env": "^1.7.0",
     "bcryptjs": "2.4.3",
@@ -27,7 +28,8 @@
     "graphql-cli": "^2.16.7",
     "graphql-middleware": "^4.0.2",
     "graphql-shield": "^7.3.2",
-    "graphql-yoga": "1.17.4",
+    "graphql-tools": "^7.0.2",
+    "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^4.6.8",
     "nodemon": "^2.0.4",
@@ -42,6 +44,11 @@
   "license": "MIT",
   "repository": {
     "url": "wesbos.com"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "all"
   },
   "babel": {
     "presets": [
